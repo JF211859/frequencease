@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TouchableHighlight, Alert, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, Alert, Dimensions, Button} from 'react-native';
 import React, { Component, useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av';
@@ -8,32 +8,19 @@ import { Audio } from 'expo-av';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const FrequencySlider = (props) => {
-  const [value, setValue] = useState(props.value ?? 0);
-  return (
-    <View>
-      <Text style={{textAlign: "center"}}>{value && +value}</Text>
-      <Slider
-        step={0.5}
-        style={styles.slider}
-        {...props}
-        value={value}
-        onValueChange={setValue}
-      />
-    </View>
-  );
-};
 
-export default class App extends Component {
+function FrequencyAdjusterPage (props) {
 
-  alert_ryan(){
-    Alert.alert("Hello Ryan!")
+  const [min_frequency, setMinFrequency] = useState(100);
+  const [max_frequency, setMaxFrequency] = useState(3000);
+
+  const navigation = () => {
+    Alert.alert("Place Navigation Here");
   }
 
-  render(){
-    return (
-      <View>
-        <TouchableHighlight onPress={this.alert_ryan}>
+  return (
+    <View>
+        <TouchableHighlight onPress={navigation}>
           <Image
             source={require('./images/hamburger_icon.png')}
             style={{width: 40, height: 40, marginTop: 60, marginLeft: 30}}
@@ -48,45 +35,50 @@ export default class App extends Component {
           Lowest Frequency
         </Text>
 
-        <FrequencySlider
+        <Text style = {{textAlign: "center"}}>{min_frequency}</Text>
+
+        <Slider
           style={{marginTop: 16, height: 100}}
           minimumValue={50}
           maximumValue={5000}
           minimumTrackTintColor="#92C3F0"
           maximumTrackTintColor="#F6F3F3"
           value={100}
+          onValueChange={setMinFrequency}
+          step={1}
         />
 
         <Text style={{fontSize: 16, marginTop: 16, textAlign: "center"}}>
           Highest Frequency
         </Text>
 
-        <FrequencySlider
+        <Text style = {{textAlign: "center"}}>{max_frequency}</Text>
+
+        <Slider
           style={{marginTop: 16, height: 100}}
           minimumValue={50}
           maximumValue={5000}
-          minimumTrackTintColor="#F6F3F3"
-          maximumTrackTintColor="#92C3F0"
+          minimumTrackTintColor="#92C3F0"
+          maximumTrackTintColor="#F6F3F3"
           value={3000}
+          onValueChange={setMaxFrequency}
+          step={1}
         />
 
         <StatusBar style="auto" />
       </View>
+  );
+};
+
+export default class App extends Component {
+
+
+  render(){
+
+    return (
+      <FrequencyAdjusterPage>
+
+      </FrequencyAdjusterPage>
     );
   }
 }
-
-
-
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-    backgroundColor: '#fff',
-    fontSize: 32,
-  },
-});
