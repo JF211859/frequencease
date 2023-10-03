@@ -14,7 +14,7 @@ export default function FrequencyAdjuster() {
 
   return (
     <View>
-      <Text stye={{ fontSize: 32, marginTop: 32, textAlign: "center" }}>
+      <Text style={{ fontSize: 32, marginTop: 32, textAlign: "center" }}>
         Audible Frequency
       </Text>
 
