@@ -18,6 +18,20 @@ export default function FrequencyAdjusterPage () {
     Alert.alert("Place Navigation Here");
   }
 
+  const onRecord = () => {
+    Alert.alert("Recording");
+  }
+
+  const onPlayBack = () => {
+    Alert.alert("PlayingBack");
+  }
+
+  async function playSound () {
+    const { sound } = await Audio.Sound.createAsync(require('../audio/test.mp3'));
+    await sound.playAsync();
+    console.log("Sound Played")
+  }
+
   return (
     <View>
         <TouchableHighlight onPress={navigation}>
@@ -65,20 +79,17 @@ export default function FrequencyAdjusterPage () {
           step={1}
         />
 
+        <Button
+          onPress={onRecord}
+          title="record"
+        />
+
+        <Button
+          onPress={playSound}
+          title="playback"
+        />
+
         <StatusBar style="auto" />
       </View>
   );
 };
-
-// export default class App extends Component {
-
-
-//   render(){
-
-//     return (
-//       <FrequencyAdjusterPage>
-
-//       </FrequencyAdjusterPage>
-//     );
-//   }
-// }
