@@ -1,16 +1,36 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
-import React, { Component, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Dimensions,
+  Button,
+} from "react-native";
+import React, { useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
-
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
   const [min_frequency, setMinFrequency] = useState(100);
   const [max_frequency, setMaxFrequency] = useState(3000);
+
+  const onRecord = () => {
+    Alert.alert("Recording");
+  };
+
+  const onPlayBack = () => {
+    Alert.alert("PlayingBack");
+  };
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../audio/test.mp3")
+    );
+    await sound.playAsync();
+    console.log("Sound Played");
+  }
 
   return (
     <View>
@@ -47,6 +67,10 @@ export default function FrequencyAdjuster() {
         onValueChange={setMaxFrequency}
         step={1}
       />
+
+      <Button onPress={onRecord} title="record" />
+
+      <Button onPress={playSound} title="playback" />
 
       <StatusBar style="auto" />
     </View>
