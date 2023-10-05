@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
+import { COLORS } from "../Style/colorScheme";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
@@ -46,8 +47,8 @@ export default function FrequencyAdjuster() {
         style={{ marginTop: 16, height: 100 }}
         minimumValue={50}
         maximumValue={5000}
-        minimumTrackTintColor="#92C3F0"
-        maximumTrackTintColor="#F6F3F3"
+        minimumTrackTintColor={COLORS.MEDIUM_BLUE}
+        maximumTrackTintColor={COLORS.LIGHT_GREY}
         value={100}
         onValueChange={setMinFrequency}
         step={1}
@@ -61,8 +62,8 @@ export default function FrequencyAdjuster() {
         style={{ marginTop: 16, height: 100 }}
         minimumValue={50}
         maximumValue={5000}
-        minimumTrackTintColor="#92C3F0"
-        maximumTrackTintColor="#F6F3F3"
+        minimumTrackTintColor={COLORS.MEDIUM_BLUE}
+        maximumTrackTintColor={COLORS.LIGHT_GREY}
         value={3000}
         onValueChange={setMaxFrequency}
         step={1}
