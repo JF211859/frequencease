@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { View, StyleSheet, Button } from "react-native";
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions, Button} from 'react-native';
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
@@ -18,6 +20,7 @@ export default function FrequencyTester() {
   const replayPosition = 90;
   const thumbsUpPostion = (windowWidth / 2) - 100;
   const thumbsDownPosition = 90
+  const navigation = useNavigation();
 
   const audio = () => {
     Alert.alert("implement audio playback and button switching (play/pause) for alpha");
@@ -57,13 +60,13 @@ export default function FrequencyTester() {
       </Text>
 
       <View style={{flexDirection: "row"}}>
-        <TouchableOpacity onPress={testerPhasePage}>
+        <TouchableOpacity onPress={() => navigation.navigate("FrequencyTesterPhase")}>
           <Image
             source={require('../images/thumbsup.png')}
             style={{width: 55, height: 55, marginTop: 40, marginLeft: thumbsUpPostion}}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={testerPhasePage}>
+        <TouchableOpacity onPress={() => navigation.navigate("FrequencyTesterPhase")}>
           <Image
             source={require('../images/thumbsdown.png')}
             style={{width: 55, height: 55, marginTop: 40, marginLeft: thumbsDownPosition}}
