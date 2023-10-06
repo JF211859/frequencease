@@ -1,6 +1,6 @@
 export const COLORS = {
   LIGHT_BLUE: "#A4D3FF",
-  MEDIUM_BLUE: "92C3F0",
+  MEDIUM_BLUE: "#92C3F0",
   DARK_BLUE: "#258EEF",
   PURPLE: "#9E74D3",
   GREEN: "#69BC00",
