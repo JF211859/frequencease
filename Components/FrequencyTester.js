@@ -25,9 +25,6 @@ export default function FrequencyTester() {
   const audio = () => {
     Alert.alert("implement audio playback and button switching (play/pause) for alpha");
   }
-  const testerPhasePage = () => {
-    Alert.alert("navigate to phase page here after merging");
-  }
   const testerTutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
   }
