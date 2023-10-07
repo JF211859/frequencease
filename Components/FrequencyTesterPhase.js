@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { APP_THEME, COLORS } from "../Style/colorScheme";
+import TutorialButton from "./ImageComponents/TutorialButton";
 
 function Phase(props) {
   const phaseColor = APP_THEME[`PHASE_${props.phase}`];
@@ -62,10 +63,7 @@ export default function FrequencyTesterPhase(props) {
           <Text style={{ fontSize: 20 }}>Confirm Results</Text>
         </TouchableOpacity>
       </View>
-      {/* TODO: insert help button */}
-      {/* <Pressable onPress={() => Alert.alert("Help")}>
-        <FontAwesomeIcon icon="fa-regular fa-circle-question" />
-      </Pressable> */}
+      <TutorialButton />
     </View>
   );
 }
