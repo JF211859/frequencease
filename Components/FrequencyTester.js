@@ -15,7 +15,7 @@ const windowHeight = Dimensions.get("window").height;
 // <Progress.Bar progress={0.1} width={200} />
 export default function FrequencyTester() {
   const circlePosition = (windowWidth / 2) - 115;
-  const playPausePosition = (windowWidth / 2) - 95;
+  const playPausePosition = (windowWidth / 2) - 115;
   const replayPosition = 90;
   const thumbsUpPostion = (windowWidth / 2) - 100;
   const thumbsDownPosition = 90
@@ -39,14 +39,14 @@ export default function FrequencyTester() {
       <View style={{flexDirection: "row"}}>
         <TouchableOpacity onPress={audio}>
           <Image
-            source={require('../images/playbutton.png')}
-            style={{width: 55, height: 55, marginTop: 50, marginLeft: playPausePosition}}
+            source={require('../images/play.png')}
+            style={{width: 70, height: 70, marginTop: 50, marginLeft: playPausePosition}}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={audio}>
           <Image
-            source={require('../images/replaybutton.png')}
-            style={{width: 60, height: 60, marginTop: 50, marginLeft: replayPosition}}
+            source={require('../images/replay.png')}
+            style={{width: 70, height: 70, marginTop: 50, marginLeft: replayPosition}}
           />
         </TouchableOpacity>
       </View>
