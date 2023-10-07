@@ -69,6 +69,7 @@ function SoundPlayer({ mp3 }) {
   const ReplayAudio = async () => {
     try {
       sound.current.replayAsync();
+      SetStatus(true);
       console.log('Audio replaying');
     } catch (error) {
       SetStatus(false);
