@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Button } from "react-native";
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions, Button} from 'react-native';
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
