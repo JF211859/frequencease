@@ -1,13 +1,11 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions, Button} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions} from 'react-native';
+import SoundPlayer from './audioPlayer';
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-
-
 
 // This is the main view for the Frequency Tester
 // First time users should be directed to this view first
@@ -15,8 +13,6 @@ const windowHeight = Dimensions.get("window").height;
 // <Progress.Bar progress={0.1} width={200} />
 export default function FrequencyTester() {
   const circlePosition = (windowWidth / 2) - 115;
-  const playPausePosition = (windowWidth / 2) - 115;
-  const replayPosition = 90;
   const thumbsUpPostion = (windowWidth / 2) - 100;
   const thumbsDownPosition = 90
   const navigation = useNavigation();
@@ -36,20 +32,7 @@ export default function FrequencyTester() {
         </Text>
       </View>
 
-      <View style={{flexDirection: "row"}}>
-        <TouchableOpacity onPress={audio}>
-          <Image
-            source={require('../images/play.png')}
-            style={{width: 70, height: 70, marginTop: 50, marginLeft: playPausePosition}}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={audio}>
-          <Image
-            source={require('../images/replay.png')}
-            style={{width: 70, height: 70, marginTop: 50, marginLeft: replayPosition}}
-          />
-        </TouchableOpacity>
-      </View>
+      <SoundPlayer mp3={require('../audio/audiosweep.mp3')} />
 
       <Text style={{ fontSize: 32, marginTop: 100, textAlign: "center" }}>
           Can you hear this sound?
