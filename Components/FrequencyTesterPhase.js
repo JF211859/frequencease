@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Button, Alert } from "react-native";
+import { View, Text, Button, Alert, TouchableOpacity, Image, useWindowDimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { APP_THEME, COLORS } from "../Style/colorScheme";
 import styles from '../Style/styles.js';
@@ -19,30 +19,39 @@ function Phase(props) {
 }
 
 export default function FrequencyTesterPhase(props) {
+  const windowHeight = useWindowDimensions().height;
   const navigation = useNavigation();
 
   return (
-    <View>
+    <View style={{height: {windowHeight}, flex: 1}}>
       {/* progress bar */}
       {/* phases */}
+
+      <View style={[styles.row, styles.fileButtons, styles.margin]}>
+        <TouchableOpacity
+          style={[styles.button, {color: APP_THEME.CONFIRM}]}
+          onPress={() => {
+            navigation.navigate("FrequencyTester"); //TODO: need to change
+          }}>
+          <Text>Retake Entire Test</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, {color: APP_THEME.CANCEL}]}
+          onPress={() => {
+            navigation.navigate("FrequencyAdjuster"); //TODO: need to change
+          }}>
+          <Text>Confirm Results</Text>
+        </TouchableOpacity>
+      </View>
+
       <TouchableOpacity
-        style={[styles.button, {color: APP_THEME.CONFIRM}]}
-        onPress={() => {
-          navigation.navigate("FrequencyTester"); //TODO: need to change
-        }}>
-        <Text>Retake Entire Test</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, {color: APP_THEME.CANCEL}]}
-        onPress={() => {
-          navigation.navigate("FrequencyAdjuster"); //TODO: need to change
-        }}>
-        <Text>Confirm Results</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}>
-        <Text>Help</Text>
-      </TouchableOpacity>
+          onPress={testerTutorialPage}
+          style={[styles.circleButton, styles.corner]}>
+          <Image
+            source={require('../images/tutorial.png')}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
     </View>
   );
 }

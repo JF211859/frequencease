@@ -66,7 +66,6 @@ export default StyleSheet.create({
     corner: {
       alignSelf: 'flex-end',
       position: 'absolute',
-      bottom: 0,
-      paddingRight: 30
+      bottom: 0
     }
 })

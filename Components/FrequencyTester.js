@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Text, View, Image, TouchableOpacity, Alert, useWindowDimensions} from 'react-native';
-import SoundPlayer from './audioPlayer';
+import SoundPlayer from './TesterPlayer';
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
 import styles from '../Style/styles.js';
@@ -28,7 +28,7 @@ export default function FrequencyTester() {
       </View>
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require('../audio/audiosweep.mp3')} fullPlayer='false' />
+        <SoundPlayer mp3={require('../audio/audiosweep.mp3')} />
       </View>      
 
       <Text style={styles.h1}>

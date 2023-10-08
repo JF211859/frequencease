@@ -3,10 +3,9 @@ import { View, Image, TouchableOpacity, Dimensions, Text} from 'react-native';
 import { Audio } from 'expo-av';
 import styles from "../Style/styles";
 
-function SoundPlayer({ mp3, fullPlayer }) {
+function SoundPlayer({ mp3 }) {
   const sound = React.useRef(new Audio.Sound());
   const [Status, SetStatus] = React.useState(false);
-  const [showFullPlayer, setShowPlayer] = React.useState(fullPlayer);
     
   React.useEffect(() => {
     LoadAudio();
@@ -92,14 +91,6 @@ function SoundPlayer({ mp3, fullPlayer }) {
         style={styles.circleButton}>
         <Image
           source={Status === false ? require('../images/play.png') : require('../images/pause.png')}
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={StopAudio}
-        style={[styles.circleButton, {display: showFullPlayer === true ? 'flex' : 'none'}]}>
-        <Image
-          source={require('../images/stop.png')}
           style={styles.icon}
         />
       </TouchableOpacity>

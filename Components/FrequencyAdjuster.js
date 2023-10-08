@@ -11,7 +11,7 @@ import SwitchSelector from "react-native-switch-selector";
 import { COLORS } from "../Style/colorScheme";
 import styles from "../Style/styles";
 
-import SoundPlayer from './audioPlayer';
+import SoundPlayer from './AdjusterPlayer';
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
@@ -44,18 +44,10 @@ export default function FrequencyAdjuster() {
           width: 50,
           height: 25 }} />
       </View>
-
-      <Slider
-        style={styles.slider}
-        minimumValue={50}
-        maximumValue={5000}
-        minimumTrackTintColor={COLORS.MEDIUM_BLUE}
-        maximumTrackTintColor={COLORS.LIGHT_GREY}
-        value={100}
-        onValueChange={setMinFrequency}
-        step={1}
-      />
-
+      <View style={[styles.margin, styles.row]}>
+        <Text>{min_frequency}</Text>
+        <Text>{max_frequency}</Text>
+      </View>
 
       <SwitchSelector
         options={[
@@ -84,16 +76,16 @@ export default function FrequencyAdjuster() {
       />
       
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require('../audio/audiosweep.mp3')} fullPlayer='true' />
+        <SoundPlayer mp3={require('../audio/audiosweep.mp3')} />
       </View>
 
       <View style={[styles.row, styles.fileButtons, styles.margin]}>
         <TouchableOpacity style={styles.button} onPress={onRecord} >
-          <Text>Record</Text>
+          <Text style={styles.body}>Record</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.button} onPress={onImport} >
-          <Text>Import File</Text>
+          <Text style={styles.body}>Import File</Text>
         </TouchableOpacity>
       </View>
 
