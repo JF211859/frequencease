@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { View, Image, TouchableOpacity, Dimensions, Text} from 'react-native';
+import { View, Image, TouchableOpacity, Text} from 'react-native';
 import { Audio } from 'expo-av';
 import Slider from "@react-native-community/slider";
-import styles from "../Style/styles.js";
-import { APP_THEME, COLORS } from '../Style/colorScheme.js';
+import styles from "../Style/styles";
+import { APP_THEME, COLORS } from '../Style/colorScheme';
 
-function SoundPlayer({ mp3, fullPlayer }) {
+function SoundPlayer({ mp3 }) {
   const sound = React.useRef(new Audio.Sound());
   const [Status, SetStatus] = React.useState(false);
   const [audioProgress, setAudioProgress] = React.useState(0);
