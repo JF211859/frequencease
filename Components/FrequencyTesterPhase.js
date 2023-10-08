@@ -18,6 +18,10 @@ function Phase(props) {
   );
 }
 
+const testerTutorialPage = () => {
+  Alert.alert("tutorial page to be implemented");
+}
+
 export default function FrequencyTesterPhase(props) {
   const windowHeight = useWindowDimensions().height;
   const navigation = useNavigation();

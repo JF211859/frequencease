@@ -10,7 +10,6 @@ import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector";
 import { COLORS } from "../Style/colorScheme";
 import styles from "../Style/styles";
-
 import SoundPlayer from './AdjusterPlayer';
 
 // This should be the home screen when app opens
@@ -45,8 +44,8 @@ export default function FrequencyAdjuster() {
           height: 25 }} />
       </View>
       <View style={[styles.margin, styles.row]}>
-        <Text>{min_frequency}</Text>
-        <Text>{max_frequency}</Text>
+        <Text>20 Hz</Text>
+        <Text>20,000 Hz</Text>
       </View>
 
       <SwitchSelector

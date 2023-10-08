@@ -63,17 +63,6 @@ function SoundPlayer({ mp3 }) {
     }
   };
 
-  const StopAudio = async () => {
-    try {
-      sound.current.pauseAsync();
-      sound.current.setPositionAsync(0);
-      SetStatus(false);
-      console.log('Audio stopped');
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
   const ReplayAudio = async () => {
     try {
       sound.current.replayAsync();
