@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Dimensions} from 'react-native';
+import { View, Image, TouchableOpacity, Dimensions, Text} from 'react-native';
 import { Audio } from 'expo-av';
+import styles from "../Style/styles";
 
-const windowWidth = Dimensions.get("window").width;
-
-function SoundPlayer({ mp3 }) {
+function SoundPlayer({ mp3, fullPlayer }) {
   const sound = React.useRef(new Audio.Sound());
   const [Status, SetStatus] = React.useState(false);
-  const playPausePosition = (windowWidth / 2) - 115;
-  const replayPosition = 90;
+  const [showFullPlayer, setShowPlayer] = React.useState(fullPlayer);
     
   React.useEffect(() => {
     LoadAudio();
@@ -66,6 +64,17 @@ function SoundPlayer({ mp3 }) {
     }
   };
 
+  const StopAudio = async () => {
+    try {
+      sound.current.pauseAsync();
+      sound.current.setPositionAsync(0);
+      SetStatus(false);
+      console.log('Audio stopped');
+    } catch (error) {
+      SetStatus(false);
+    }
+  };
+
   const ReplayAudio = async () => {
     try {
       sound.current.replayAsync();
@@ -77,17 +86,29 @@ function SoundPlayer({ mp3 }) {
   };
 
   return (
-    <View style={{flexDirection: "row"}}>
-      <TouchableOpacity onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}>
+    <View style={[styles.row, {justifyContent: 'space-around'}]}>
+      <TouchableOpacity
+        onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
+        style={styles.circleButton}>
         <Image
           source={Status === false ? require('../images/play.png') : require('../images/pause.png')}
-          style={{width: 70, height: 70, marginTop: 50, marginLeft: playPausePosition}}
+          style={styles.icon}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={ReplayAudio}>
+      <TouchableOpacity
+        onPress={StopAudio}
+        style={[styles.circleButton, {display: showFullPlayer === true ? 'flex' : 'none'}]}>
         <Image
-          source={require('../images/replay.png')}
-          style={{width: 70, height: 70, marginTop: 50, marginLeft: replayPosition}}
+          source={require('../images/stop.png')}
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={ReplayAudio}
+        style={styles.circleButton}>
+        <Image
+          source={require('../images/replay-music.png')}
+          style={styles.icon}
         />
       </TouchableOpacity>
     </View>
@@ -95,5 +116,3 @@ function SoundPlayer({ mp3 }) {
 }
 
 export default SoundPlayer;
-
-const styles = StyleSheet.create({});

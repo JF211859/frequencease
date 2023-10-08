@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text, Button, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { APP_THEME, COLORS } from "../Style/colorScheme";
+import styles from '../Style/styles.js';
 
 function Phase(props) {
   return (
@@ -24,11 +25,30 @@ export default function FrequencyTesterPhase(props) {
     <View>
       {/* progress bar */}
       {/* phases */}
-      <Button title="Retake Entire Test" color={APP_THEME.CANCEL} />
-      <Button title="Confirm Results" color={APP_THEME.CONFIRM} />
-      <Button title="Help" color={APP_THEME.APP_BLUE} />
+      <TouchableOpacity
+        style={[styles.button, {color: APP_THEME.CONFIRM}]}
+        onPress={() => {
+          navigation.navigate("FrequencyTester"); //TODO: need to change
+        }}>
+        <Text>Retake Entire Test</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, {color: APP_THEME.CANCEL}]}
+        onPress={() => {
+          navigation.navigate("FrequencyAdjuster"); //TODO: need to change
+        }}>
+        <Text>Confirm Results</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}>
+        <Text>Help</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+
+// <Button title="Retake Entire Test" color={APP_THEME.CANCEL} />
+// <Button title="Confirm Results" color={APP_THEME.CONFIRM} />
+// <Button title="Help" color={APP_THEME.APP_BLUE} />
+
