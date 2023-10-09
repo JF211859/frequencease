@@ -72,7 +72,7 @@ export default function FrequencyAdjuster() {
 
       <Button onPress={() => playSound('https://webaudioapi.com/samples/audio-tag/chrono.mp3')} title="record" />
 
-      <Button onPress={() => playSound('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3')} title="playback" />
+      <Button onPress={() => playSound('https://helloworld-3k7cjdpwya-uc.a.run.app')} title="playback" />
 
       <StatusBar style="auto" />
     </View>
