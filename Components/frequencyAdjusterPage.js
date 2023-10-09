@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, Alert, Dimensions, B
 import React, { Component, useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av';
+// import * as FileSystem from 'expo-file-system';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -16,6 +17,19 @@ export default function FrequencyAdjusterPage () {
 
   const navigation = () => {
     Alert.alert("Place Navigation Here");
+  }
+
+  const onRecord = () => {
+    Alert.alert("Recording");
+  };
+
+  async function playSound(file) {
+    console.log(file);
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: file},
+      { shouldPlay: true}
+    );
+    await sound.playAsync();
   }
 
   return (
@@ -36,6 +50,7 @@ export default function FrequencyAdjusterPage () {
         </Text>
 
         <Text style = {{textAlign: "center"}}>{min_frequency}</Text>
+
 
         <Slider
           style={{marginTop: 16, height: 100}}
@@ -65,20 +80,11 @@ export default function FrequencyAdjusterPage () {
           step={1}
         />
 
+        <Button onPress={() => playSound('https://webaudioapi.com/samples/audio-tag/chrono.mp3')} title="record" />
+
+        <Button onPress={() => playSound('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3')} title="playback" />
+
         <StatusBar style="auto" />
       </View>
   );
 };
-
-// export default class App extends Component {
-
-
-//   render(){
-
-//     return (
-//       <FrequencyAdjusterPage>
-
-//       </FrequencyAdjusterPage>
-//     );
-//   }
-// }
