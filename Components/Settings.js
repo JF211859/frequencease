@@ -1,14 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
+import styles from "../Style/styles";
 
 export default function Settings() {
   return (
-    <View>
-      <Text style={styles.option}>Input Device</Text>
-      <Text style={styles.option}>Output Device</Text>
+    <View style={[styles.screenContainer, { margin: 20 }]}>
+      <Text style={styles.h2}>Input Device</Text>
+      <Text style={styles.h2}>Output Device</Text>
+      <Text style={styles.h2}>Tutorial</Text>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  option: { fontSize: 20 },
-});
