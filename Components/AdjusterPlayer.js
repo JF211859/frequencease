@@ -1,19 +1,19 @@
-import * as React from 'react';
-import { View, Image, TouchableOpacity, Text} from 'react-native';
-import { Audio } from 'expo-av';
+import * as React from "react";
+import { View, Image, TouchableOpacity, Text } from "react-native";
+import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import styles from "../Style/styles";
-import { APP_THEME, COLORS } from '../Style/colorScheme';
+import { APP_THEME, COLORS } from "../Style/colorScheme";
 
 function SoundPlayer({ mp3 }) {
   const sound = React.useRef(new Audio.Sound());
   const [Status, SetStatus] = React.useState(false);
   const [audioProgress, setAudioProgress] = React.useState(0);
-  const audioLength = 0
-    
+  const audioLength = 0;
+
   React.useEffect(() => {
     LoadAudio();
-      return () => sound.current.unloadAsync();
+    return () => sound.current.unloadAsync();
   }, []);
 
   const LoadAudio = async () => {
@@ -24,16 +24,16 @@ function SoundPlayer({ mp3 }) {
         const result = await sound.current.loadAsync(mp3, {}, true);
         audioLength = result.durationMillis;
         if (result.isLoaded === false) {
-          console.log('Error in Loading Audio');
+          console.log("Error in Loading Audio");
         } else {
           await playSound();
         }
-        } catch (error) {
-          console.log('Error in Loading Audio');
-        }
-      } else {
-        console.log('Error in Loading Audio');
+      } catch (error) {
+        console.log("Error in Loading Audio");
       }
+    } else {
+      console.log("Error in Loading Audio");
+    }
   };
 
   const PlayAudio = async () => {
@@ -43,7 +43,7 @@ function SoundPlayer({ mp3 }) {
         if (result.isPlaying === false) {
           sound.current.playAsync();
           SetStatus(true);
-          console.log('Audio playing');
+          console.log("Audio playing");
         }
       } else {
         LoadAudio();
@@ -60,7 +60,7 @@ function SoundPlayer({ mp3 }) {
         if (result.isPlaying === true) {
           sound.current.pauseAsync();
           SetStatus(false);
-          console.log('Audio paused');
+          console.log("Audio paused");
         }
       }
     } catch (error) {
@@ -73,7 +73,7 @@ function SoundPlayer({ mp3 }) {
       sound.current.pauseAsync();
       sound.current.setPositionAsync(0);
       SetStatus(false);
-      console.log('Audio stopped');
+      console.log("Audio stopped");
     } catch (error) {
       SetStatus(false);
     }
@@ -83,7 +83,7 @@ function SoundPlayer({ mp3 }) {
     try {
       sound.current.replayAsync();
       SetStatus(true);
-      console.log('Audio replaying');
+      console.log("Audio replaying");
     } catch (error) {
       SetStatus(false);
     }
@@ -102,33 +102,39 @@ function SoundPlayer({ mp3 }) {
           onValueChange={setAudioProgress}
           step={1}
         />
-        <Text>0:00</Text>
-        <Text>{audioLength}</Text>
+        <View
+          style={[
+            styles.margin,
+            styles.row,
+            { justifyContent: "space-between" },
+          ]}
+        >
+          <Text>0:00</Text>
+          <Text>{audioLength}</Text>
+        </View>
       </View>
 
-      <View style={[styles.row, {justifyContent: 'space-around'}]}>
+      <View style={[styles.row, { justifyContent: "space-around" }]}>
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
-          style={styles.circleButton}>
+          style={styles.circleButton}
+        >
           <Image
-            source={Status === false ? require('../images/play.png') : require('../images/pause.png')}
+            source={
+              Status === false
+                ? require("../images/play.png")
+                : require("../images/pause.png")
+            }
             style={styles.icon}
           />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={StopAudio}
-          style={[styles.circleButton]}>
-          <Image
-            source={require('../images/stop.png')}
-            style={styles.icon}
-          />
+        <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
+          <Image source={require("../images/stop.png")} style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={ReplayAudio}
-          style={styles.circleButton}>
+        <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
           <Image
-            source={require('../images/replay-music.png')}
+            source={require("../images/replay-music.png")}
             style={styles.icon}
           />
         </TouchableOpacity>
