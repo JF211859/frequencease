@@ -1,23 +1,18 @@
 import React from "react";
-import { Image, TouchableOpacity, Dimensions, Alert } from "react-native";
+import { Image, TouchableOpacity, Alert } from "react-native";
+import styles from '../../Style/styles';
 
-// back button icon for header
+// Tutorial button
 export default function TutorialButton() {
   const testerTutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
   };
-  const windowWidth = Dimensions.get("window").width;
 
   return (
-    <TouchableOpacity onPress={testerTutorialPage}>
+    <TouchableOpacity onPress={testerTutorialPage} style={[styles.circleButton, styles.corner]}>
       <Image
         source={require("../../images/tutorial.png")}
-        style={{
-          width: 50,
-          height: 50,
-          marginLeft: windowWidth - 70,
-          marginTop: 115,
-        }}
+        style={styles.icon}
       />
     </TouchableOpacity>
   );
