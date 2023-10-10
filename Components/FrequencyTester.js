@@ -26,12 +26,6 @@ export default function FrequencyTester() {
   const thumbsDownPosition = 90;
   const navigation = useNavigation();
 
-  const audio = () => {
-    Alert.alert(
-      "implement audio playback and button switching (play/pause) for alpha"
-    );
-  };
-
   return (
     <View>
       <View
