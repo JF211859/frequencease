@@ -5,9 +5,9 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Alert,
   useWindowDimensions,
 } from "react-native";
+
 import SoundPlayer from "../TesterPlayer";
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
@@ -23,12 +23,15 @@ export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
 
-  // const phase = {
-  //   1: FrequenctTester(1),
-  //   2: FrequenctTester(1),
-  //   3: FrequenctTester(1),
-  // };
   const phase = route.params.phase || 1;
+
+  // TODO: change this to a dynamic number
+  // TODO: change audio sweep files to 3 discrete sounds per phase
+  const phaseInfo = {
+    1: { hz: 20, audio: require("../../audio/phase1sweep.mp3") },
+    2: { hz: 200, audio: require("../../audio/phase2sweep.mp3") },
+    3: { hz: 2500, audio: require("../../audio/phase3sweep.mp3") },
+  };
   const navigateToTesterPhase = (phaseNum) => {
     if (phase < 3) {
       navigation.navigate("FrequencyTester", { phase: phaseNum + 1 });
@@ -54,12 +57,13 @@ export default function FrequencyTester({ route }) {
           },
         ]}
       >
-        <Text style={{ fontSize: 52, marginTop: 80 }}>{phase} Hz</Text>
+        <Text style={{ fontSize: 52, marginTop: 80 }}>
+          {phaseInfo[phase].hz} Hz
+        </Text>
       </View>
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../../audio/audiosweep.mp3")} />
-        {/* require needs to be different for each phase */}
+        <SoundPlayer mp3={phaseInfo[phase].audio} />
       </View>
 
       <Text style={[styles.h1, styles.center]}>Can you hear this sound?</Text>
