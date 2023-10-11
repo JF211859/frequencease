@@ -1,7 +1,8 @@
 import "react-native-gesture-handler";
 import FrequencyAdjuster from "./Components/FrequencyAdjuster";
-import FrequencyTester from "./Components/FrequencyTester";
-import FrequencyTesterPhase from "./Components/FrequencyTesterPhase";
+import FrequencyTester from "./Components/FrequencyTester/FrequencyTester";
+import FrequencyTesterConfirmation from "./Components/FrequencyTester/FrequencyTesterConfirmation";
+import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPhase";
 import BackButtonImage from "./Components/ImageComponents/BackButton";
 import HamburgerIcon from "./Components/ImageComponents/HamburgerIcon";
 import Settings from "./Components/Settings";
@@ -33,6 +34,7 @@ function FrequencyTesterStack() {
           headerLeft: HamburgerIcon,
           headerTitle: "Frequency Tester",
         }}
+        initialParams={{ phase: 1 }}
       />
       <Stack.Screen
         name="FrequencyTesterPhase"
@@ -41,6 +43,15 @@ function FrequencyTesterStack() {
           headerBackTitleVisible: false,
           headerBackImage: BackButtonImage,
           headerTintColor: COLORS.BLACK,
+          headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="FrequencyTesterConfirmation"
+        component={FrequencyTesterConfirmation}
+        options={{
+          headerTintColor: COLORS.BLACK,
+          headerBackVisible: false,
           headerTitle: "",
         }}
       />
