@@ -62,6 +62,10 @@ function FrequencyTesterStack() {
 
 // Entire App's Navigation Container
 export default function App() {
+  useEffect(() => {
+    readData();
+  }, []);
+  
   return (
     <NavigationContainer>
       <Drawer.Navigator
