@@ -6,6 +6,7 @@ import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPh
 import BackButtonImage from "./Components/ImageComponents/BackButton";
 import HamburgerIcon from "./Components/ImageComponents/HamburgerIcon";
 import Settings from "./Components/Settings";
+import WelcomePage from "./Components/WelcomePage"
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -64,7 +65,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName={"Home"}
+        initialRouteName={"Welcome Page"}
         screenOptions={{
           headerStyle: { backgroundColor: "transparent" },
           headerTitleStyle: {
@@ -89,6 +90,14 @@ export default function App() {
         <Drawer.Screen
           name="Settings"
           component={Settings}
+          options={{
+            headerLeft: HamburgerIcon,
+            headerLeftContainerStyle: { paddingLeft: 20 },
+          }}
+        />
+        <Drawer.Screen
+          name="Welcome Page"
+          component={WelcomePage}
           options={{
             headerLeft: HamburgerIcon,
             headerLeftContainerStyle: { paddingLeft: 20 },
