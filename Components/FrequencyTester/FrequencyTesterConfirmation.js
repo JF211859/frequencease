@@ -1,5 +1,5 @@
 import { View, Text, Button, Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import styles from "../../Style/styles";
 
 export default function FrequencyTesterConfirmation(props) {
@@ -11,12 +11,14 @@ export default function FrequencyTesterConfirmation(props) {
         Your test results are in! 🎉
       </Text>
       <Text style={[styles.h2, styles.center]}>
-        Your hearing range is [TBD]
+        Your hearing range is 20 - 20,000Hz
       </Text>
 
       <Button
         title="Go to Frequency Adjuster"
         onPress={() => {
+          navigation.dispatch(StackActions.popToTop());
+          navigation.dispatch(StackActions.push("Profile")); //reset stack navigation
           navigation.navigate("Home");
         }}
       ></Button>

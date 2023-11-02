@@ -14,6 +14,14 @@ import SoundPlayer from "../TesterPlayer";
 import styles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
+import {
+  saveName,
+  saveLowestFreq,
+  saveHighestFreq,
+  readData,
+  MINFREQ_KEY,
+  MAXFREQ_KEY,
+} from "../Storage";
 
 // This is the main view for the Frequency Tester
 // First time users should be directed to this view first
@@ -73,6 +81,7 @@ export default function FrequencyTester({ route }) {
       >
         <TouchableOpacity
           onPress={() => {
+            saveLowestFreq("20"); // TODO: dynamic value
             navigateToTesterPhase(phase);
           }}
         >
