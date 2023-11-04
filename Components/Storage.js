@@ -25,7 +25,7 @@ export const saveLowestFreq = async (min_freq) => {
   }
 };
 
-export const savHighestFreq = async (max_freq) => {
+export const saveHighestFreq = async (max_freq) => {
   try {
     await AsyncStorage.setItem(MAXFREQ_KEY, max_freq);
     alert("Data successfully saved");
