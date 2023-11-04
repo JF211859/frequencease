@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import SoundPlayer from "../TesterPlayer";
+import SoundPlayer from "./TesterPlayer";
 // import ProgressBar from "react-native-progress/Bar";
 // import SemiCircleProgressBar from "react-progressbar-semicircle";
 import styles from "../../Style/styles";

@@ -3,8 +3,8 @@ import { Text, View, Alert, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
-import { COLORS } from "../Style/colorScheme";
-import styles from "../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
+import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
 
 // This should be the home screen when app opens

@@ -2,8 +2,8 @@ import * as React from "react";
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
-import styles from "../Style/styles";
-import { APP_THEME, COLORS } from "../Style/colorScheme";
+import styles from "../../Style/styles";
+import { APP_THEME, COLORS } from "../../Style/colorScheme";
 
 function SoundPlayer({ mp3 }) {
   const sound = React.useRef(new Audio.Sound());

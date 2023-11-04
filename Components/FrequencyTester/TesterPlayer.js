@@ -3,7 +3,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { useNavigationState } from "@react-navigation/native";
 
 import { Audio } from "expo-av";
-import styles from "../Style/styles";
+import styles from "../../Style/styles";
 
 function SoundPlayer({ mp3 }) {
   const navigation = useNavigationState((state) => state);
