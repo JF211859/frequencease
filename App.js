@@ -5,13 +5,13 @@ import FrequencyTesterConfirmation from "./Components/FrequencyTester/FrequencyT
 import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPhase";
 import BackButtonImage from "./Components/ImageComponents/BackButton";
 import HamburgerIcon from "./Components/ImageComponents/HamburgerIcon";
-import Settings from "./Components/Settings";
-import WelcomePage from "./Components/WelcomePage"
+import Profile from "./Components/Profile";
+import WelcomePage from "./Components/WelcomePage";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { COLORS } from "./Style/colorScheme";
+import { APP_THEME } from "./Style/colorScheme";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 function FrequencyTesterStack() {
   return (
     <Stack.Navigator
-      initialRouteName="FrequencyTester"
+      initialRouteName="Welcome Page"
       screenOptions={{
         headerStyle: { backgroundColor: "transparent" },
         headerTitleStyle: {
@@ -28,11 +28,29 @@ function FrequencyTesterStack() {
         },
       }}
     >
+      {/* Only loads on first launch/ reload app */}
+      <Stack.Screen
+        name="Welcome Page"
+        component={WelcomePage}
+        options={{
+          headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerLeft: HamburgerIcon,
+          headerTitle: "Profile",
+        }}
+      />
       <Stack.Screen
         name="FrequencyTester"
         component={FrequencyTester}
         options={{
-          headerLeft: HamburgerIcon,
+          headerBackTitleVisible: false,
+          headerTintColor: APP_THEME.TEXT_STANDARD,
+          headerBackImage: BackButtonImage,
           headerTitle: "Frequency Tester",
         }}
         initialParams={{ phase: 1 }}
@@ -43,7 +61,7 @@ function FrequencyTesterStack() {
         options={{
           headerBackTitleVisible: false,
           headerBackImage: BackButtonImage,
-          headerTintColor: COLORS.BLACK,
+          headerTintColor: APP_THEME.TEXT_STANDARD,
           headerTitle: "",
         }}
       />
@@ -51,7 +69,7 @@ function FrequencyTesterStack() {
         name="FrequencyTesterConfirmation"
         component={FrequencyTesterConfirmation}
         options={{
-          headerTintColor: COLORS.BLACK,
+          headerTintColor: APP_THEME.TEXT_STANDARD,
           headerBackVisible: false,
           headerTitle: "",
         }}
@@ -65,7 +83,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName={"Welcome Page"}
+        initialRouteName={"User Profile"}
         screenOptions={{
           headerStyle: { backgroundColor: "transparent" },
           headerTitleStyle: {
@@ -83,25 +101,9 @@ export default function App() {
           }}
         />
         <Drawer.Screen
-          name="Frequency Tester"
+          name="User Profile"
           component={FrequencyTesterStack}
           options={{ headerShown: false }} // stack has its own headers
-        />
-        <Drawer.Screen
-          name="Settings"
-          component={Settings}
-          options={{
-            headerLeft: HamburgerIcon,
-            headerLeftContainerStyle: { paddingLeft: 20 },
-          }}
-        />
-        <Drawer.Screen
-          name="Welcome Page"
-          component={WelcomePage}
-          options={{
-            headerLeft: HamburgerIcon,
-            headerLeftContainerStyle: { paddingLeft: 20 },
-          }}
         />
       </Drawer.Navigator>
     </NavigationContainer>

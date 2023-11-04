@@ -1,3 +1,4 @@
+// Note: Don't use these outside of the file, use APP_THEME instead
 export const COLORS = {
   LIGHT_BLUE: "#A4D3FF",
   MEDIUM_BLUE: "#92C3F0",

@@ -1,6 +1,6 @@
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { APP_THEME, COLORS } from "../../Style/colorScheme";
+import { APP_THEME } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import styles from "../../Style/styles";
 
@@ -75,7 +75,7 @@ export default function FrequencyTesterPhase(props) {
             { borderRadius: 15, backgroundColor: APP_THEME.CONFIRM },
           ]}
           onPress={() => {
-            navigation.navigate("FrequencyTesterConfirmation"); //TODO: need to change
+            navigation.navigate("FrequencyTesterConfirmation");
           }}
         >
           <Text style={styles.body}>Confirm Results</Text>
