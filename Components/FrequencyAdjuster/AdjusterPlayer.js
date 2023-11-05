@@ -122,19 +122,19 @@ function SoundPlayer({ mp3 }) {
           <Image
             source={
               Status === false
-                ? require("../images/play.png")
-                : require("../images/pause.png")
+                ? require("../../images/play.png")
+                : require("../../images/pause.png")
             }
             style={styles.icon}
           />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
-          <Image source={require("../images/stop.png")} style={styles.icon} />
+          <Image source={require("../../images/stop.png")} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
           <Image
-            source={require("../images/replay-music.png")}
+            source={require("../../images/replay-music.png")}
             style={styles.icon}
           />
         </TouchableOpacity>

@@ -10,7 +10,7 @@ function SoundPlayer({ mp3 }) {
   const [sound] = React.useState(new Audio.Sound());
   const [status, setStatus] = React.useState(false);
   const [imageSrc, setImageSrc] = React.useState({
-    src: require("../images/play.png"),
+    src: require("../../images/play.png"),
   }); //change play/pause button with state variable
 
   React.useEffect(() => {
@@ -29,11 +29,11 @@ function SoundPlayer({ mp3 }) {
   React.useMemo(() => {
     if (status === false) {
       setImageSrc({
-        src: require("../images/play.png"),
+        src: require("../../images/play.png"),
       });
     } else {
       setImageSrc({
-        src: require("../images/pause.png"),
+        src: require("../../images/pause.png"),
       });
     }
   }, [status]); // update play/ pause image
@@ -112,7 +112,7 @@ function SoundPlayer({ mp3 }) {
       </TouchableOpacity>
       <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
         <Image
-          source={require("../images/replay-music.png")}
+          source={require("../../images/replay-music.png")}
           style={styles.icon}
         />
       </TouchableOpacity>

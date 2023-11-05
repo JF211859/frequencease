@@ -6,6 +6,7 @@ import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.
 import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
+import RecordAndPlayback from "./RecordAndPlayback";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
@@ -82,13 +83,11 @@ export default function FrequencyAdjuster() {
       />
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../audio/audiosweep.mp3")} />
+        <SoundPlayer mp3={require("../../audio/audiosweep.mp3")} />
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <TouchableOpacity style={styles.button} onPress={onRecord}>
-          <Text style={styles.body}>Record</Text>
-        </TouchableOpacity>
+        <RecordAndPlayback/>
 
         <TouchableOpacity style={styles.button} onPress={onImport}>
           <Text style={styles.body}>Import File</Text>

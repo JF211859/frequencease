@@ -2,11 +2,12 @@ import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
+import styles from "../../Style/styles";
 
-export default function App() {
+export default function RecordAndPlayback() {
 
   const [recording, setRecording] = useState(null);
-  const [recordingStatus, setRecordingStatus] = useState('idle');
+  const [recordingStatus, setRecordingStatus] = useState('Record');
   const [audioPermission, setAudioPermission] = useState(null);
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export default function App() {
       await newRecording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
       await newRecording.startAsync();
       setRecording(newRecording);
-      setRecordingStatus('recording');
+      setRecordingStatus('Stop');
 
     } catch (error) {
       console.error('Failed to start recording', error);
@@ -56,13 +57,13 @@ export default function App() {
   async function stopRecording() {
     try {
 
-      if (recordingStatus === 'recording') {
+      if (recordingStatus === 'Stop') {
         console.log('Stopping Recording')
         await recording.stopAndUnloadAsync();
         const recordingUri = recording.getURI();
 
         // Create a file name for the recording
-        const fileName = `recording-${Date.now()}.caf`;
+        const fileName = `recording-${Date.now()}.wav`;
 
         // Move the recording to the new directory with the new file name
         await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'recordings/', { intermediates: true });
@@ -78,7 +79,7 @@ export default function App() {
 
         // resert our states to record again
         setRecording(null);
-        setRecordingStatus('stopped');
+        setRecordingStatus('Record');
       }
 
     } catch (error) {
@@ -98,31 +99,10 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableOpacity style={styles.button} onPress={handleRecordButtonPress}>
-        <FontAwesome name={recording ? 'stop-circle' : 'circle'} size={64} color="white" />
+        <Text style={styles.body}> {`${recordingStatus}`} </Text>
       </TouchableOpacity>
-      <Text style={styles.recordingStatusText}>{`Recording status: ${recordingStatus}`}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 128,
-    height: 128,
-    borderRadius: 64,
-    backgroundColor: 'red',
-  },
-  recordingStatusText: {
-    marginTop: 16,
-  },
-});
-
