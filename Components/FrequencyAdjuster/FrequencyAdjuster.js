@@ -3,15 +3,18 @@ import { Text, View, Alert, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
-import { COLORS } from "../Style/colorScheme";
-import styles from "../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
+import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
+import RecordAndPlayback from "./RecordAndPlayback";
+import ImportFile from "./ImportFile";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
   const [min_frequency, setMinFrequency] = useState(100);
   const [max_frequency, setMaxFrequency] = useState(3000);
 
+<<<<<<< HEAD:Components/FrequencyAdjuster.js
   const onRecord = () => {
     Alert.alert("Recording");
   };
@@ -29,6 +32,8 @@ export default function FrequencyAdjuster() {
     await sound.playAsync();
   }
 
+=======
+>>>>>>> sarah:Components/FrequencyAdjuster/FrequencyAdjuster.js
   return (
     <View>
       <Text style={[styles.h1, styles.center]}>Audible Frequency</Text>
@@ -91,17 +96,13 @@ export default function FrequencyAdjuster() {
       />
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../audio/audiosweep.mp3")} />
+        <SoundPlayer mp3={require("../../audio/audiosweep.mp3")} />
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <TouchableOpacity style={styles.button} onPress={onRecord}>
-          <Text style={styles.body}>Record</Text>
-        </TouchableOpacity>
+        <RecordAndPlayback/>
 
-        <TouchableOpacity style={styles.button} onPress={onImport}>
-          <Text style={styles.body}>Import File</Text>
-        </TouchableOpacity>
+        <ImportFile/>
       </View>
 
       <StatusBar style="auto" />
