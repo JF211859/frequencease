@@ -7,19 +7,12 @@ import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
 import RecordAndPlayback from "./RecordAndPlayback";
+import ImportFile from "./ImportFile";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
   const [min_frequency, setMinFrequency] = useState(100);
   const [max_frequency, setMaxFrequency] = useState(3000);
-
-  const onRecord = () => {
-    Alert.alert("Recording");
-  };
-
-  const onImport = () => {
-    Alert.alert("Import file");
-  };
 
   return (
     <View>
@@ -89,9 +82,7 @@ export default function FrequencyAdjuster() {
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
         <RecordAndPlayback/>
 
-        <TouchableOpacity style={styles.button} onPress={onImport}>
-          <Text style={styles.body}>Import File</Text>
-        </TouchableOpacity>
+        <ImportFile/>
       </View>
 
       <StatusBar style="auto" />

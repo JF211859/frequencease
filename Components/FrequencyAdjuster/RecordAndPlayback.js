@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
+import UploadToServer from "./UploadToServer"
 
 export default function RecordAndPlayback() {
 
@@ -54,6 +55,42 @@ export default function RecordAndPlayback() {
     }
   }
 
+  async function uploadAudioAsync(uri) {
+    console.log("Uploading " + uri);
+    let apiUrl = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster?min_frequency=0&max_frequency=800';
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+  
+    let formData = new FormData();
+    formData.append('file', {
+      uri,
+      name: `recording.${fileType}`,
+      type: `audio/x-${fileType}`,
+    });
+  
+    let options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+  
+    console.log("POSTing " + uri + " to " + apiUrl);
+    return await fetch(apiUrl, options);
+  }
+
+  const getAudioFromApiAsync = async (uri) => {
+    try {
+      const response = uploadAudioAsync(uri);
+      const json = await response.json();
+      return json.uri;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   async function stopRecording() {
     try {
 
@@ -61,6 +98,7 @@ export default function RecordAndPlayback() {
         console.log('Stopping Recording')
         await recording.stopAndUnloadAsync();
         const recordingUri = recording.getURI();
+        console.log('URI: ', recordingUri)
 
         // Create a file name for the recording
         const fileName = `recording-${Date.now()}.wav`;
