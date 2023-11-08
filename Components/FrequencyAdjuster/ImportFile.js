@@ -1,31 +1,56 @@
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import React, { useState } from "react";
 import { Audio } from 'expo-av';
+import * as DocumentPicker from 'expo-document-picker';
 import styles from "../../Style/styles";
 
 export default function ImportFile() {
-  async function uploadFile() {
-    const data = new FormData();
-    data.append('file', {
-      name: file.name,
-      type: file.type,
-      uri: Platform.OS === 'ios' ? 
-          file.uri.replace('file://', '')
-          : file.uri,
-    });
+  const [audio, setAudio] = useState();
 
-    await fetch("https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster?shift=5000", {
-      method: "post",
-      body: data,
-      headers: {
-        "Content-Type": "multipart/form-data; ",
-      },
-    });
+  _pickDocument = async () => {
+    setAudio(
+      await DocumentPicker.getDocumentAsync({
+        type: 'audio/*',
+        copyToCacheDirectory: true,
+      })
+    );
+  }
+
+  async function pick() {
+    try {
+      result = await DocumentPicker.getDocumentAsync({
+        type: 'audio/*',
+        copyToCacheDirectory: true,
+      })
+      console.log(
+          result.uri,
+          result.type,
+          result.name,
+          result.size
+        );
+    } catch (error) {
+      console.error('Failed to upload/user canceled upload', error);
+    }
+  }
+
+  async function playAudio() {
+    const audioUri = audio.uri;
+
+    const soundObject = new Audio.Sound();
+    soundObject.setOnPlaybackStatusUpdate();
+
+    await soundObject.loadAsync({ uri: audioUri });
+    await soundObject.playAsync();
   }
 
   return (
     <View>
-      <TouchableOpacity style={styles.button} onPress={uploadFile}>
+      <TouchableOpacity style={styles.button} onPress={pick}>
         <Text style={styles.body}> Import File </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={playAudio}>
+        <Text style={styles.body}> PLAY </Text>
       </TouchableOpacity>
     </View>
   );

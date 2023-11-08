@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
-import UploadToServer from "./UploadToServer"
 
 export default function RecordAndPlayback() {
 
