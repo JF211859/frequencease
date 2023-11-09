@@ -16,11 +16,21 @@ function SoundPlayer({ mp3 }) {
     return () => sound.current.unloadAsync();
   }, []);
 
+
+  const UploadAudio = async () => {
+
+    console.log(mp3);
+
+  };
+
   const LoadAudio = async () => {
     const checkLoading = await sound.current.getStatusAsync();
     // Get Loading Status
     if (checkLoading.isLoaded === false) {
       try {
+
+        await UploadAudio();
+
         const result = await sound.current.loadAsync(mp3, {}, true);
         audioLength = result.durationMillis;
         if (result.isLoaded === false) {

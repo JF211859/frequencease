@@ -14,26 +14,6 @@ export default function FrequencyAdjuster() {
   const [min_frequency, setMinFrequency] = useState(100);
   const [max_frequency, setMaxFrequency] = useState(3000);
 
-<<<<<<< HEAD:Components/FrequencyAdjuster.js
-  const onRecord = () => {
-    Alert.alert("Recording");
-  };
-
-  const onImport = () => {
-    Alert.alert("Import file");
-  };
-
-  async function playSound(file) {
-    console.log(file);
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: file},
-      { shouldPlay: true}
-    );
-    await sound.playAsync();
-  }
-
-=======
->>>>>>> sarah:Components/FrequencyAdjuster/FrequencyAdjuster.js
   return (
     <View>
       <Text style={[styles.h1, styles.center]}>Audible Frequency</Text>
