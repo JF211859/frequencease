@@ -9,8 +9,9 @@ import SoundPlayer from "./AdjusterPlayer";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
-  const [min_frequency, setMinFrequency] = useState(100);
-  const [max_frequency, setMaxFrequency] = useState(3000);
+  // TODO: user's hearing range
+  const [minFrequency, setMinFrequency] = useState(100); // store the range the audio should be in
+  const [maxFrequency, setMaxFrequency] = useState(15000);
 
   const onRecord = () => {
     Alert.alert("Recording");
@@ -27,7 +28,7 @@ export default function FrequencyAdjuster() {
       <View style={[styles.margin, styles.row]}>
         <View
           style={{
-            backgroundColor: COLORS.LIGHT_GREY,
+            backgroundColor: COLORS.GREY,
             width: 50,
             height: 25,
           }}
@@ -41,7 +42,7 @@ export default function FrequencyAdjuster() {
         />
         <View
           style={{
-            backgroundColor: COLORS.LIGHT_GREY,
+            backgroundColor: COLORS.GREY,
             width: 50,
             height: 25,
           }}
@@ -50,10 +51,11 @@ export default function FrequencyAdjuster() {
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>20 Hz</Text>
-        <Text>20,000 Hz</Text>
+        <Text>{minFrequency} Hz</Text>
+        <Text>{maxFrequency} Hz</Text>
       </View>
 
+      {/* <Text>Select the mode here</Text>
       <SwitchSelector
         options={[
           { label: "Auto", value: "A" },
@@ -69,7 +71,6 @@ export default function FrequencyAdjuster() {
         selectedTextStyle={{ color: COLORS.BLACK }}
         style={styles.margin}
       />
-
       <Slider
         style={[styles.slider, styles.margin]}
         minimumValue={50}
@@ -79,7 +80,7 @@ export default function FrequencyAdjuster() {
         value={3000}
         onValueChange={setMaxFrequency}
         step={1}
-      />
+      /> */}
 
       <View style={[styles.center, styles.margin]}>
         <SoundPlayer mp3={require("../../audio/test.mp3")} />
