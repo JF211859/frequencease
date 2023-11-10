@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import FrequencyAdjuster from "./Components/FrequencyAdjuster";
+import FrequencyAdjuster from "./Components/FrequencyAdjuster/FrequencyAdjuster";
 import FrequencyTester from "./Components/FrequencyTester/FrequencyTester";
 import FrequencyTesterConfirmation from "./Components/FrequencyTester/FrequencyTesterConfirmation";
 import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPhase";

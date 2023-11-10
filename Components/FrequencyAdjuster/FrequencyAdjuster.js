@@ -3,8 +3,8 @@ import { Text, View, Alert, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
-import { COLORS } from "../Style/colorScheme";
-import styles from "../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
+import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
 
 // This should be the home screen when app opens
@@ -27,7 +27,7 @@ export default function FrequencyAdjuster() {
       <View style={[styles.margin, styles.row]}>
         <View
           style={{
-            backgroundColor: COLORS.GREY,
+            backgroundColor: COLORS.LIGHT_GREY,
             width: 50,
             height: 25,
           }}
@@ -41,7 +41,7 @@ export default function FrequencyAdjuster() {
         />
         <View
           style={{
-            backgroundColor: COLORS.GREY,
+            backgroundColor: COLORS.LIGHT_GREY,
             width: 50,
             height: 25,
           }}
@@ -75,14 +75,14 @@ export default function FrequencyAdjuster() {
         minimumValue={50}
         maximumValue={5000}
         minimumTrackTintColor={COLORS.MEDIUM_BLUE}
-        maximumTrackTintColor={COLORS.LIGHT_GREY}
+        maximumTrackTintColor={COLORS.GREY}
         value={3000}
         onValueChange={setMaxFrequency}
         step={1}
       />
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../audio/audiosweep.mp3")} />
+        <SoundPlayer mp3={require("../../audio/test.mp3")} />
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
