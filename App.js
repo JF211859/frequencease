@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import FrequencyAdjuster from "./Components/FrequencyAdjuster";
+import FrequencyAdjuster from "./Components/FrequencyAdjuster/FrequencyAdjuster";
 import FrequencyTester from "./Components/FrequencyTester/FrequencyTester";
 import FrequencyTesterConfirmation from "./Components/FrequencyTester/FrequencyTesterConfirmation";
 import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPhase";
@@ -87,7 +87,7 @@ export default function App() {
         screenOptions={{
           headerStyle: { backgroundColor: "transparent" },
           headerTitleStyle: {
-            fontSize: 25,
+            fontSize: 24,
           },
         }}
       >
@@ -98,12 +98,16 @@ export default function App() {
             headerTitle: "Frequency Adjuster",
             headerLeft: HamburgerIcon,
             headerLeftContainerStyle: { paddingLeft: 20 },
+            drawerLabelStyle: { fontSize: 24 }
           }}
         />
         <Drawer.Screen
           name="User Profile"
           component={FrequencyTesterStack}
-          options={{ headerShown: false }} // stack has its own headers
+          options={{ 
+            headerShown: false,
+            drawerLabelStyle: { fontSize: 24 }
+          }} // stack has its own headers
         />
       </Drawer.Navigator>
     </NavigationContainer>
