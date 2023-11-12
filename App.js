@@ -24,7 +24,7 @@ function FrequencyTesterStack() {
       screenOptions={{
         headerStyle: { backgroundColor: "transparent" },
         headerTitleStyle: {
-          fontSize: 25,
+          fontSize: 24,
         },
       }}
     >
@@ -33,7 +33,7 @@ function FrequencyTesterStack() {
         name="Welcome Page"
         component={WelcomePage}
         options={{
-          headerTitle: "",
+          headerShown: false,
         }}
       />
       <Stack.Screen

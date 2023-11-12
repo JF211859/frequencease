@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
+import styles from "../Style/styles";
 
 // This is the page first-time users should see when opening the app
 export default function FrequencyTester() {
@@ -16,25 +17,25 @@ export default function FrequencyTester() {
   const windowHeight = useWindowDimensions().height;
 
   return (
-    <SafeAreaView style={{ height: { windowHeight }, flex: 1 }}>
+    <SafeAreaView style={{ height: { windowHeight }, flex: 1, justifyContent: "space-around" }}>
       <View>
         <Image
           source={require("../images/logo.png")}
           style={{
             width: 150,
             height: 150,
-            marginTop: 10,
+            marginTop: 30,
             alignSelf: "center",
           }}
         />
-        <Text style={{ alignSelf: "center", fontSize: 32 }}>
+        <Text style={[styles.center, styles.h1]}>
           {" "}
           Welcome to FrequencEase!{" "}
         </Text>
       </View>
 
       <View style={{ marginTop: 20 }}>
-        <Text style={{ fontSize: 18, marginLeft: 20, marginRight: 20 }}>
+        <Text style={[styles.body, { marginLeft: 20, marginRight: 20 }]}>
           This app is designed to work like a hearing aid!{"\n"} {"\n"}
           First, we will find your frequency hearing range in the Frequency
           Tester. {"\n"} {"\n"}
@@ -43,7 +44,7 @@ export default function FrequencyTester() {
           or you can upload or record audios to have their frequencies adjusted
           as well.{"\n"} {"\n"}
           If you ever need more instructions for a page, there will be a
-          question mark button in the top right corner of your screen you can
+          question mark button in the bottom right corner of your screen you can
           click for a tutorial.
         </Text>
       </View>
@@ -58,11 +59,12 @@ export default function FrequencyTester() {
           height: 80,
           borderRadius: 50,
           marginTop: 40,
+          marginBottom: 30,
           alignSelf: "center",
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 24, textAlign: "center" }}>
+        <Text style={[styles.h2, styles.center]}>
           {" "}
           Get started!{" "}
         </Text>
