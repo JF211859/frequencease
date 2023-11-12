@@ -15,17 +15,3 @@ const TutorialButton = ({
   );
 }
 export default TutorialButton;
-
-// Tutorial button
-// export default function TutorialButton1(
-//   { tutorial }
-// ) {
-//   return (
-//     <TouchableOpacity onPress={() => tutorial} style={[styles.circleButton, styles.corner]}>
-//       <Image
-//         source={require("../../images/tutorial.png")}
-//         style={styles.icon}
-//       />
-//     </TouchableOpacity>
-//   );
-// }
