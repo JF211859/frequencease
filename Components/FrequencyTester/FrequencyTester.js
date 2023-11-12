@@ -6,14 +6,13 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
+  StyleSheet,
+  Button,
 } from "react-native";
-
 import SoundPlayer from "./TesterPlayer";
-// import ProgressBar from "react-native-progress/Bar";
-// import SemiCircleProgressBar from "react-progressbar-semicircle";
-import styles from "../../Style/styles";
-import { COLORS } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
+import StepIndicator from "react-native-step-indicator";
+import CircularProgress from "react-native-circular-progress-indicator";
 import {
   saveName,
   saveLowestFreq,
@@ -22,11 +21,10 @@ import {
   MINFREQ_KEY,
   MAXFREQ_KEY,
 } from "../Storage";
+import styles from "../../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
+import Modal from "react-native-modal";
 
-// This is the main view for the Frequency Tester
-// First time users should be directed to this view first
-// <SemiCircleProgressBar percentage={33} showPercentValue />
-// <Progress.Bar progress={0.1} width={200} />
 export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
@@ -47,10 +45,89 @@ export default function FrequencyTester({ route }) {
       navigation.navigate("FrequencyTesterPhase");
     }
   };
+  // progress bar
+  const labels = ["Phase 1", "Phase 2", "Phase 3"];
+
+  // modal
+  const [isModalVisible, setModalVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (phase === 1) {
+      setModalVisible(true);
+    }
+  }, []);
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
-      <Text style={[styles.h1, styles.center]}>Phase {phase}</Text>
+      {/* Modal to notify users to turn on ringer */}
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 250,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text style={[styles.h2, { paddingBottom: 20 }]}>
+            Please turn on your device's ringer before starting the test. 😃
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                borderRadius: 30,
+                backgroundColor: COLORS.LIGHT_BLUE,
+              },
+            ]}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.h3}>Okay, I'm ready!</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      {/* FrequencyTester View */}
+      <StepIndicator
+        currentPosition={phase - 1}
+        labels={labels}
+        stepCount={3}
+        customStyles={{
+          labelSize: 25,
+          currentStepLabelColor: COLORS.BLACK,
+          labelColor: COLORS.GREY,
+          stepIndicatorSize: 30,
+          currentStepIndicatorSize: 35,
+          stepStrokeCurrentColor: COLORS.DARK_BLUE,
+          stepStrokeFinishedColor: COLORS.MEDIUM_BLUE,
+          stepStrokeUnFinishedColor: COLORS.MEDIUM_BLUE,
+          separatorFinishedColor: COLORS.MEDIUM_BLUE,
+          separatorUnFinishedColor: COLORS.GREY,
+          stepIndicatorFinishedColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorUnFinishedColor: COLORS.GREY,
+          stepIndicatorCurrentColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelCurrentColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelFinishedColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelUnFinishedColor: COLORS.GREY,
+        }}
+      />
+
+      <CircularProgress
+        value={58}
+        dashedStrokeConfig={{
+          count: 50,
+          width: 4,
+        }}
+      />
+
       <View
         style={[
           styles.center,
@@ -74,11 +151,24 @@ export default function FrequencyTester({ route }) {
         <SoundPlayer mp3={phaseInfo[phase].audio} />
       </View>
 
-      <Text style={[styles.h1, styles.center]}>Can you hear this sound?</Text>
+      <Text style={[styles.h1, styles.center, { marginBottom: 20 }]}>
+        Can you hear this sound?
+      </Text>
 
       <View
         style={[styles.row, styles.margin, { justifyContent: "space-evenly" }]}
       >
+        <TouchableOpacity
+          onPress={() => {
+            navigateToTesterPhase(phase);
+          }}
+        >
+          <Image
+            source={require("../../images/thumbsdown.png")}
+            style={styles.icon}
+          />
+          <Text style={[styles.h3, { marginLeft: 12, marginTop: 5 }]}>No</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             saveLowestFreq("20"); // TODO: dynamic value
@@ -89,16 +179,7 @@ export default function FrequencyTester({ route }) {
             source={require("../../images/thumbsup.png")}
             style={styles.icon}
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigateToTesterPhase(phase);
-          }}
-        >
-          <Image
-            source={require("../../images/thumbsdown.png")}
-            style={styles.icon}
-          />
+          <Text style={[styles.h3, { marginLeft: 12, marginTop: 5 }]}>Yes</Text>
         </TouchableOpacity>
       </View>
 
