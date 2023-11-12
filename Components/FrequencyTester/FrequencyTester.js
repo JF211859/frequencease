@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
+  Alert
 } from "react-native";
 
 import SoundPlayer from "./TesterPlayer";
@@ -48,9 +49,13 @@ export default function FrequencyTester({ route }) {
     }
   };
 
+  const testerTutorialPage = () => {
+    Alert.alert("tutorial page to be implemented");
+  };
+
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
-      <Text style={[styles.h1, styles.center]}>Phase {phase}</Text>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>Phase {phase}</Text>
       <View
         style={[
           styles.center,
@@ -74,7 +79,7 @@ export default function FrequencyTester({ route }) {
         <SoundPlayer mp3={phaseInfo[phase].audio} />
       </View>
 
-      <Text style={[styles.h1, styles.center]}>Can you hear this sound?</Text>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>Can you hear this sound?</Text>
 
       <View
         style={[styles.row, styles.margin, { justifyContent: "space-evenly" }]}
@@ -102,7 +107,7 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
       </View>
 
-      <TutorialButton />
+      <TutorialButton tutorial={() => testerTutorialPage()}/>
     </View>
   );
 }
