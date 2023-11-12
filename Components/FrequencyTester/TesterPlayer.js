@@ -5,7 +5,7 @@ import { useNavigationState } from "@react-navigation/native";
 import { Audio } from "expo-av";
 import styles from "../../Style/styles";
 
-function SoundPlayer({ mp3 }) {
+function SoundPlayer({ mp3, progressRef }) {
   const navigation = useNavigationState((state) => state);
   const [sound] = React.useState(new Audio.Sound());
   const [status, setStatus] = React.useState(false);
@@ -17,8 +17,7 @@ function SoundPlayer({ mp3 }) {
     PauseAudio();
     setStatus(false);
     return () => sound.unloadAsync();
-  }, [navigation]); //pause audio when screen changes
-  // TODO: does not work for nav bar view change
+  }, [navigation]); //pause audio when screen changes (TODO: unsure if this works)
 
   React.useEffect(() => {
     LoadAudio();
@@ -65,6 +64,13 @@ function SoundPlayer({ mp3 }) {
           sound.playAsync();
           setStatus(true);
           console.log("Audio playing");
+          // when audio finishes, change to pause button and restart audio
+          sound.setOnPlaybackStatusUpdate((status) => {
+            if (status.didJustFinish) {
+              setStatus(false);
+              sound.setPositionAsync(0);
+            }
+          });
         }
       } else {
         LoadAudio();
@@ -72,9 +78,6 @@ function SoundPlayer({ mp3 }) {
     } catch (error) {
       setStatus(false);
     }
-    return () => {
-      sound && sound.unloadAsync();
-    };
   };
 
   const PauseAudio = async () => {

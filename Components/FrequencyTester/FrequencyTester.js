@@ -12,7 +12,11 @@ import {
 import SoundPlayer from "./TesterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import StepIndicator from "react-native-step-indicator";
-import CircularProgress from "react-native-circular-progress-indicator";
+import CircularProgress, {
+  ProgressRef,
+} from "react-native-circular-progress-indicator";
+import { Audio } from "expo-av";
+
 import {
   saveName,
   saveLowestFreq,
@@ -34,10 +38,11 @@ export default function FrequencyTester({ route }) {
   // TODO: change this to a dynamic number
   // TODO: change audio sweep files to 3 discrete sounds per phase
   const phaseInfo = {
-    1: { hz: 20, audio: require("../../audio/phase1sweep.mp3") },
+    1: { hz: 20, audio: require("../../audio/500.mp3") },
     2: { hz: 200, audio: require("../../audio/phase2sweep.mp3") },
     3: { hz: 2500, audio: require("../../audio/phase3sweep.mp3") },
   };
+
   const navigateToTesterPhase = (phaseNum) => {
     if (phase < 3) {
       navigation.navigate("FrequencyTester", { phase: phaseNum + 1 });
@@ -47,15 +52,30 @@ export default function FrequencyTester({ route }) {
   };
   // progress bar
   const labels = ["Phase 1", "Phase 2", "Phase 3"];
+  const progressRef = React.useRef(null);
 
   // modal
   const [isModalVisible, setModalVisible] = React.useState(false);
-
+  const [ringtonePlayed, setRingtonePlayed] = React.useState(false);
   React.useEffect(() => {
     if (phase === 1) {
       setModalVisible(true);
     }
   }, []);
+  const playSound = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require("../../audio/ringtone.mp3"));
+      await soundObject.playAsync();
+      soundObject.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          setRingtonePlayed(true);
+        }
+      });
+    } catch (error) {
+      console.error("Error loading sound", error);
+    }
+  };
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -70,7 +90,7 @@ export default function FrequencyTester({ route }) {
             styles.center,
             {
               width: 300,
-              height: 250,
+              height: 310,
               backgroundColor: "white",
               borderRadius: 30,
               padding: 20,
@@ -84,14 +104,30 @@ export default function FrequencyTester({ route }) {
             style={[
               styles.button,
               {
+                width: 220,
+                marginBottom: 15,
                 borderRadius: 30,
                 backgroundColor: COLORS.LIGHT_BLUE,
               },
             ]}
-            onPress={() => setModalVisible(false)}
+            onPress={playSound}
           >
-            <Text style={styles.h3}>Okay, I'm ready!</Text>
+            <Text style={[styles.h2, { marginTop: 0 }]}>Play Test Audio</Text>
           </TouchableOpacity>
+          {ringtonePlayed && (
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.GREEN,
+                },
+              ]}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.h3}>Okay, I'm ready!</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </Modal>
 
@@ -120,15 +156,19 @@ export default function FrequencyTester({ route }) {
         }}
       />
 
-      <CircularProgress
-        value={58}
-        dashedStrokeConfig={{
-          count: 50,
-          width: 4,
-        }}
-      />
+      <View style={[styles.center, { marginTop: 30 }]}>
+        <CircularProgress
+          radius={130}
+          progressValueFontSize={60}
+          ref={progressRef}
+          value={25000}
+          title={"Hz"}
+          titleStyle={{ fontWeight: "bold" }}
+          duration={400}
+        />
+      </View>
 
-      <View
+      {/* <View
         style={[
           styles.center,
           {
@@ -145,10 +185,10 @@ export default function FrequencyTester({ route }) {
         <Text style={{ fontSize: 52, marginTop: 80 }}>
           {phaseInfo[phase].hz} Hz
         </Text>
-      </View>
+      </View> */}
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={phaseInfo[phase].audio} />
+        <SoundPlayer mp3={phaseInfo[phase].audio} progressRef={progressRef} />
       </View>
 
       <Text style={[styles.h1, styles.center, { marginBottom: 20 }]}>
