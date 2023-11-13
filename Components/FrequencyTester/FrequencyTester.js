@@ -15,7 +15,6 @@ import CircularProgress from "react-native-circular-progress-indicator";
 import { Audio } from "expo-av";
 
 import {
-  saveName,
   saveLowestFreq,
   saveHighestFreq,
   readData,
@@ -68,6 +67,7 @@ export default function FrequencyTester({ route }) {
       }
     }
   };
+
   // progress bar
   const labels = ["Phase 1", "Phase 2", "Phase 3"];
   const progressRef = React.useRef(null);
@@ -99,6 +99,10 @@ export default function FrequencyTester({ route }) {
   const testerTutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
   };
+
+  // set default frequencies
+  saveLowestFreq("2000");
+  saveHighestFreq("2000");
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -220,8 +224,18 @@ export default function FrequencyTester({ route }) {
       >
         <TouchableOpacity
           onPress={() => {
-            navigateToNextPhase();
-            // saveResults(); //save lowest and highest range
+            if (phase === 1) {
+              navigation.navigate("FrequencyTester", {
+                phase: 2,
+                subphase: 1,
+              });
+              // save lowest frequency
+              saveLowestFreq(phaseInfo[phase][subphase].hz.toString());
+            } else {
+              navigation.navigate("FrequencyTesterPhase"); //finish hearing test
+              // save highest frequency
+              saveHighestFreq(phaseInfo[phase][subphase].hz.toString());
+            }
           }}
         >
           <Image
@@ -232,7 +246,11 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            saveLowestFreq("20"); // TODO: dynamic value
+            if (phase === 1) {
+              saveLowestFreq(phaseInfo[phase][subphase].hz.toString());
+            } else {
+              saveHighestFreq(phaseInfo[phase][subphase].hz.toString());
+            }
             navigateToNextPhase();
           }}
         >

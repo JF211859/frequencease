@@ -1,10 +1,21 @@
+import React from "react";
 import { View, Text, Button, Alert, TouchableOpacity } from "react-native";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import styles from "../../Style/styles";
 import { APP_THEME } from "../../Style/colorScheme";
+import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 
-export default function FrequencyTesterConfirmation(props) {
+export default function FrequencyTesterConfirmation() {
   const navigation = useNavigation();
+
+  // get minFreq and maxFreq from asyncStorage
+  const [minFreq, setMinFreq] = React.useState(null);
+  const [maxFreq, setMaxFreq] = React.useState(null);
+
+  React.useEffect(() => {
+    readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
+    readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
+  }, []);
 
   return (
     <View style={[styles.screenContainer, { gap: 10 }]}>
@@ -12,7 +23,7 @@ export default function FrequencyTesterConfirmation(props) {
         Your test results are in! 🎉
       </Text>
       <Text style={[styles.h2, styles.center]}>
-        Your hearing range is 20 - 20,000Hz
+        Your hearing range is {minFreq} - {maxFreq}Hz
       </Text>
 
       <TouchableOpacity
