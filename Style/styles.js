@@ -72,8 +72,8 @@ export default StyleSheet.create({
   corner: {
     alignSelf: "flex-end",
     position: "absolute",
-    bottom: 30,
-    right: 30,
+    bottom: 15,
+    right: 15,
   },
   phaseContainer: {
     flexDirection: "row",

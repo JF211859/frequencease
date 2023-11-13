@@ -22,6 +22,10 @@ export default function FrequencyAdjuster() {
   const [maxFrequency, setMaxFrequency] = useState(15000);
   const windowHeight = useWindowDimensions().height;
 
+  const tutorialPage = () => {
+    Alert.alert("tutorial page to be implemented");
+  };
+
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
       <Text style={[styles.h1, styles.marginTop, styles.center]}>Audible Frequency</Text>

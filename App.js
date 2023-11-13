@@ -33,7 +33,7 @@ function ProfileTesterStack() {
         name="Welcome Page"
         component={WelcomePage}
         options={{
-          headerTitle: "",
+          headerShown: false,
         }}
       />
       <Stack.Screen

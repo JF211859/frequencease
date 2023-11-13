@@ -16,7 +16,7 @@ export default function FrequencyTester() {
   const windowHeight = useWindowDimensions().height;
 
   return (
-    <SafeAreaView style={{ height: { windowHeight }, flex: 1 }}>
+    <SafeAreaView style={{ height: { windowHeight }, flex: 1, justifyContent: "space-around" }}>
       <View>
         <Image
           source={require("../images/logo.png")}
