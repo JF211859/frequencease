@@ -5,36 +5,18 @@ import * as DocumentPicker from 'expo-document-picker';
 import styles from "../../Style/styles";
 
 export default function ImportFile() {
-  const [audio, setAudio] = useState();
-
-  _pickDocument = async () => {
-    setAudio(
-      await DocumentPicker.getDocumentAsync({
-        type: 'audio/*',
-        copyToCacheDirectory: true,
-      })
-    );
-  }
+  const [audio, setAudio] = React.useState([]);
 
   async function pick() {
-    try {
-      result = await DocumentPicker.getDocumentAsync({
-        type: 'audio/*',
-        copyToCacheDirectory: true,
-      })
-      console.log(
-          result.uri,
-          result.type,
-          result.name,
-          result.size
-        );
-    } catch (error) {
-      console.error('Failed to upload/user canceled upload', error);
-    }
+    setAudio(await DocumentPicker.getDocumentAsync({
+      type: 'audio/*',
+      copyToCacheDirectory: true
+    }));
+    console.log(audio.assets[0].uri);
   }
 
   async function playAudio() {
-    const audioUri = audio.uri;
+    const audioUri = audio.assets[0].uri;
 
     const soundObject = new Audio.Sound();
     soundObject.setOnPlaybackStatusUpdate();
@@ -49,9 +31,10 @@ export default function ImportFile() {
         <Text style={styles.body}> Import File </Text>
       </TouchableOpacity>
 
+      {/* FOR DEBUGGING
       <TouchableOpacity style={styles.button} onPress={playAudio}>
         <Text style={styles.body}> PLAY </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
