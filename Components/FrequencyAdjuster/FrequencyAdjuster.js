@@ -12,6 +12,8 @@ import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
+import RecordAndPlayback from "./RecordAndPlayback";
+import ImportFile from "./ImportFile";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
@@ -19,18 +21,6 @@ export default function FrequencyAdjuster() {
   const [minFrequency, setMinFrequency] = useState(100); // store the range the audio should be in
   const [maxFrequency, setMaxFrequency] = useState(15000);
   const windowHeight = useWindowDimensions().height;
-
-  const onRecord = () => {
-    Alert.alert("Recording");
-  };
-
-  const onImport = () => {
-    Alert.alert("Import file");
-  };
-
-  const tutorialPage = () => {
-    Alert.alert("tutorial page to be implemented");
-  };
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -98,13 +88,9 @@ export default function FrequencyAdjuster() {
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <TouchableOpacity style={styles.button} onPress={onRecord}>
-          <Text style={styles.body}>Record</Text>
-        </TouchableOpacity>
+        <RecordAndPlayback/>
 
-        <TouchableOpacity style={styles.button} onPress={onImport}>
-          <Text style={styles.body}>Import File</Text>
-        </TouchableOpacity>
+        <ImportFile/>
       </View>
 
       <StatusBar style="auto" />

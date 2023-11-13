@@ -15,6 +15,7 @@
     "@react-navigation/native-stack": "^6.9.14",
     "expo": "^49.0.16",
     "expo-av": "~13.4.1",
+    "expo-document-picker": "~11.5.4",
     "expo-status-bar": "~1.6.0",
     "native-base": "^3.4.28",
     "react": "18.2.0",
@@ -29,7 +30,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-step-indicator": "^1.0.3",
     "react-native-switch-selector": "^2.3.0",
-    "react-native-web": "~0.19.6",
+    "react-native-web": "^0.19.9",
     "react-navigation": "^5.0.0"
   },
   "devDependencies": {
