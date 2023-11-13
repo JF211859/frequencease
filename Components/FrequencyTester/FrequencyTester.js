@@ -6,15 +6,14 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
-  Alert
+  Alert,
 } from "react-native";
-
 import SoundPlayer from "./TesterPlayer";
-// import ProgressBar from "react-native-progress/Bar";
-// import SemiCircleProgressBar from "react-progressbar-semicircle";
-import styles from "../../Style/styles";
-import { COLORS } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
+import StepIndicator from "react-native-step-indicator";
+import CircularProgress from "react-native-circular-progress-indicator";
+import { Audio } from "expo-av";
+
 import {
   saveName,
   saveLowestFreq,
@@ -23,91 +22,229 @@ import {
   MINFREQ_KEY,
   MAXFREQ_KEY,
 } from "../Storage";
+import styles from "../../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
+import Modal from "react-native-modal";
 
-// This is the main view for the Frequency Tester
-// First time users should be directed to this view first
-// <SemiCircleProgressBar percentage={33} showPercentValue />
-// <Progress.Bar progress={0.1} width={200} />
 export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
 
   const phase = route.params.phase || 1;
+  const subphase = route.params.subphase || 1;
 
-  // TODO: change this to a dynamic number
-  // TODO: change audio sweep files to 3 discrete sounds per phase
   const phaseInfo = {
-    1: { hz: 20, audio: require("../../audio/phase1sweep.mp3") },
-    2: { hz: 200, audio: require("../../audio/phase2sweep.mp3") },
-    3: { hz: 2500, audio: require("../../audio/phase3sweep.mp3") },
+    1: {
+      1: { hz: 2000, audio: require("../../audio/2000.mp3") },
+      2: { hz: 1000, audio: require("../../audio/1000.mp3") },
+      3: { hz: 500, audio: require("../../audio/500.mp3") },
+    },
+    2: {
+      1: { hz: 4000, audio: require("../../audio/4000.mp3") },
+      2: { hz: 6000, audio: require("../../audio/6000.mp3") },
+      3: { hz: 8000, audio: require("../../audio/8000.mp3") },
+    },
+    3: {
+      1: { hz: 10000, audio: require("../../audio/10000.mp3") },
+      2: { hz: 12000, audio: require("../../audio/12000.mp3") },
+      3: { hz: 14000, audio: require("../../audio/14000.mp3") },
+    },
   };
-  const navigateToTesterPhase = (phaseNum) => {
-    if (phase < 3) {
-      navigation.navigate("FrequencyTester", { phase: phaseNum + 1 });
+
+  const navigateToNextPhase = () => {
+    if (phase === 3 && subphase === 3) {
+      navigation.navigate("FrequencyTesterPhase"); //final phase finished
     } else {
-      navigation.navigate("FrequencyTesterPhase");
+      if (subphase < 3) {
+        navigation.navigate("FrequencyTester", {
+          phase: phase,
+          subphase: subphase + 1,
+        });
+      } else {
+        navigation.navigate("FrequencyTester", {
+          phase: phase + 1,
+          subphase: 1,
+        });
+      }
+    }
+  };
+  // progress bar
+  const labels = ["Phase 1", "Phase 2", "Phase 3"];
+  const progressRef = React.useRef(null);
+
+  // ringtone modal
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const [ringtonePlayed, setRingtonePlayed] = React.useState(false);
+  React.useEffect(() => {
+    if (phase === 1) {
+      setModalVisible(true);
+    }
+  }, []);
+  const playRingtone = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require("../../audio/ringtone.mp3"));
+      await soundObject.playAsync();
+      soundObject.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          setRingtonePlayed(true);
+        }
+      });
+    } catch (error) {
+      console.error("Error loading sound", error);
     }
   };
 
+  // tutorial page
   const testerTutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
   };
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
-      <Text style={[styles.h1, styles.marginTop, styles.center]}>Phase {phase}</Text>
-      <View
-        style={[
-          styles.center,
-          {
-            alignSelf: "center",
-            width: 230,
-            height: 230,
-            borderRadius: 115,
-            borderColor: COLORS.GREY,
-            borderWidth: 5,
-            marginTop: 50,
-          },
-        ]}
+      {/* Modal to notify users to turn on ringer */}
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
       >
-        <Text style={{ fontSize: 52, marginTop: 80 }}>
-          {phaseInfo[phase].hz} Hz
-        </Text>
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 300,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text style={[styles.h2, { paddingBottom: 20, marginTop: 20 }]}>
+            Please turn on your device's ringer before starting the test. 😃
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                width: 220,
+                marginBottom: 15,
+                borderRadius: 30,
+                backgroundColor: COLORS.LIGHT_BLUE,
+              },
+            ]}
+            onPress={playRingtone}
+          >
+            <Text style={[styles.h2, { marginTop: 0 }]}>Play Test Audio</Text>
+          </TouchableOpacity>
+          {ringtonePlayed && (
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.GREEN,
+                },
+              ]}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.h3}>Okay, I'm ready!</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </Modal>
+
+      {/* FrequencyTester View */}
+      <StepIndicator
+        currentPosition={phase - 1}
+        labels={labels}
+        stepCount={3}
+        customStyles={{
+          labelSize: 25,
+          currentStepLabelColor: COLORS.BLACK,
+          labelColor: COLORS.GREY,
+          stepIndicatorSize: 30,
+          currentStepIndicatorSize: 35,
+          stepStrokeCurrentColor: COLORS.DARK_BLUE,
+          stepStrokeFinishedColor: COLORS.MEDIUM_BLUE,
+          stepStrokeUnFinishedColor: COLORS.MEDIUM_BLUE,
+          separatorFinishedColor: COLORS.MEDIUM_BLUE,
+          separatorUnFinishedColor: COLORS.GREY,
+          stepIndicatorFinishedColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorUnFinishedColor: COLORS.GREY,
+          stepIndicatorCurrentColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelCurrentColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelFinishedColor: COLORS.MEDIUM_BLUE,
+          stepIndicatorLabelUnFinishedColor: COLORS.GREY,
+        }}
+      />
+
+      <View style={[styles.center, { marginTop: 30 }]}>
+        <CircularProgress
+          ref={progressRef}
+          initialValue={100} //starting
+          value={0} //ending
+          duration={4000} // 4 seconds
+          radius={130}
+          progressValueFontSize={0.5}
+          titleFontSize={55}
+          title={`${phaseInfo[phase][subphase].hz}`} // update this
+          titleStyle={{
+            fontWeight: "bold",
+            color: COLORS.BLACK,
+            marginTop: 20,
+          }}
+          subtitle={"Hz"}
+          subtitleStyle={{
+            fontWeight: "bold",
+            fontSize: 40,
+            marginTop: 0,
+            color: COLORS.BLACK,
+          }}
+        />
       </View>
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={phaseInfo[phase].audio} />
+        <SoundPlayer
+          mp3={phaseInfo[phase][subphase].audio}
+          progressRef={progressRef}
+        />
       </View>
 
-      <Text style={[styles.h1, styles.marginTop, styles.center]}>Can you hear this sound?</Text>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>
+        Can you hear this sound?
+      </Text>
 
       <View
         style={[styles.row, styles.margin, { justifyContent: "space-evenly" }]}
       >
         <TouchableOpacity
           onPress={() => {
-            saveLowestFreq("20"); // TODO: dynamic value
-            navigateToTesterPhase(phase);
-          }}
-        >
-          <Image
-            source={require("../../images/thumbsup.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigateToTesterPhase(phase);
+            navigateToNextPhase();
+            // saveResults(); //save lowest and highest range
           }}
         >
           <Image
             source={require("../../images/thumbsdown.png")}
             style={styles.icon}
           />
+          <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>No</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            saveLowestFreq("20"); // TODO: dynamic value
+            navigateToNextPhase();
+          }}
+        >
+          <Image
+            source={require("../../images/thumbsup.png")}
+            style={styles.icon}
+          />
+          <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>Yes</Text>
         </TouchableOpacity>
       </View>
 
-      <TutorialButton tutorial={() => testerTutorialPage()}/>
+      <TutorialButton tutorial={() => testerTutorialPage()} />
     </View>
   );
 }

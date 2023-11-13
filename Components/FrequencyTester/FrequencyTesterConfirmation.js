@@ -1,6 +1,7 @@
-import { View, Text, Button, Alert } from "react-native";
+import { View, Text, Button, Alert, TouchableOpacity } from "react-native";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import styles from "../../Style/styles";
+import { APP_THEME } from "../../Style/colorScheme";
 
 export default function FrequencyTesterConfirmation(props) {
   const navigation = useNavigation();
@@ -14,20 +15,26 @@ export default function FrequencyTesterConfirmation(props) {
         Your hearing range is 20 - 20,000Hz
       </Text>
 
-      <Button
-        title="Go to Frequency Adjuster"
+      <TouchableOpacity
         onPress={() => {
           navigation.dispatch(StackActions.popToTop());
           navigation.dispatch(StackActions.push("Profile")); //reset stack navigation
           navigation.navigate("Home");
         }}
-      ></Button>
-      <Button
-        title="Retake Test"
-        onPress={() => {
-          navigation.navigate("FrequencyTester");
+        style={{
+          backgroundColor: APP_THEME.APP_BLUE,
+          width: 300,
+          height: 60,
+          borderRadius: 50,
+          marginTop: 20,
+          alignSelf: "center",
+          justifyContent: "center",
         }}
-      ></Button>
+      >
+        <Text style={{ fontSize: 20, textAlign: "center" }}>
+          Go to Frequency Adjuster
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
