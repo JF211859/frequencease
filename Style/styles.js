@@ -8,11 +8,12 @@ export default StyleSheet.create({
   },
   h1: {
     fontSize: 32,
-    marginTop: 32,
   },
   h2: {
     fontSize: 24,
-    marginTop: 32,
+  },
+  marginTop: {
+    marginTop: 32
   },
   h3: {
     fontSize: 20,

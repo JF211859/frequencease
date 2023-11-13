@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
   StyleSheet,
   Button,
+  Alert
 } from "react-native";
 import SoundPlayer from "./TesterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
@@ -75,6 +76,10 @@ export default function FrequencyTester({ route }) {
     } catch (error) {
       console.error("Error loading sound", error);
     }
+  };
+
+  const testerTutorialPage = () => {
+    Alert.alert("tutorial page to be implemented");
   };
 
   return (
@@ -191,9 +196,7 @@ export default function FrequencyTester({ route }) {
         <SoundPlayer mp3={phaseInfo[phase].audio} progressRef={progressRef} />
       </View>
 
-      <Text style={[styles.h1, styles.center, { marginBottom: 20 }]}>
-        Can you hear this sound?
-      </Text>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>Can you hear this sound?</Text>
 
       <View
         style={[styles.row, styles.margin, { justifyContent: "space-evenly" }]}
@@ -223,7 +226,7 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
       </View>
 
-      <TutorialButton />
+      <TutorialButton tutorial={() => testerTutorialPage()}/>
     </View>
   );
 }
