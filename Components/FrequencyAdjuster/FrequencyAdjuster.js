@@ -1,17 +1,24 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, Alert, TouchableOpacity } from "react-native";
+import { 
+  Text,
+  View,
+  Alert,
+  TouchableOpacity,
+  useWindowDimensions
+} from "react-native";
 import React, { useState } from "react";
-import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
 import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
+import TutorialButton from "../ImageComponents/TutorialButton";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
   // TODO: user's hearing range
   const [minFrequency, setMinFrequency] = useState(100); // store the range the audio should be in
   const [maxFrequency, setMaxFrequency] = useState(15000);
+  const windowHeight = useWindowDimensions().height;
 
   const onRecord = () => {
     Alert.alert("Recording");
@@ -21,9 +28,13 @@ export default function FrequencyAdjuster() {
     Alert.alert("Import file");
   };
 
+  const tutorialPage = () => {
+    Alert.alert("tutorial page to be implemented");
+  };
+
   return (
-    <View>
-      <Text style={[styles.h1, styles.center]}>Audible Frequency</Text>
+    <View style={{ height: { windowHeight }, flex: 1 }}>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>Audible Frequency</Text>
 
       <View style={[styles.margin, styles.row]}>
         <View
@@ -97,6 +108,8 @@ export default function FrequencyAdjuster() {
       </View>
 
       <StatusBar style="auto" />
+
+      <TutorialButton tutorial={() => tutorialPage()} />
     </View>
   );
 }
