@@ -13,6 +13,14 @@ export default function ImportFile() {
       copyToCacheDirectory: true
     }));
     console.log(audio.assets[0].uri);
+
+    const audioUri = audio.assets[0].uri;
+
+    const soundObject = new Audio.Sound();
+    soundObject.setOnPlaybackStatusUpdate();
+
+    await soundObject.loadAsync({ uri: audioUri });
+    await soundObject.playAsync();
   }
 
   async function playAudio() {
