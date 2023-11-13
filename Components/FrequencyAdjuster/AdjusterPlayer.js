@@ -2,14 +2,59 @@ import * as React from "react";
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
-import styles from "../../Style/styles";
 import { APP_THEME, COLORS } from "../../Style/colorScheme";
+import styles from "../../Style/styles";
+import SeekBar from "./SeekBar";
 
 function SoundPlayer({ mp3 }) {
   const sound = React.useRef(new Audio.Sound());
-  const [Status, SetStatus] = React.useState(false);
-  const [audioProgress, setAudioProgress] = React.useState(0);
-  const audioLength = 0;
+  const [Status, SetStatus] = React.useState(false); // isPlaying
+  // Seekbar variables
+  const [totalLength, setTotalLength] = React.useState(1);
+  const [currentPos, setCurrentPos] = React.useState(0);
+  const [intervalId, setIntervalId] = React.useState(0);
+
+  // get audio length from sound
+  const setDuration = (sound) => {
+    setTotalLength(Math.floor(sound.durationMillis / 1000));
+  };
+
+  const setTime = (sound, pos) => {
+    console.log("Set time: " + pos);
+    setCurrentPos(Math.floor(pos));
+    sound.current.positionMillis = pos * 1000;
+  };
+
+  const seek = (pos) => {
+    console.log("Seeking " + pos);
+    setCurrentPos(Math.floor(pos));
+    sound.current.playFromPositionAsync(pos * 1000);
+    SetStatus(true);
+    clearInterval(intervalId);
+    const interval = setInterval(updatePos, 300);
+    setIntervalId(interval);
+  };
+
+  const updatePos = async () => {
+    try {
+      // is playing
+      const result = await sound.current.getStatusAsync();
+      if (result.isPlaying) {
+        // console.log("New time: " + result.positionMillis / 1000);
+        setCurrentPos(Math.floor(result.positionMillis / 1000));
+      }
+      else if (!result.isPlaying && result.positionMillis == result.durationMillis) {
+        // console.log("End of sound")
+        setCurrentPos(totalLength);
+        SetStatus(false);  
+        clearInterval(intervalId);
+      }
+    }
+    catch (error) {
+      clearInterval(intervalId);
+    }
+    
+  }
 
   React.useEffect(() => {
     LoadAudio();
@@ -21,8 +66,11 @@ function SoundPlayer({ mp3 }) {
     // Get Loading Status
     if (checkLoading.isLoaded === false) {
       try {
-        const result = await sound.current.loadAsync(mp3, {}, true);
-        audioLength = result.durationMillis;
+        const result = await sound.current.loadAsync(mp3, {
+          progressUpdateIntervalMillis: 100
+        }, true);
+        setDuration(result);
+        setTime(result, 0);
         if (result.isLoaded === false) {
           console.log("Error in Loading Audio");
         } else {
@@ -32,7 +80,7 @@ function SoundPlayer({ mp3 }) {
         console.log("Error in Loading Audio");
       }
     } else {
-      console.log("Error in Loading Audio");
+      console.log("Audio loaded");
     }
   };
 
@@ -40,9 +88,12 @@ function SoundPlayer({ mp3 }) {
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
+        console.log(intervalId);
         if (result.isPlaying === false) {
-          sound.current.playAsync();
+          sound.current.playFromPositionAsync(currentPos * 1000);
           SetStatus(true);
+          const interval = setInterval(updatePos, 300);
+          setIntervalId(interval);
           console.log("Audio playing");
         }
       } else {
@@ -60,6 +111,7 @@ function SoundPlayer({ mp3 }) {
         if (result.isPlaying === true) {
           sound.current.pauseAsync();
           SetStatus(false);
+          clearInterval(intervalId);
           console.log("Audio paused");
         }
       }
@@ -70,9 +122,10 @@ function SoundPlayer({ mp3 }) {
 
   const StopAudio = async () => {
     try {
-      sound.current.pauseAsync();
-      sound.current.setPositionAsync(0);
+      sound.current.stopAsync();
       SetStatus(false);
+      setTime(sound, 0);
+      clearInterval(intervalId);
       console.log("Audio stopped");
     } catch (error) {
       SetStatus(false);
@@ -83,6 +136,9 @@ function SoundPlayer({ mp3 }) {
     try {
       sound.current.replayAsync();
       SetStatus(true);
+      setTime(sound, 0);
+      const interval = setInterval(updatePos, 300);
+      setIntervalId(interval);
       console.log("Audio replaying");
     } catch (error) {
       SetStatus(false);
@@ -92,26 +148,12 @@ function SoundPlayer({ mp3 }) {
   return (
     <View>
       <View style={styles.progressBar}>
-        <Slider
-          style={[styles.slider, styles.margin]}
-          minimumValue={0}
-          maximumValue={audioLength}
-          minimumTrackTintColor={COLORS.MEDIUM_BLUE}
-          maximumTrackTintColor={COLORS.LIGHT_GREY}
-          value={audioProgress}
-          onValueChange={setAudioProgress}
-          step={1}
+        <SeekBar
+          onSlidingStart={() => PauseAudio()}
+          onSeek={(value) => seek(value)}
+          trackLength={totalLength}
+          currentPosition={currentPos}
         />
-        <View
-          style={[
-            styles.margin,
-            styles.row,
-            { justifyContent: "space-between" },
-          ]}
-        >
-          <Text>0:00</Text>
-          <Text>{audioLength}</Text>
-        </View>
       </View>
 
       <View style={[styles.row, { justifyContent: "space-around" }]}>
