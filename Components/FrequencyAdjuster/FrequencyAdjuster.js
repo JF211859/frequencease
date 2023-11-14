@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { 
+import {
   Text,
   View,
   Alert,
@@ -25,6 +25,31 @@ export default function FrequencyAdjuster() {
   const tutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
   };
+
+  async function playSound(file) {
+    console.log(file);
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: file},
+      { shouldPlay: true}
+    );
+    await sound.playAsync();
+  }
+
+  state = {
+    shiftedURI: "NOT SET"
+  };
+
+
+  changeShiftedURI = (shiftedURI) => {
+    console.log("parent input = " + shiftedURI);
+    this.state.URI = shiftedURI;
+    // this.setState({URI: shiftedURI});
+    console.log("parent state = " + this.state.URI);
+  }
+
+  getShiftedURI = () => {
+    return this.state.URI;
+  }
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -88,11 +113,11 @@ export default function FrequencyAdjuster() {
       /> */}
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../../audio/test.mp3")} />
+        <SoundPlayer getShiftedURI = {this.getShiftedURI}/>
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <RecordAndPlayback/>
+        <RecordAndPlayback changeShiftedURI={this.changeShiftedURI}/>
 
         <ImportFile/>
       </View>
