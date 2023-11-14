@@ -36,6 +36,9 @@ See App on Device:
 * iOS: open the default "Camera" app and scan QR code you see in the terminal.
 * Android: press "Scan QR Code" on the "Projects" tab of the Expo Go app and scan the QR code.
 
+## Frequency Adjustment API
+[Frequency Adjustment API GitHub](https://github.com/JF211859/frequenceaseapi)
+
 
 ## Resources
 [Expo Documentation](https://docs.expo.dev/index.html)
