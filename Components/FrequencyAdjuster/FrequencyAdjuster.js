@@ -75,11 +75,11 @@ export default function FrequencyAdjuster() {
         step={1}
       />
 
-      <View style={[styles.center, styles.margin]}>
+      {/* <View style={[styles.center, styles.margin]}>
         <SoundPlayer mp3={require("../../audio/audiosweep.mp3")} />
-      </View>
+      </View> */}
 
-      <View style={[styles.row, styles.bottomButtons, styles.margin]}>
+      <View>
         <RecordAndPlayback/>
 
         <ImportFile/>

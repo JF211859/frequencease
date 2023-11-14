@@ -1,8 +1,11 @@
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
+import { State } from 'react-native-gesture-handler';
+import Slider from "@react-native-community/slider";
+import { APP_THEME, COLORS } from "../../Style/colorScheme"
 // import UploadToServer from "./UploadToServer"
 
 export default function RecordAndPlayback() {
@@ -10,6 +13,11 @@ export default function RecordAndPlayback() {
   const [recording, setRecording] = useState(null);
   const [recordingStatus, setRecordingStatus] = useState('Record');
   const [audioPermission, setAudioPermission] = useState(null);
+  const sound = React.useRef(new Audio.Sound());
+  const [Status, SetStatus] = React.useState(false);
+  const [audioProgress, setAudioProgress] = React.useState(0);
+  let audioLength = 0;
+
 
   useEffect(() => {
 
@@ -53,7 +61,7 @@ export default function RecordAndPlayback() {
     } catch (error) {
       console.error('Failed to start recording', error);
     }
-  }
+  };
 
   async function uploadAudioAsync(uri) {
     console.log("Uploading " + uri);
@@ -80,45 +88,23 @@ export default function RecordAndPlayback() {
     .then(text => {
       return text;
     });
-  }
-
-  const getAudioFromApiAsync = async (uri) => {
-    try {
-      const new_uri = uploadAudioAsync(uri);
-      console.log(new_uri);
-      return new_uri;
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   async function stopRecording() {
     try {
 
       if (recordingStatus === 'Stop') {
-        console.log('Stopping Recording')
+        console.log('Stopping Recording');
         await recording.stopAndUnloadAsync();
         const recordingUri = recording.getURI();
         console.log('URI: ', recordingUri);
 
-        console.log(await getAudioFromApiAsync(recordingUri));
+        const shiftedUrl = await uploadAudioAsync(recordingUri);
 
-        // Create a file name for the recording
-        const fileName = `recording-${Date.now()}.wav`;
+        console.log("local = " + shiftedUrl);
 
-        // Move the recording to the new directory with the new file name
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'recordings/', { intermediates: true });
-        await FileSystem.moveAsync({
-          from: recordingUri,
-          to: FileSystem.documentDirectory + 'recordings/' + `${fileName}`
-        });
+        this.shiftedURI = shiftedUrl;
 
-        // This is for simply playing the sound back
-        const playbackObject = new Audio.Sound();
-        await playbackObject.loadAsync({ uri: FileSystem.documentDirectory + 'recordings/' + `${fileName}` });
-        await playbackObject.playAsync();
-
-        // resert our states to record again
         setRecording(null);
         setRecordingStatus('Record');
       }
@@ -126,24 +112,164 @@ export default function RecordAndPlayback() {
     } catch (error) {
       console.error('Failed to stop recording', error);
     }
-  }
+  };
+
+  function getShiftedUrl () {
+    console.log("url = " + this.shiftedURI);
+    return this.shiftedURI;
+  };
 
   async function handleRecordButtonPress() {
     if (recording) {
-      const audioUri = await stopRecording(recording);
-      if (audioUri) {
-        console.log('Saved audio file to', savedUri);
-      }
+      await stopRecording(recording);
+      console.log("shiftedURI = " + this.shiftedURI);
+      console.log("recording = " + recording);
+      console.log("recordingStatus = " + recordingStatus);
     } else {
       await startRecording();
     }
-  }
+  };
+
+  const LoadAudio = async () => {
+    const checkLoading = await sound.current.getStatusAsync();
+    // Get Loading Status
+    if (checkLoading.isLoaded === false) {
+      try {
+
+        await UploadAudio();
+
+        console.log("Loading Audio");
+
+        const result = await sound.current.loadAsync({uri: this.shiftedURI});
+        audioLength = result.durationMillis;
+        if (result.isLoaded === false) {
+          console.log("Error in Loading Audio");
+        } else {
+          await PlayAudio();
+        }
+      } catch (error) {
+        console.log("Error in Loading Audio");
+      }
+    } else {
+      console.log("Error in Loading Audio");
+    }
+  };
+
+
+
+  const PlayAudio = async () => {
+    try {
+      const result = await sound.current.getStatusAsync();
+      if (result.isLoaded) {
+        if (result.isPlaying === false) {
+          sound.current.playAsync();
+          SetStatus(true);
+          console.log("Audio playing");
+        }
+      } else {
+        LoadAudio();
+      }
+    } catch (error) {
+      SetStatus(false);
+    }
+  };
+
+  const PauseAudio = async () => {
+    try {
+      const result = await sound.current.getStatusAsync();
+      if (result.isLoaded) {
+        if (result.isPlaying === true) {
+          sound.current.pauseAsync();
+          SetStatus(false);
+          console.log("Audio paused");
+        }
+      }
+    } catch (error) {
+      SetStatus(false);
+    }
+  };
+
+  const StopAudio = async () => {
+    try {
+      sound.current.pauseAsync();
+      sound.current.setPositionAsync(0);
+      SetStatus(false);
+      console.log("Audio stopped");
+    } catch (error) {
+      SetStatus(false);
+    }
+  };
+
+  const ReplayAudio = async () => {
+    try {
+      await sound.current.replayAsync();
+      SetStatus(true);
+      console.log("Audio replaying");
+      console.log(sound.current.getStatus());
+    } catch (error) {
+      SetStatus(false);
+    }
+  };
 
   return (
+
     <View>
-      <TouchableOpacity style={styles.button} onPress={handleRecordButtonPress}>
-        <Text style={styles.body}> {`${recordingStatus}`} </Text>
-      </TouchableOpacity>
+      <View style={[styles.center, styles.margin]}>
+        <View style={styles.progressBar}>
+          <Slider
+            style={[styles.slider, styles.margin]}
+            minimumValue={0}
+            maximumValue={audioLength}
+            minimumTrackTintColor={COLORS.MEDIUM_BLUE}
+            maximumTrackTintColor={COLORS.LIGHT_GREY}
+            value={audioProgress}
+            onValueChange={setAudioProgress}
+            step={1}
+          />
+          <View
+            style={[
+              styles.margin,
+              styles.row,
+              { justifyContent: "space-between" },
+            ]}
+          >
+            <Text>0:00</Text>
+            <Text>{audioLength}</Text>
+          </View>
+        </View>
+
+        <View style={[styles.row, { justifyContent: "space-around" }]}>
+          <TouchableOpacity
+            onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
+            style={styles.circleButton}
+          >
+            <Image
+              source={
+                Status === false
+                  ? require("../../images/play.png")
+                  : require("../../images/pause.png")
+              }
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
+            <Image source={require("../../images/stop.png")} style={styles.icon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
+            <Image
+              source={require("../../images/replay-music.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={[styles.row, styles.bottomButtons, styles.margin]}>
+        <TouchableOpacity style={styles.button} onPress={handleRecordButtonPress}>
+          <Text style={styles.body}> {`${recordingStatus}`} </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

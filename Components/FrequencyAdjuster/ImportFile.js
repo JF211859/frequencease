@@ -8,7 +8,7 @@ export default function ImportFile() {
     data.append('file', {
       name: file.name,
       type: file.type,
-      uri: Platform.OS === 'ios' ? 
+      uri: Platform.OS === 'ios' ?
           file.uri.replace('file://', '')
           : file.uri,
     });
@@ -23,7 +23,7 @@ export default function ImportFile() {
   }
 
   return (
-    <View>
+    <View style={[styles.row, styles.bottomButtons, styles.margin]}>
       <TouchableOpacity style={styles.button} onPress={uploadFile}>
         <Text style={styles.body}> Import File </Text>
       </TouchableOpacity>
