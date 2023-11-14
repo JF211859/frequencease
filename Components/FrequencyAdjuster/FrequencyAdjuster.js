@@ -1,22 +1,43 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, Alert, TouchableOpacity } from "react-native";
+import { 
+  Text,
+  View,
+  Alert,
+  TouchableOpacity,
+  useWindowDimensions
+} from "react-native";
 import React, { useState } from "react";
-import Slider from "@react-native-community/slider";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
 import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
+import TutorialButton from "../ImageComponents/TutorialButton";
 import RecordAndPlayback from "./RecordAndPlayback";
 import ImportFile from "./ImportFile";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
-  const [min_frequency, setMinFrequency] = useState(100);
-  const [max_frequency, setMaxFrequency] = useState(3000);
+  // TODO: user's hearing range
+  const [minFrequency, setMinFrequency] = useState(100); // store the range the audio should be in
+  const [maxFrequency, setMaxFrequency] = useState(15000);
+  const windowHeight = useWindowDimensions().height;
+
+  const tutorialPage = () => {
+    Alert.alert("tutorial page to be implemented");
+  };
+
+  async function playSound(file) {
+    console.log(file);
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: file},
+      { shouldPlay: true}
+    );
+    await sound.playAsync();
+  }
 
   return (
-    <View>
-      <Text style={[styles.h1, styles.center]}>Audible Frequency</Text>
+    <View style={{ height: { windowHeight }, flex: 1 }}>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>Audible Frequency</Text>
 
       <View style={[styles.margin, styles.row]}>
         <View
@@ -44,10 +65,11 @@ export default function FrequencyAdjuster() {
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>20 Hz</Text>
-        <Text>20,000 Hz</Text>
+        <Text>{minFrequency} Hz</Text>
+        <Text>{maxFrequency} Hz</Text>
       </View>
 
+      {/* <Text>Select the mode here</Text>
       <SwitchSelector
         options={[
           { label: "Auto", value: "A" },
@@ -63,21 +85,20 @@ export default function FrequencyAdjuster() {
         selectedTextStyle={{ color: COLORS.BLACK }}
         style={styles.margin}
       />
-
       <Slider
         style={[styles.slider, styles.margin]}
         minimumValue={50}
         maximumValue={5000}
         minimumTrackTintColor={COLORS.MEDIUM_BLUE}
-        maximumTrackTintColor={COLORS.LIGHT_GREY}
+        maximumTrackTintColor={COLORS.GREY}
         value={3000}
         onValueChange={setMaxFrequency}
         step={1}
-      />
+      /> */}
 
-      {/* <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={require("../../audio/audiosweep.mp3")} />
-      </View> */}
+      <View style={[styles.center, styles.margin]}>
+        <SoundPlayer mp3={require("../../audio/test.mp3")} />
+      </View>
 
       <View>
         <RecordAndPlayback/>
@@ -86,6 +107,8 @@ export default function FrequencyAdjuster() {
       </View>
 
       <StatusBar style="auto" />
+
+      <TutorialButton tutorial={() => tutorialPage()} />
     </View>
   );
 }

@@ -3,10 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
-import { State } from 'react-native-gesture-handler';
-import Slider from "@react-native-community/slider";
-import { APP_THEME, COLORS } from "../../Style/colorScheme"
-// import UploadToServer from "./UploadToServer"
 
 export default function RecordAndPlayback() {
 

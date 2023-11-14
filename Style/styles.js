@@ -8,10 +8,11 @@ export default StyleSheet.create({
   },
   h1: {
     fontSize: 32,
-    marginTop: 32,
   },
   h2: {
     fontSize: 24,
+  },
+  marginTop: {
     marginTop: 32,
   },
   h3: {
@@ -71,8 +72,8 @@ export default StyleSheet.create({
   corner: {
     alignSelf: "flex-end",
     position: "absolute",
-    bottom: 30,
-    right: 30,
+    bottom: 15,
+    right: 15,
   },
   phaseContainer: {
     flexDirection: "row",
