@@ -62,10 +62,7 @@ export default function FrequencyTester() {
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 24, textAlign: "center" }}>
-          {" "}
-          Get started!{" "}
-        </Text>
+        <Text style={{ fontSize: 24, textAlign: "center" }}>Get started!</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
