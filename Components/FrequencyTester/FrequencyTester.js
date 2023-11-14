@@ -14,14 +14,7 @@ import StepIndicator from "react-native-step-indicator";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { Audio } from "expo-av";
 
-import {
-  saveName,
-  saveLowestFreq,
-  saveHighestFreq,
-  readData,
-  MINFREQ_KEY,
-  MAXFREQ_KEY,
-} from "../Storage";
+import { saveLowestFreq, saveHighestFreq } from "../Storage";
 import styles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
 import Modal from "react-native-modal";
@@ -30,44 +23,33 @@ export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
 
-  const phase = route.params.phase || 1;
-  const subphase = route.params.subphase || 1;
+  const phase = route.params.phase || 0;
+  const actualPhase = parseInt(phase / 3, 10) + 1;
 
   const phaseInfo = {
-    1: {
-      1: { hz: 2000, audio: require("../../audio/2000.mp3") },
-      2: { hz: 1000, audio: require("../../audio/1000.mp3") },
-      3: { hz: 500, audio: require("../../audio/500.mp3") },
-    },
-    2: {
-      1: { hz: 4000, audio: require("../../audio/4000.mp3") },
-      2: { hz: 6000, audio: require("../../audio/6000.mp3") },
-      3: { hz: 8000, audio: require("../../audio/8000.mp3") },
-    },
-    3: {
-      1: { hz: 10000, audio: require("../../audio/10000.mp3") },
-      2: { hz: 12000, audio: require("../../audio/12000.mp3") },
-      3: { hz: 14000, audio: require("../../audio/14000.mp3") },
-    },
+    0: { hz: 500, audio: require("../../audio/500.mp3") }, //phase 1
+    1: { hz: 1000, audio: require("../../audio/1000.mp3") },
+    2: { hz: 2000, audio: require("../../audio/2000.mp3") },
+
+    3: { hz: 4000, audio: require("../../audio/4000.mp3") }, //phase 2
+    4: { hz: 6000, audio: require("../../audio/6000.mp3") },
+    5: { hz: 8000, audio: require("../../audio/8000.mp3") },
+
+    6: { hz: 10000, audio: require("../../audio/10000.mp3") }, //phase 3
+    7: { hz: 12000, audio: require("../../audio/12000.mp3") },
+    8: { hz: 14000, audio: require("../../audio/14000.mp3") },
   };
 
   const navigateToNextPhase = () => {
-    if (phase === 3 && subphase === 3) {
+    if (phase === 8) {
       navigation.navigate("FrequencyTesterPhase"); //final phase finished
     } else {
-      if (subphase < 3) {
-        navigation.navigate("FrequencyTester", {
-          phase: phase,
-          subphase: subphase + 1,
-        });
-      } else {
-        navigation.navigate("FrequencyTester", {
-          phase: phase + 1,
-          subphase: 1,
-        });
-      }
+      navigation.navigate("FrequencyTester", {
+        phase: phase + 1,
+      });
     }
   };
+
   // progress bar
   const labels = ["Phase 1", "Phase 2", "Phase 3"];
   const progressRef = React.useRef(null);
@@ -76,7 +58,7 @@ export default function FrequencyTester({ route }) {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [ringtonePlayed, setRingtonePlayed] = React.useState(false);
   React.useEffect(() => {
-    if (phase === 1) {
+    if (phase === 0) {
       setModalVisible(true);
     }
   }, []);
@@ -156,7 +138,7 @@ export default function FrequencyTester({ route }) {
 
       {/* FrequencyTester View */}
       <StepIndicator
-        currentPosition={phase - 1}
+        currentPosition={actualPhase - 1}
         labels={labels}
         stepCount={3}
         customStyles={{
@@ -182,13 +164,14 @@ export default function FrequencyTester({ route }) {
       <View style={[styles.center, { marginTop: 30 }]}>
         <CircularProgress
           ref={progressRef}
-          initialValue={100} //starting
-          value={0} //ending
-          duration={4000} // 4 seconds
+          initialValue={100}
+          progressValueColor={"#f2f2f2"}
+          value={0}
+          duration={4000} //4 seconds
           radius={130}
           progressValueFontSize={0.5}
           titleFontSize={55}
-          title={`${phaseInfo[phase][subphase].hz}`} // update this
+          title={`${phaseInfo[phase].hz}`}
           titleStyle={{
             fontWeight: "bold",
             color: COLORS.BLACK,
@@ -205,10 +188,7 @@ export default function FrequencyTester({ route }) {
       </View>
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer
-          mp3={phaseInfo[phase][subphase].audio}
-          progressRef={progressRef}
-        />
+        <SoundPlayer mp3={phaseInfo[phase].audio} progressRef={progressRef} />
       </View>
 
       <Text style={[styles.h1, styles.marginTop, styles.center]}>
@@ -220,8 +200,13 @@ export default function FrequencyTester({ route }) {
       >
         <TouchableOpacity
           onPress={() => {
-            navigateToNextPhase();
-            // saveResults(); //save lowest and highest range
+            if (actualPhase === 1) {
+              saveLowestFreq(phaseInfo[phase + 1].hz.toString());
+              navigateToNextPhase();
+            } else {
+              saveHighestFreq(phaseInfo[phase - 1].hz.toString());
+              navigation.navigate("FrequencyTesterPhase"); //finish hearing test
+            }
           }}
         >
           <Image
@@ -232,7 +217,9 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            saveLowestFreq("20"); // TODO: dynamic value
+            if (actualPhase !== 1) {
+              saveHighestFreq(phaseInfo[phase].hz.toString());
+            }
             navigateToNextPhase();
           }}
         >
