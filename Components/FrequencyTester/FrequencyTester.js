@@ -27,9 +27,9 @@ export default function FrequencyTester({ route }) {
   const actualPhase = parseInt(phase / 3, 10) + 1;
 
   const phaseInfo = {
-    0: { hz: 2000, audio: require("../../audio/2000.mp3") }, //phase 1
+    0: { hz: 500, audio: require("../../audio/500.mp3") }, //phase 1
     1: { hz: 1000, audio: require("../../audio/1000.mp3") },
-    2: { hz: 500, audio: require("../../audio/500.mp3") },
+    2: { hz: 2000, audio: require("../../audio/2000.mp3") },
 
     3: { hz: 4000, audio: require("../../audio/4000.mp3") }, //phase 2
     4: { hz: 6000, audio: require("../../audio/6000.mp3") },
@@ -201,17 +201,10 @@ export default function FrequencyTester({ route }) {
         <TouchableOpacity
           onPress={() => {
             if (actualPhase === 1) {
-              const freqToSave =
-                phase === 0 ? "4000" : phaseInfo[phase - 1].hz.toString();
-              saveLowestFreq(freqToSave);
-              navigation.navigate("FrequencyTester", {
-                //if thumbs down in phase 1, navigate to phase 2
-                phase: 3,
-              });
+              saveLowestFreq(phaseInfo[phase + 1].hz.toString());
+              navigateToNextPhase();
             } else {
-              const freqToSave =
-                phase === 3 ? "4000" : phaseInfo[phase - 1].hz.toString();
-              saveHighestFreq(freqToSave);
+              saveHighestFreq(phaseInfo[phase - 1].hz.toString());
               navigation.navigate("FrequencyTesterPhase"); //finish hearing test
             }
           }}
@@ -224,9 +217,7 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            if (actualPhase === 1) {
-              saveLowestFreq(phaseInfo[phase].hz.toString());
-            } else {
+            if (actualPhase !== 1) {
               saveHighestFreq(phaseInfo[phase].hz.toString());
             }
             navigateToNextPhase();
