@@ -9,8 +9,8 @@ export default function Profile() {
   const navigation = useNavigation();
 
   // get minFreq and maxFreq from asyncStorage
-  const [minFreq, setMinFreq] = React.useState(null);
-  const [maxFreq, setMaxFreq] = React.useState(null);
+  const [minFreq, setMinFreq] = React.useState(2000);
+  const [maxFreq, setMaxFreq] = React.useState(4000);
 
   React.useEffect(() => {
     readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
@@ -40,7 +40,7 @@ export default function Profile() {
         onPress={() => {
           navigation.navigate({
             name: "FrequencyTester",
-            params: { phase: 1 },
+            params: { phase: 0 },
           });
         }}
       >

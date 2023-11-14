@@ -1,25 +1,33 @@
+import React from "react";
+
 import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import { APP_THEME } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import styles from "../../Style/styles";
+import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 
 function Phase(props) {
   const phaseColor = APP_THEME[`PHASE_${props.phase}`];
   const navigation = useNavigation();
+  const phaseNum = (props.phase - 1) * 3;
 
   return (
     <View style={styles.phaseContainer}>
       <View>
         <Text
-          color={APP_THEME.TEXT_STANDARD}
-          style={[styles.h3, styles.center, { fontWeight: "bold" }]}
+          style={[
+            styles.h3,
+            styles.center,
+            { fontWeight: "bold", color: APP_THEME.TEXT_STANDARD },
+          ]}
         >
           Phase {props.phase}
         </Text>
-        {/* <Text style={[styles.h3, styles.center, { fontStyle: "italic" }]}>
-          {props.progress}%
-        </Text> */}
+        <Text style={[styles.h3, styles.center, { fontStyle: "italic" }]}>
+          {props.phase === 1 ? "lower" : props.phase === 2 ? "middle" : "upper"}{" "}
+          range
+        </Text>
       </View>
       <TouchableOpacity
         style={[
@@ -29,8 +37,8 @@ function Phase(props) {
         onPress={() => {
           navigation.navigate({
             name: "FrequencyTester",
-            params: { phase: props.phase },
-          }); //TODO: need to change
+            params: { phase: phaseNum },
+          });
         }}
       >
         <Text style={styles.body}>Retake</Text>
@@ -39,22 +47,30 @@ function Phase(props) {
   );
 }
 
-export default function FrequencyTesterPhase(props) {
+export default function FrequencyTesterPhase() {
   const navigation = useNavigation();
+  const [minFreq, setMinFreq] = React.useState(4000); //default hearing range
+  const [maxFreq, setMaxFreq] = React.useState(4000);
+
+  React.useEffect(() => {
+    readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
+    readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
+  }, []);
 
   return (
     <View style={[styles.screenContainer, { gap: 5 }]}>
-      {/* TODO: insert progress bar */}
       <Text style={[styles.h1, styles.center, { fontWeight: "bold" }]}>
-        Test Completed!
+        Your test results are in! 🎉{" "}
       </Text>
-      {/* TODO: Progress Bar */}
-      {/* <Text style={[styles.h2, styles.center]}>**insert progress bar**</Text> */}
-      <Phase phase={1} progress={100} />
-      <Phase phase={2} progress={100} />
-      <Phase phase={3} progress={80} />
 
-      <View style={styles.bottomButtons}>
+      <Text style={[styles.h2, styles.center, { marginBottom: 20 }]}>
+        Your hearing range is {minFreq} - {maxFreq}Hz
+      </Text>
+      <Phase phase={1} />
+      <Phase phase={2} />
+      <Phase phase={3} />
+
+      <View style={[styles.bottomButtons, { marginTop: 20 }]}>
         <TouchableOpacity
           style={[
             styles.button,
@@ -63,11 +79,11 @@ export default function FrequencyTesterPhase(props) {
           onPress={() => {
             navigation.navigate({
               name: "FrequencyTester",
-              params: { phase: 1 },
-            }); //TODO: need to change
+              params: { phase: 0 },
+            });
           }}
         >
-          <Text style={styles.body}>Retake Entire Test</Text>
+          <Text style={styles.h3}>Retake Entire Test</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -75,10 +91,12 @@ export default function FrequencyTesterPhase(props) {
             { borderRadius: 15, backgroundColor: APP_THEME.CONFIRM },
           ]}
           onPress={() => {
-            navigation.navigate("FrequencyTesterConfirmation");
+            navigation.dispatch(StackActions.popToTop());
+            navigation.dispatch(StackActions.push("Profile"));
+            navigation.navigate("Home");
           }}
         >
-          <Text style={styles.body}>Confirm Results</Text>
+          <Text style={styles.h3}>Go to Adjuster</Text>
         </TouchableOpacity>
       </View>
 

@@ -13,7 +13,7 @@ export default StyleSheet.create({
     fontSize: 24,
   },
   marginTop: {
-    marginTop: 32
+    marginTop: 32,
   },
   h3: {
     fontSize: 20,

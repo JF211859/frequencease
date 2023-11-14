@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import FrequencyAdjuster from "./Components/FrequencyAdjuster/FrequencyAdjuster";
 import FrequencyTester from "./Components/FrequencyTester/FrequencyTester";
-import FrequencyTesterConfirmation from "./Components/FrequencyTester/FrequencyTesterConfirmation";
 import FrequencyTesterPhase from "./Components/FrequencyTester/FrequencyTesterPhase";
 import BackButtonImage from "./Components/ImageComponents/BackButton";
 import HamburgerIcon from "./Components/ImageComponents/HamburgerIcon";
@@ -55,21 +54,11 @@ function ProfileTesterStack() {
           headerTitle: "Frequency Tester",
           gestureEnabled: false, //disable back
         }}
-        initialParams={{ phase: 1 }}
+        initialParams={{ phase: 0 }}
       />
       <Stack.Screen
         name="FrequencyTesterPhase"
         component={FrequencyTesterPhase}
-        options={{
-          headerTintColor: APP_THEME.TEXT_STANDARD,
-          headerBackVisible: false,
-          headerTitle: "",
-          gestureEnabled: false, //disable back
-        }}
-      />
-      <Stack.Screen
-        name="FrequencyTesterConfirmation"
-        component={FrequencyTesterConfirmation}
         options={{
           headerTintColor: APP_THEME.TEXT_STANDARD,
           headerBackVisible: false,
