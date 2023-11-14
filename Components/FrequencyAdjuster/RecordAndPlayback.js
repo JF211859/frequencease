@@ -4,16 +4,54 @@ import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
 
-export default function RecordAndPlayback() {
+export default function RecordAndPlayback (props) {
 
   const [recording, setRecording] = useState(null);
   const [recordingStatus, setRecordingStatus] = useState('Record');
   const [audioPermission, setAudioPermission] = useState(null);
-  const sound = React.useRef(new Audio.Sound());
-  const [Status, SetStatus] = React.useState(false);
-  const [audioProgress, setAudioProgress] = React.useState(0);
-  let audioLength = 0;
 
+  const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
+
+  // const InputArea = (props) => {
+  //   const handleChange = (e) => props.handleInputValue(e.target.value);
+
+  //   return (
+  //     <div className="column">
+  //       <div className="col-body">
+  //         <textarea
+  //           id="editor"
+  //           placeholder="Enter text here"
+  //           onChange={handleChange}
+  //         ></textarea>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+  // const DisplayArea = (props) => (
+  //   <div className="column">
+  //     <div className="col-body">
+  //       <div id="preview">{props.inputValue}</div>
+  //     </div>
+  //   </div>
+  // );
+
+  // class App extends React.Component {
+  //   state = {
+  //     inputValue: "Initial Value",
+  //   };
+
+  //   handleInputValue = (inputValue) => this.setState({ inputValue });
+
+  //   render() {
+  //     return (
+  //       <div id="wrapper" className="App">
+  //         <DisplayArea inputValue={this.state.inputValue} />
+  //         <InputArea handleInputValue={this.handleInputValue} />
+  //       </div>
+  //     );
+  //   }
+  // }
 
   useEffect(() => {
 
@@ -103,6 +141,8 @@ export default function RecordAndPlayback() {
 
         setRecording(null);
         setRecordingStatus('Record');
+
+        changeShiftedURL();
       }
 
     } catch (error) {
@@ -208,64 +248,12 @@ export default function RecordAndPlayback() {
   };
 
   return (
-
     <View>
-      <View style={[styles.center, styles.margin]}>
-        <View style={styles.progressBar}>
-          <Slider
-            style={[styles.slider, styles.margin]}
-            minimumValue={0}
-            maximumValue={audioLength}
-            minimumTrackTintColor={COLORS.MEDIUM_BLUE}
-            maximumTrackTintColor={COLORS.LIGHT_GREY}
-            value={audioProgress}
-            onValueChange={setAudioProgress}
-            step={1}
-          />
-          <View
-            style={[
-              styles.margin,
-              styles.row,
-              { justifyContent: "space-between" },
-            ]}
-          >
-            <Text>0:00</Text>
-            <Text>{audioLength}</Text>
-          </View>
-        </View>
 
-        <View style={[styles.row, { justifyContent: "space-around" }]}>
-          <TouchableOpacity
-            onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
-            style={styles.circleButton}
-          >
-            <Image
-              source={
-                Status === false
-                  ? require("../../images/play.png")
-                  : require("../../images/pause.png")
-              }
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleRecordButtonPress}>
+        <Text style={styles.body}> {`${recordingStatus}`} </Text>
+      </TouchableOpacity>
 
-          <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
-            <Image source={require("../../images/stop.png")} style={styles.icon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
-            <Image
-              source={require("../../images/replay-music.png")}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <TouchableOpacity style={styles.button} onPress={handleRecordButtonPress}>
-          <Text style={styles.body}> {`${recordingStatus}`} </Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

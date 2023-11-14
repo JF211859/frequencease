@@ -6,7 +6,8 @@ import { APP_THEME, COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
 import SeekBar from "./SeekBar";
 
-function SoundPlayer({ mp3 }) {
+export default function SoundPlayer(props) {
+
   const sound = React.useRef(new Audio.Sound());
   const [Status, SetStatus] = React.useState(false); // isPlaying
   // Seekbar variables
@@ -21,8 +22,8 @@ function SoundPlayer({ mp3 }) {
 
   const setTime = (sound, pos) => {
     console.log("Set time: " + pos);
-    setCurrentPos(Math.floor(pos));
     sound.current.positionMillis = pos * 1000;
+    setCurrentPos(Math.floor(pos));
   };
 
   const seek = (pos) => {
@@ -46,38 +47,45 @@ function SoundPlayer({ mp3 }) {
       else if (!result.isPlaying && result.positionMillis == result.durationMillis) {
         // console.log("End of sound")
         setCurrentPos(totalLength);
-        SetStatus(false);  
+        SetStatus(false);
         clearInterval(intervalId);
       }
     }
     catch (error) {
       clearInterval(intervalId);
     }
-    
   }
 
-//   React.useEffect(() => {
-
   const LoadAudio = async () => {
-    const checkLoading = await sound.current.getStatusAsync();
-    // Get Loading Status
-    if (checkLoading.isLoaded === false) {
+
+    shiftedURI = props.getShiftedURI();
+
+    if (shiftedURI === "NOT SET"){
+
+      console.log("Attempting to load before audio is recorded!");
+
+    }
+
+    else{
+
       try {
-        const result = await sound.current.loadAsync(mp3, {
-          progressUpdateIntervalMillis: 100
-        }, true);
+
+        console.log("props.shiftedURI = " + shiftedURI);
+
+        await sound.current.unloadAsync();
+
+        let result = await sound.current.loadAsync({uri: shiftedURI});
+        console.log(sound.current);
+        setTime(sound, 0);
         setDuration(result);
-        setTime(result, 0);
         if (result.isLoaded === false) {
           console.log("Error in Loading Audio");
         } else {
-          await playSound();
+          await PlayAudio();
         }
       } catch (error) {
-        console.log("Error in Loading Audio");
+        console.log("Error in Loading Audio: " + error);
       }
-    } else {
-      console.log("Audio loaded");
     }
   };
 
@@ -85,7 +93,6 @@ function SoundPlayer({ mp3 }) {
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
-        console.log(intervalId);
         if (result.isPlaying === false) {
           sound.current.playFromPositionAsync(currentPos * 1000);
           SetStatus(true);
@@ -131,6 +138,7 @@ function SoundPlayer({ mp3 }) {
 
   const ReplayAudio = async () => {
     try {
+      LoadAudio();
       sound.current.replayAsync();
       SetStatus(true);
       setTime(sound, 0);
@@ -181,5 +189,3 @@ function SoundPlayer({ mp3 }) {
     </View>
   );
 }
-
-export default SoundPlayer;
