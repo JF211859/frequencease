@@ -104,7 +104,7 @@ export default function RecordAndPlayback (props) {
 
     console.log("Uploading " + uri);
 
-    const uplaodURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency='+storedMin+'&max_frequency='+storedMax;
+    const uploadURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency='+storedMin+'&max_frequency='+storedMax;
 
     var uploaded_audio = {
       uri: uri,
@@ -120,8 +120,8 @@ export default function RecordAndPlayback (props) {
       uri: uri
     });
 
-    console.log("POSTing " + uri + " to " + uplaodURL);
-    return await fetch(uplaodURL, {method: 'POST', body})
+    console.log("POSTing " + uri + " to " + uploadURL);
+    return await fetch(uploadURL, {method: 'POST', body})
     .then(response => response.text())
     .then(text => {
       return text;
