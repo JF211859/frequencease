@@ -13,47 +13,6 @@ export default function RecordAndPlayback (props) {
 
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
 
-  // const InputArea = (props) => {
-  //   const handleChange = (e) => props.handleInputValue(e.target.value);
-
-  //   return (
-  //     <div className="column">
-  //       <div className="col-body">
-  //         <textarea
-  //           id="editor"
-  //           placeholder="Enter text here"
-  //           onChange={handleChange}
-  //         ></textarea>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  // const DisplayArea = (props) => (
-  //   <div className="column">
-  //     <div className="col-body">
-  //       <div id="preview">{props.inputValue}</div>
-  //     </div>
-  //   </div>
-  // );
-
-  // class App extends React.Component {
-  //   state = {
-  //     inputValue: "Initial Value",
-  //   };
-
-  //   handleInputValue = (inputValue) => this.setState({ inputValue });
-
-  //   render() {
-  //     return (
-  //       <div id="wrapper" className="App">
-  //         <DisplayArea inputValue={this.state.inputValue} />
-  //         <InputArea handleInputValue={this.handleInputValue} />
-  //       </div>
-  //     );
-  //   }
-  // }
-
   useEffect(() => {
 
     // Simply get recording permission upon first render
@@ -154,11 +113,6 @@ export default function RecordAndPlayback (props) {
     }
   };
 
-  function getShiftedUrl () {
-    console.log("url = " + this.shiftedURI);
-    return this.shiftedURI;
-  };
-
   async function handleRecordButtonPress() {
     if (recording) {
       await stopRecording(recording);
@@ -195,8 +149,6 @@ export default function RecordAndPlayback (props) {
     }
   };
 
-
-
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
@@ -209,43 +161,6 @@ export default function RecordAndPlayback (props) {
       } else {
         LoadAudio();
       }
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const PauseAudio = async () => {
-    try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
-        if (result.isPlaying === true) {
-          sound.current.pauseAsync();
-          SetStatus(false);
-          console.log("Audio paused");
-        }
-      }
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const StopAudio = async () => {
-    try {
-      sound.current.pauseAsync();
-      sound.current.setPositionAsync(0);
-      SetStatus(false);
-      console.log("Audio stopped");
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const ReplayAudio = async () => {
-    try {
-      await sound.current.replayAsync();
-      SetStatus(true);
-      console.log("Audio replaying");
-      console.log(sound.current.getStatus());
     } catch (error) {
       SetStatus(false);
     }
