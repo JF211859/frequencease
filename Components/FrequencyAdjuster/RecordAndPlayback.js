@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecordAndPlayback (props) {
 
@@ -11,47 +12,6 @@ export default function RecordAndPlayback (props) {
   const [audioPermission, setAudioPermission] = useState(null);
 
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
-
-  // const InputArea = (props) => {
-  //   const handleChange = (e) => props.handleInputValue(e.target.value);
-
-  //   return (
-  //     <div className="column">
-  //       <div className="col-body">
-  //         <textarea
-  //           id="editor"
-  //           placeholder="Enter text here"
-  //           onChange={handleChange}
-  //         ></textarea>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  // const DisplayArea = (props) => (
-  //   <div className="column">
-  //     <div className="col-body">
-  //       <div id="preview">{props.inputValue}</div>
-  //     </div>
-  //   </div>
-  // );
-
-  // class App extends React.Component {
-  //   state = {
-  //     inputValue: "Initial Value",
-  //   };
-
-  //   handleInputValue = (inputValue) => this.setState({ inputValue });
-
-  //   render() {
-  //     return (
-  //       <div id="wrapper" className="App">
-  //         <DisplayArea inputValue={this.state.inputValue} />
-  //         <InputArea handleInputValue={this.handleInputValue} />
-  //       </div>
-  //     );
-  //   }
-  // }
 
   useEffect(() => {
 
@@ -98,9 +58,12 @@ export default function RecordAndPlayback (props) {
   };
 
   async function uploadAudioAsync(uri) {
+    const storedMin = await AsyncStorage.getItem('MinFrequency');
+    const storedMax = await AsyncStorage.getItem('MaxFrequency');
+
     console.log("Uploading " + uri);
 
-    const uplaodURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency=0&max_frequency=800';
+    const uploadURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency='+storedMin+'&max_frequency='+storedMax;
 
     var uploaded_audio = {
       uri: uri,
@@ -116,8 +79,8 @@ export default function RecordAndPlayback (props) {
       uri: uri
     });
 
-    console.log("POSTing " + uri + " to " + uplaodURL);
-    return await fetch(uplaodURL, {method: 'POST', body})
+    console.log("POSTing " + uri + " to " + uploadURL);
+    return await fetch(uploadURL, {method: 'POST', body})
     .then(response => response.text())
     .then(text => {
       return text;
@@ -148,11 +111,6 @@ export default function RecordAndPlayback (props) {
     } catch (error) {
       console.error('Failed to stop recording', error);
     }
-  };
-
-  function getShiftedUrl () {
-    console.log("url = " + this.shiftedURI);
-    return this.shiftedURI;
   };
 
   async function handleRecordButtonPress() {
@@ -191,8 +149,6 @@ export default function RecordAndPlayback (props) {
     }
   };
 
-
-
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
@@ -205,43 +161,6 @@ export default function RecordAndPlayback (props) {
       } else {
         LoadAudio();
       }
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const PauseAudio = async () => {
-    try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
-        if (result.isPlaying === true) {
-          sound.current.pauseAsync();
-          SetStatus(false);
-          console.log("Audio paused");
-        }
-      }
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const StopAudio = async () => {
-    try {
-      sound.current.pauseAsync();
-      sound.current.setPositionAsync(0);
-      SetStatus(false);
-      console.log("Audio stopped");
-    } catch (error) {
-      SetStatus(false);
-    }
-  };
-
-  const ReplayAudio = async () => {
-    try {
-      await sound.current.replayAsync();
-      SetStatus(true);
-      console.log("Audio replaying");
-      console.log(sound.current.getStatus());
     } catch (error) {
       SetStatus(false);
     }
