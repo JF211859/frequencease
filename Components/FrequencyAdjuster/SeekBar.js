@@ -25,8 +25,8 @@ const SeekBar = ({
   onSeek,
   onSlidingStart
 }) => {
-  const elapsed = minutesAndSeconds(currentPosition);
-  const remaining = minutesAndSeconds(trackLength - currentPosition);
+  const elapsed = minutesAndSeconds(Math.floor(currentPosition / 1000));
+  const remaining = minutesAndSeconds(Math.floor(trackLength / 1000) - Math.floor(currentPosition / 1000));
   return (
     <View style={seekbarStyle.container}>
       <View style={ styles.row }>
