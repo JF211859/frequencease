@@ -2,7 +2,7 @@
 
 ## [BACKEND CODE] Frequency Adjustment API
 [Frequency Adjustment API GitHub](https://github.com/JF211859/frequenceaseapi)
-
+Note: Our app is currently iOS-only as the backend is not compatible with Android.
 
 ## Setup
 Clone this repository to your local machine
