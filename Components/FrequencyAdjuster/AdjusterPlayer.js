@@ -14,6 +14,7 @@ export default function SoundPlayer(props) {
   const [totalLength, setTotalLength] = React.useState(1);
   const [currentPos, setCurrentPos] = React.useState(0);
   const [intervalId, setIntervalId] = React.useState(0);
+  const [currentURI, setURI] = React.useState("");
 
   // get audio length from sound
   const setDuration = (sound) => {
@@ -65,6 +66,9 @@ export default function SoundPlayer(props) {
       console.log("Attempting to load before audio is recorded!");
 
     }
+    else if (shiftedURI === currentURI) {
+      console.log("Already loaded");
+    }
 
     else{
 
@@ -73,9 +77,9 @@ export default function SoundPlayer(props) {
         console.log("props.shiftedURI = " + shiftedURI);
 
         await sound.current.unloadAsync();
-
         let result = await sound.current.loadAsync({uri: shiftedURI});
         console.log(sound.current);
+        setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
         if (result.isLoaded === false) {

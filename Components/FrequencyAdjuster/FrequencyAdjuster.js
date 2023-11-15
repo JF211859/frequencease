@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
 import { COLORS } from "../../Style/colorScheme";
 import styles from "../../Style/styles";
@@ -14,13 +14,19 @@ import SoundPlayer from "./AdjusterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import RecordAndPlayback from "./RecordAndPlayback";
 import ImportFile from "./ImportFile";
+import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
-  // TODO: user's hearing range
-  const [minFrequency, setMinFrequency] = useState(100); // store the range the audio should be in
-  const [maxFrequency, setMaxFrequency] = useState(800);
+
   const windowHeight = useWindowDimensions().height;
+  const [minFreq, setMinFreq] = React.useState(500);
+  const [maxFreq, setMaxFreq] = React.useState(4000);
+
+  React.useEffect(() => {
+    readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
+    readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
+  }, []);
 
   const tutorialPage = () => {
     Alert.alert("tutorial page to be implemented");
@@ -82,8 +88,8 @@ export default function FrequencyAdjuster() {
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>{minFrequency} Hz</Text>
-        <Text>{maxFrequency} Hz</Text>
+        <Text>{minFreq} Hz</Text>
+        <Text>{maxFreq} Hz</Text>
       </View>
 
       {/* <Text>Select the mode here</Text>
