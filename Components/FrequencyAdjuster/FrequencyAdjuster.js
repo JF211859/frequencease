@@ -15,31 +15,41 @@ import TutorialButton from "../ImageComponents/TutorialButton";
 import RecordAndPlayback from "./RecordAndPlayback";
 import ImportFile from "./ImportFile";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
+import Modal from "react-native-modal";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
-
   const windowHeight = useWindowDimensions().height;
   const [minFreq, setMinFreq] = React.useState(500);
   const [maxFreq, setMaxFreq] = React.useState(4000);
+
+  // Modal for tutorial
+  const [isRecordModalVisible, setRecordModalVisible] = React.useState(false);
+  const [isImportModalVisible, setImportModalVisible] = React.useState(false);
+  const [isPlayerModalVisible, setPlayerModalVisible] = React.useState(false);
+  
+  const recordModalNext = () => {
+    setRecordModalVisible(false);
+    setImportModalVisible(true);
+  };
+  const importModalNext = () => {
+    setImportModalVisible(false);
+    setPlayerModalVisible(true);
+  };
+  const closeAll = () => {
+    setRecordModalVisible(false);
+    setImportModalVisible(false);
+    setPlayerModalVisible(false);
+  }
 
   React.useEffect(() => {
     readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
     readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
   }, []);
 
-  const tutorialPage = () => {
-    Alert.alert("tutorial page to be implemented");
+  const openTutorial = () => {
+    setRecordModalVisible(true);
   };
-
-  async function playSound(file) {
-    console.log(file);
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: file },
-      { shouldPlay: true }
-    );
-    await sound.playAsync();
-  }
 
   state = {
     shiftedURI: "NOT SET",
@@ -58,6 +68,136 @@ export default function FrequencyAdjuster() {
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
+      <Modal
+        isVisible={isRecordModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+        >
+        <View
+            style={[
+            styles.center,
+            {
+                width: 300,
+                height: 300,
+                backgroundColor: "white",
+                borderRadius: 30,
+                padding: 20,
+            },
+            ]}
+        >
+            <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
+                Record
+            </Text>
+            <Text style={[styles.body, { marginTop: 20 }]}>
+                Tap the Record button to start recording.
+                When you are done recording, tap the button again to stop recording.
+                The audio you recorded will be adjusted in the app!
+            </Text>
+
+            <View style={[styles.row, { justifyContent: "space-around" }]}>
+                <TouchableOpacity
+                  style={[
+                  styles.button,
+                  {
+                      borderRadius: 30,
+                      backgroundColor: COLORS.RED,
+                      paddingRight: 5
+                  },
+                  ]}
+                  onPress={() => closeAll()}
+                >
+                    <Text style={styles.h3}>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                    styles.button,
+                    {
+                        borderRadius: 30,
+                        backgroundColor: COLORS.LIGHT_BLUE,
+                        paddingLeft: 5
+                    },
+                    ]}
+                    onPress={() => recordModalNext()}
+                >
+                    <Text style={styles.h3}>Next</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+        </Modal>
+
+        <Modal
+        isVisible={isImportModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+        >
+        <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
+                Import File
+            </Text>
+            <Text style={[styles.body]}>
+                Tap the Import File to open your device's file selector.
+                Choose the file you want to listen to.
+                The audio you selected will be adjusted in the app!
+            </Text>
+
+            <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+                  style={[
+                  styles.button,
+                  {
+                      borderRadius: 30,
+                      backgroundColor: COLORS.RED,
+                      paddingRight: 5
+                  },
+                  ]}
+                  onPress={() => closeAll()}
+                >
+                    <Text style={styles.h3}>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                    styles.button,
+                    {
+                        borderRadius: 30,
+                        backgroundColor: COLORS.LIGHT_BLUE,
+                        paddingLeft: 5
+                    },
+                    ]}
+                    onPress={() => importModalNext()}
+                >
+                    <Text style={styles.h3}>Next</Text>
+                </TouchableOpacity>
+            </View>
+        </Modal>
+
+        <Modal
+        isVisible={isPlayerModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+        >
+            <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
+                Listening to files
+            </Text>
+            <Text style={[styles.body, { marginTop: 20 }]}>
+                Use our built-in audio player to listen to adjusted audio!
+                Use the Play, Pause, and Stop buttons to control the audio playback.
+                Use the Replay button to start the audio from the beginning.
+            </Text>
+
+            <View style={[styles.row, { justifyContent: "space-between" }]}>
+                <TouchableOpacity
+                    style={[
+                    styles.button,
+                    {
+                        borderRadius: 30,
+                        backgroundColor: COLORS.RED,
+                    },
+                    ]}
+                    onPress={() => closeAll()}
+                >
+                    <Text style={styles.h3}>Close</Text>
+                </TouchableOpacity>
+            </View>
+        </Modal>
       <Text style={[styles.h1, styles.marginTop, styles.center]}>
         Audible Frequency
       </Text>
@@ -119,7 +259,7 @@ export default function FrequencyAdjuster() {
         step={1}
       /> */}
 
-      <View style={[styles.center, styles.margin]}>
+      <View style={[styles.center, styles.margin, styles.marginTop]}>
         <SoundPlayer getShiftedURI={this.getShiftedURI} />
       </View>
 
@@ -131,7 +271,7 @@ export default function FrequencyAdjuster() {
 
       <StatusBar style="auto" />
 
-      <TutorialButton tutorial={() => tutorialPage()} />
+      <TutorialButton tutorial={() => openTutorial()} />
     </View>
   );
 }
