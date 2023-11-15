@@ -49,7 +49,7 @@ function Phase(props) {
 
 export default function FrequencyTesterPhase() {
   const navigation = useNavigation();
-  const [minFreq, setMinFreq] = React.useState(100); //default hearing range
+  const [minFreq, setMinFreq] = React.useState(400); //default hearing range
   const [maxFreq, setMaxFreq] = React.useState(800);
 
   React.useEffect(() => {
