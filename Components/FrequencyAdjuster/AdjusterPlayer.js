@@ -18,19 +18,19 @@ export default function SoundPlayer(props) {
 
   // get audio length from sound
   const setDuration = (sound) => {
-    setTotalLength(Math.floor(sound.durationMillis / 1000));
+    setTotalLength(sound.durationMillis);
   };
 
   const setTime = (sound, pos) => {
     console.log("Set time: " + pos);
-    sound.current.positionMillis = pos * 1000;
-    setCurrentPos(Math.floor(pos));
+    sound.current.positionMillis = pos
+    setCurrentPos(pos);
   };
 
   const seek = (pos) => {
     console.log("Seeking " + pos);
     setCurrentPos(Math.floor(pos));
-    sound.current.playFromPositionAsync(pos * 1000);
+    sound.current.playFromPositionAsync(pos);
     SetStatus(true);
     clearInterval(intervalId);
     const interval = setInterval(updatePos, 300);
@@ -43,7 +43,7 @@ export default function SoundPlayer(props) {
       const result = await sound.current.getStatusAsync();
       if (result.isPlaying) {
         // console.log("New time: " + result.positionMillis / 1000);
-        setCurrentPos(Math.floor(result.positionMillis / 1000));
+        setCurrentPos(result.positionMillis);
       }
       else if (!result.isPlaying && result.positionMillis == result.durationMillis) {
         // console.log("End of sound")
@@ -98,7 +98,12 @@ export default function SoundPlayer(props) {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
         if (result.isPlaying === false) {
-          sound.current.playFromPositionAsync(currentPos * 1000);
+          if (currentPos === totalLength) {
+            sound.current.playFromPositionAsync(0);
+          }
+          else {
+            sound.current.playFromPositionAsync(currentPos);
+          }
           SetStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);

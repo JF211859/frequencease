@@ -27,7 +27,7 @@ backdropOpacity={0.8}
     styles.center,
     {
         width: 300,
-        height: 300,
+        height: 600,
         backgroundColor: "white",
         borderRadius: 30,
         padding: 20,
@@ -38,9 +38,10 @@ backdropOpacity={0.8}
         Record
     </Text>
     <Text style={[styles.body, { marginTop: 20 }]}>
-        Tap the Record button to start recording. When you are done recording,
-        click the same button, now labeled Stop, to stop recording. The audio 
-        you recorded will be adjusted in the app.
+        Tap the Record button to start recording.{"\n"} {"\n"}
+        When you are done recording, tap the button{"\n"} {"\n"}
+        again to stop recording. The audio {"\n"} {"\n"}
+        you recorded will be adjusted in the app!
     </Text>
 
     <View style={[styles.row, { justifyContent: "space-around" }]}>
@@ -52,7 +53,7 @@ backdropOpacity={0.8}
                 backgroundColor: COLORS.LIGHT_BLUE,
             },
             ]}
-            onPress={() => setModalVisible(false)}
+            onPress={() => recordModalNext()}
         >
             <Text style={styles.h3}>Next</Text>
         </TouchableOpacity>
@@ -82,9 +83,9 @@ backdropOpacity={0.8}
         Import File
     </Text>
     <Text style={[styles.body, { marginTop: 20 }]}>
-        Tap the Import File to open your device's file selector. Choose
-        the file you want to listen to. The audio you selected will be adjusted in
-        the app.
+        Tap the Import File to open your device's file selector.{"\n"} {"\n"}
+        Choose the file you want to listen to.{"\n"} {"\n"}
+        The audio you selected will be adjusted in the app!
     </Text>
 
     <View style={[styles.row, { justifyContent: "space-around" }]}>
@@ -96,7 +97,7 @@ backdropOpacity={0.8}
                 backgroundColor: COLORS.LIGHT_BLUE,
             },
             ]}
-            onPress={() => setModalVisible(false)}
+            onPress={() => importModalNext()}
         >
             <Text style={styles.h3}>Next</Text>
         </TouchableOpacity>
@@ -125,9 +126,9 @@ backdropOpacity={0.8}
         Listening to files
     </Text>
     <Text style={[styles.body, { marginTop: 20 }]}>
-        Use our built-in audio player to listen to adjusted audio.
-        Use the Play, Pause, and Stop buttons to start and stop the
-        audio as needed. Use the Replay button to start the audio from
+        Use our built-in audio player to listen to adjusted audio.{"\n"} {"\n"}
+        Use the Play, Pause, and Stop buttons to start and stop the{"\n"} {"\n"}
+        audio as needed. Use the Replay button to start the audio from{"\n"} {"\n"}
         the beginning.
     </Text>
 
