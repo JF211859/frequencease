@@ -15,31 +15,29 @@ import TutorialButton from "../ImageComponents/TutorialButton";
 import RecordAndPlayback from "./RecordAndPlayback";
 import ImportFile from "./ImportFile";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
+import Modal from "react-native-modal";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
-
   const windowHeight = useWindowDimensions().height;
   const [minFreq, setMinFreq] = React.useState(500);
   const [maxFreq, setMaxFreq] = React.useState(4000);
+
+  // Modal for tutorial
+  const [isRecordModalVisible, setRecordModalVisible] = React.useState(false);
+
+  const closeAll = () => {
+    setRecordModalVisible(false);
+  }
 
   React.useEffect(() => {
     readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
     readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
   }, []);
 
-  const tutorialPage = () => {
-    Alert.alert("tutorial page to be implemented");
+  const openTutorial = () => {
+    setRecordModalVisible(true);
   };
-
-  async function playSound(file) {
-    console.log(file);
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: file },
-      { shouldPlay: true }
-    );
-    await sound.playAsync();
-  }
 
   state = {
     shiftedURI: "NOT SET",
@@ -58,6 +56,50 @@ export default function FrequencyAdjuster() {
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
+      <Modal
+        isVisible={isRecordModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+        >
+        <View
+          style={[
+          styles.center,
+            {
+              width: 300,
+              height: 300,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20, fontWeight: "bold" }]}>
+            Tutorial
+          </Text>
+          <Text style={styles.body}>
+            Tap the Record button to start recording or tap the Import File button to upload your own audio.
+            The audio you recorded will be adjusted in the app!
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+            style={[
+            styles.button,
+            {
+                borderRadius: 30,
+                backgroundColor: COLORS.RED,
+                marginRight: 10,
+                marginTop: 20
+            },
+            ]}
+            onPress={() => closeAll()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <Text style={[styles.h1, styles.marginTop, styles.center]}>
         Audible Frequency
       </Text>
@@ -119,7 +161,7 @@ export default function FrequencyAdjuster() {
         step={1}
       /> */}
 
-      <View style={[styles.center, styles.margin]}>
+      <View style={[styles.center, styles.margin, styles.marginTop]}>
         <SoundPlayer getShiftedURI={this.getShiftedURI} />
       </View>
 
@@ -131,7 +173,7 @@ export default function FrequencyAdjuster() {
 
       <StatusBar style="auto" />
 
-      <TutorialButton tutorial={() => tutorialPage()} />
+      <TutorialButton tutorial={() => openTutorial()} />
     </View>
   );
 }
