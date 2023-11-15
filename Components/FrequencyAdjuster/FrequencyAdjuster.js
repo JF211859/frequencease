@@ -25,21 +25,9 @@ export default function FrequencyAdjuster() {
 
   // Modal for tutorial
   const [isRecordModalVisible, setRecordModalVisible] = React.useState(false);
-  const [isImportModalVisible, setImportModalVisible] = React.useState(false);
-  const [isPlayerModalVisible, setPlayerModalVisible] = React.useState(false);
-  
-  const recordModalNext = () => {
-    setImportModalVisible(true);
-    setRecordModalVisible(false);
-  };
-  const importModalNext = () => {
-    setPlayerModalVisible(true);
-    setImportModalVisible(false);
-  };
+
   const closeAll = () => {
     setRecordModalVisible(false);
-    setImportModalVisible(false);
-    setPlayerModalVisible(false);
   }
 
   React.useEffect(() => {
@@ -85,12 +73,11 @@ export default function FrequencyAdjuster() {
             },
           ]}
         >
-          <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
-            Record
+          <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20, fontWeight: "bold" }]}>
+            Tutorial
           </Text>
           <Text style={styles.body}>
-            Tap the Record button to start recording.
-            When you are done recording, tap the button again to stop recording.
+            Tap the Record button to start recording or tap the Import File button to upload your own audio.
             The audio you recorded will be adjusted in the app!
           </Text>
 
@@ -101,123 +88,13 @@ export default function FrequencyAdjuster() {
             {
                 borderRadius: 30,
                 backgroundColor: COLORS.RED,
-                marginRight: 10
+                marginRight: 10,
+                marginTop: 20
             },
             ]}
             onPress={() => closeAll()}
             >
               <Text style={styles.h3}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-              styles.button,
-              {
-                  borderRadius: 30,
-                  backgroundColor: COLORS.LIGHT_BLUE,
-                  marginLeft: 10
-              },
-              ]}
-              onPress={() => recordModalNext()}
-            >
-              <Text style={styles.h3}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        isVisible={isImportModalVisible}
-        style={styles.center}
-        backdropOpacity={0.8}
-        >
-        <View
-          style={[
-          styles.center,
-            {
-              width: 300,
-              height: 300,
-              backgroundColor: "white",
-              borderRadius: 30,
-              padding: 20,
-            },
-          ]}
-        >
-          <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
-            Import
-          </Text>
-          <Text style={styles.body}>
-            Tap the Import File to open your device's file selector.
-            Choose the file you want to listen to.
-            The audio you selected will be adjusted in the app!
-          </Text>
-
-          <View style={[styles.row, { justifyContent: "space-around" }]}>
-            <TouchableOpacity
-            style={[
-            styles.button,
-            {
-                borderRadius: 30,
-                backgroundColor: COLORS.RED,
-                marginRight: 10
-            },
-            ]}
-            onPress={() => closeAll()}
-            >
-              <Text style={styles.h3}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-              styles.button,
-              {
-                  borderRadius: 30,
-                  backgroundColor: COLORS.LIGHT_BLUE,
-                  marginLeft: 10
-              },
-              ]}
-              onPress={() => importModalNext()}
-            >
-              <Text style={styles.h3}>Next</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={isRecordModalVisible}
-        style={styles.center}
-        backdropOpacity={0.8}
-        >
-        <View
-          style={[
-          styles.center,
-            {
-              width: 300,
-              height: 300,
-              backgroundColor: "white",
-              borderRadius: 30,
-              padding: 20,
-            },
-          ]}
-        >
-          <Text style={[styles.h3, { paddingBottom: 20, marginTop: 20 }]}>
-            Using the Player
-          </Text>
-          <Text style={styles.body}>
-            Use our built-in audio player to listen to adjusted audio!
-            Use the Play, Pause, and Stop buttons to control the audio playback.
-            Use the Replay button to start the audio from the beginning.
-          </Text>
-
-          <View style={[styles.row, { justifyContent: "space-around" }]}>
-            <TouchableOpacity
-            style={[
-            styles.button,
-            {
-                borderRadius: 30,
-                backgroundColor: COLORS.RED,
-            },
-            ]}
-            onPress={() => closeAll()}
-            >
             </TouchableOpacity>
           </View>
         </View>
