@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import styles from "../../Style/styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecordAndPlayback (props) {
 
@@ -98,9 +99,12 @@ export default function RecordAndPlayback (props) {
   };
 
   async function uploadAudioAsync(uri) {
+    const storedMin = await AsyncStorage.getItem('MinFrequency');
+    const storedMax = await AsyncStorage.getItem('MaxFrequency');
+
     console.log("Uploading " + uri);
 
-    const uplaodURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency=0&max_frequency=800';
+    const uplaodURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency='+storedMin+'&max_frequency='+storedMax;
 
     var uploaded_audio = {
       uri: uri,
