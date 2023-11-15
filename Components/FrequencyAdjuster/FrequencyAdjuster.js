@@ -18,6 +18,7 @@ import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
+
   const windowHeight = useWindowDimensions().height;
   const [minFreq, setMinFreq] = React.useState(500);
   const [maxFreq, setMaxFreq] = React.useState(4000);
