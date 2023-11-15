@@ -4,7 +4,7 @@ import {
   View,
   Alert,
   TouchableOpacity,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
@@ -18,6 +18,7 @@ import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
+
   const windowHeight = useWindowDimensions().height;
   const [minFreq, setMinFreq] = React.useState(500);
   const [maxFreq, setMaxFreq] = React.useState(4000);
@@ -34,31 +35,32 @@ export default function FrequencyAdjuster() {
   async function playSound(file) {
     console.log(file);
     const { sound } = await Audio.Sound.createAsync(
-      { uri: file},
-      { shouldPlay: true}
+      { uri: file },
+      { shouldPlay: true }
     );
     await sound.playAsync();
   }
 
   state = {
-    shiftedURI: "NOT SET"
+    shiftedURI: "NOT SET",
   };
-
 
   changeShiftedURI = (shiftedURI) => {
     console.log("parent input = " + shiftedURI);
     this.state.URI = shiftedURI;
     // this.setState({URI: shiftedURI});
     console.log("parent state = " + this.state.URI);
-  }
+  };
 
   getShiftedURI = () => {
     return this.state.URI;
-  }
+  };
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
-      <Text style={[styles.h1, styles.marginTop, styles.center]}>Audible Frequency</Text>
+      <Text style={[styles.h1, styles.marginTop, styles.center]}>
+        Audible Frequency
+      </Text>
 
       <View style={[styles.margin, styles.row]}>
         <View
@@ -118,13 +120,13 @@ export default function FrequencyAdjuster() {
       /> */}
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer getShiftedURI = {this.getShiftedURI}/>
+        <SoundPlayer getShiftedURI={this.getShiftedURI} />
       </View>
 
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
-        <RecordAndPlayback changeShiftedURI={this.changeShiftedURI}/>
+        <RecordAndPlayback changeShiftedURI={this.changeShiftedURI} />
 
-        <ImportFile/>
+        <ImportFile />
       </View>
 
       <StatusBar style="auto" />

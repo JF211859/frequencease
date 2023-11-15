@@ -9,8 +9,8 @@ export default function Profile() {
   const navigation = useNavigation();
 
   // get minFreq and maxFreq from asyncStorage
-  const [minFreq, setMinFreq] = React.useState(500);
-  const [maxFreq, setMaxFreq] = React.useState(4000);
+  const [minFreq, setMinFreq] = React.useState(100);
+  const [maxFreq, setMaxFreq] = React.useState(800);
 
   React.useEffect(() => {
     readData(MINFREQ_KEY).then((minFreqValue) => setMinFreq(minFreqValue));
