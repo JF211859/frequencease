@@ -120,7 +120,7 @@ export default function FrequencyAdjuster() {
       <View style={[styles.row, styles.bottomButtons, styles.margin]}>
         <RecordAndPlayback changeShiftedURI={this.changeShiftedURI} />
 
-        <ImportFile />
+        <ImportFile changeShiftedURI={this.changeShiftedURI} />
       </View>
 
       <StatusBar style="auto" />
