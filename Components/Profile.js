@@ -9,7 +9,7 @@ export default function Profile() {
   const navigation = useNavigation();
 
   // get minFreq and maxFreq from asyncStorage
-  const [minFreq, setMinFreq] = React.useState(100);
+  const [minFreq, setMinFreq] = React.useState(400);
   const [maxFreq, setMaxFreq] = React.useState(800);
 
   React.useEffect(() => {

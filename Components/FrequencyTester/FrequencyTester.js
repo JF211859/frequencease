@@ -217,11 +217,13 @@ export default function FrequencyTester({ route }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
+            if (phase === 0) {
+              saveLowestFreq("100");
+            }
             if (actualPhase !== 1) {
               saveHighestFreq(phaseInfo[phase].hz.toString());
-            } else {
-              saveLowestFreq(phase === 0 ? "100" : phase === 1 ? "200" : "300");
             }
+
             navigateToNextPhase();
           }}
         >
