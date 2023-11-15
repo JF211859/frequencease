@@ -1,8 +1,13 @@
 # FrequencEase
 
 ## [BACKEND CODE] Frequency Adjustment API
-[Frequency Adjustment API GitHub](https://github.com/JF211859/frequenceaseapi)
+[Frequency Adjustment API GitHub](https://github.com/JF211859/frequenceaseapi)  
 Note: Our app is currently iOS-only as the backend is not compatible with Android.
+
+## Note for Testing the App
+* The first file upload for the "Import File" button does not work, but all others after should
+* Audio for "Record" and "Import File" buttons may come from the phone's top speaker and not the bottom ones
+* Press replay or stop after recording/uploading a new audio for it to play correctly
 
 ## Setup
 Clone this repository to your local machine
