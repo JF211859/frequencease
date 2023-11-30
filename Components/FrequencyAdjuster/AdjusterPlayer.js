@@ -9,7 +9,7 @@ import SeekBar from "./SeekBar";
 export default function SoundPlayer(props) {
 
   const sound = React.useRef(new Audio.Sound());
-  const [Status, SetStatus] = React.useState(false); // isPlaying
+  const [Status, setStatus] = React.useState(false); // isPlaying
   // Seekbar variables
   const [totalLength, setTotalLength] = React.useState(1);
   const [currentPos, setCurrentPos] = React.useState(0);
@@ -28,10 +28,13 @@ export default function SoundPlayer(props) {
   };
 
   const seek = (pos) => {
+    if (currentURI === "NOT SET"){
+      LoadAudio();
+    }
     console.log("Seeking " + pos);
-    setCurrentPos(Math.floor(pos));
+    setCurrentPos(pos);
     sound.current.playFromPositionAsync(pos);
-    SetStatus(true);
+    setStatus(true);
     clearInterval(intervalId);
     const interval = setInterval(updatePos, 300);
     setIntervalId(interval);
@@ -42,15 +45,9 @@ export default function SoundPlayer(props) {
       // is playing
       const result = await sound.current.getStatusAsync();
       if (result.isPlaying) {
-        // console.log("New time: " + result.positionMillis / 1000);
         setCurrentPos(result.positionMillis);
       }
-      else if (!result.isPlaying && result.positionMillis == result.durationMillis) {
-        // console.log("End of sound")
-        setCurrentPos(totalLength);
-        SetStatus(false);
-        clearInterval(intervalId);
-      }
+      // console.log("update");
     }
     catch (error) {
       clearInterval(intervalId);
@@ -58,24 +55,18 @@ export default function SoundPlayer(props) {
   }
 
   const LoadAudio = async () => {
-
     shiftedURI = props.getShiftedURI();
 
     if (shiftedURI === "NOT SET"){
-
       console.log("Attempting to load before audio is recorded!");
-
     }
     else if (shiftedURI === currentURI) {
       console.log("Already loaded");
     }
 
     else{
-
       try {
-
         console.log("props.shiftedURI = " + shiftedURI);
-
         await sound.current.unloadAsync();
         let result = await sound.current.loadAsync({uri: shiftedURI});
         console.log(sound.current);
@@ -83,7 +74,7 @@ export default function SoundPlayer(props) {
         setTime(sound, 0);
         setDuration(result);
         if (result.isLoaded === false) {
-          console.log("Error in Loading Audio");
+          console.log("Error in Loadng Audio");
         } else {
           await PlayAudio();
         }
@@ -92,7 +83,7 @@ export default function SoundPlayer(props) {
       }
     }
   };
-
+  
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
@@ -104,16 +95,23 @@ export default function SoundPlayer(props) {
           else {
             sound.current.playFromPositionAsync(currentPos);
           }
-          SetStatus(true);
+          setStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);
           console.log("Audio playing");
+          sound.current.setOnPlaybackStatusUpdate((status) => {
+            if (status.didJustFinish) {
+              setStatus(false);
+              clearInterval(intervalId);
+              setCurrentPos(totalLength);
+            }
+          });
         }
       } else {
         LoadAudio();
       }
     } catch (error) {
-      SetStatus(false);
+      setStatus(false);
     }
   };
 
@@ -123,39 +121,40 @@ export default function SoundPlayer(props) {
       if (result.isLoaded) {
         if (result.isPlaying === true) {
           sound.current.pauseAsync();
-          SetStatus(false);
+          setStatus(false);
           clearInterval(intervalId);
           console.log("Audio paused");
         }
       }
     } catch (error) {
-      SetStatus(false);
+      setStatus(false);
     }
   };
 
   const StopAudio = async () => {
     try {
       sound.current.stopAsync();
-      SetStatus(false);
+      setStatus(false);
       setTime(sound, 0);
       clearInterval(intervalId);
       console.log("Audio stopped");
     } catch (error) {
-      SetStatus(false);
+      setStatus(false);
     }
   };
 
   const ReplayAudio = async () => {
     try {
       LoadAudio();
+      clearInterval(intervalId);
       sound.current.replayAsync();
-      SetStatus(true);
+      setStatus(true);
       setTime(sound, 0);
       const interval = setInterval(updatePos, 300);
       setIntervalId(interval);
       console.log("Audio replaying");
     } catch (error) {
-      SetStatus(false);
+      setStatus(false);
     }
   };
 
