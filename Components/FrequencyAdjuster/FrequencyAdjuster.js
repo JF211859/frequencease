@@ -137,8 +137,8 @@ export default function FrequencyAdjuster() {
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>100 Hz</Text>
-        <Text>8000 Hz</Text>
+        <Text>Lower range: {minFreq} Hz</Text>
+        <Text>Higher range: {maxFreq} Hz</Text>
       </View>
 
       {/* <Text>Select the mode here</Text>
