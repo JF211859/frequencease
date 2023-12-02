@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import {
   Text,
   View,
-  Alert,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
@@ -21,8 +20,7 @@ import { useFocusEffect } from "@react-navigation/native";
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
   const windowHeight = useWindowDimensions().height;
-  const [minFreq, setMinFreq] = React.useState(500);
-  const [maxFreq, setMaxFreq] = React.useState(4000);
+  const windowWidth = useWindowDimensions().width;
 
   // Modal for tutorial
   const [isRecordModalVisible, setRecordModalVisible] = React.useState(false);
@@ -31,6 +29,8 @@ export default function FrequencyAdjuster() {
     setRecordModalVisible(false);
   };
 
+  const [minFreq, setMinFreq] = React.useState(400);
+  const [maxFreq, setMaxFreq] = React.useState(5000);
   // read min and max frequency when navigation changes
   useFocusEffect(
     React.useCallback(() => {
@@ -114,34 +114,40 @@ export default function FrequencyAdjuster() {
         Audible Frequency
       </Text>
 
-      <View style={[styles.margin, styles.row]}>
+      <View style={[styles.row, styles.margin, styles.marginTop]}>
+        {/*
+        total width = 8000
+        first box: 100 to minFreq
+        second box: minFreq to maxFreq
+        last box: maxFreq to 8000
+        */}
         <View
           style={{
             backgroundColor: COLORS.GREY,
-            width: 50,
-            height: 25,
+            width: (minFreq - 100) / 8000 * (windowWidth - 30),
+            height: 50,
           }}
         />
         <View
           style={{
             backgroundColor: COLORS.LIGHT_BLUE,
-            width: 200,
-            height: 25,
+            width: (maxFreq - minFreq) / 8000 * (windowWidth - 30),
+            height: 50,
           }}
         />
         <View
           style={{
             backgroundColor: COLORS.GREY,
-            width: 50,
-            height: 25,
+            width: (8000 - maxFreq) / 8000 * (windowWidth - 30),
+            height: 50,
           }}
         />
       </View>
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>{minFreq} Hz</Text>
-        <Text>{maxFreq} Hz</Text>
+        <Text>Lower range: {minFreq} Hz</Text>
+        <Text>Higher range: {maxFreq} Hz</Text>
       </View>
 
       {/* <Text>Select the mode here</Text>

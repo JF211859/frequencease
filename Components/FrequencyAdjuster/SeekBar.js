@@ -1,5 +1,5 @@
 // source: https://stackoverflow.com/questions/55537889/implemtation-of-audio-progress-bar-in-react-native
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
   Text,
