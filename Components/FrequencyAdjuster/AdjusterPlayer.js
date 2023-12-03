@@ -73,11 +73,11 @@ export default function SoundPlayer(props) {
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
-        if (result.isLoaded === false) {
-          console.log("Error in Loadng Audio");
-        } else {
-          await PlayAudio();
-        }
+        // if (result.isLoaded === false) {
+        //   console.log("Error in Loadng Audio");
+        // } else {
+        //   await PlayAudio();
+        // }
       } catch (error) {
         console.log("Error in Loading Audio: " + error);
       }
@@ -87,6 +87,7 @@ export default function SoundPlayer(props) {
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
+      // what to do if old is loaded?
       if (result.isLoaded && shiftedURI === currentURI) {
         if (result.isPlaying === false) {
           if (currentPos === totalLength) {
