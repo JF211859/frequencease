@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Alert, StyleSheet } from 'react-native';
 import React, { useState } from "react";
 import { Audio } from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
@@ -45,76 +45,28 @@ export default function ImportFile(props) {
       type: 'audio/*',
       copyToCacheDirectory: true
     }));
-    console.log(audio.assets[0].uri);
 
     const audioUri = audio.assets[0].uri;
+    console.log(audioUri);
 
-    const shiftedUrl = await uploadAudioAsync(audio.assets[0].uri);
-    console.log("local = " + shiftedUrl);
-
-    this.shiftedURI = shiftedUrl;
-
-    changeShiftedURL();
-
-    // const soundObject = new Audio.Sound();
-    // soundObject.setOnPlaybackStatusUpdate();
-
-    // await soundObject.loadAsync({ uri: audioUri });
-    // await soundObject.playAsync();
-  }
-
-  const LoadAudio = async () => {
-    const checkLoading = await sound.current.getStatusAsync();
-    // Get Loading Status
-    if (checkLoading.isLoaded === false) {
-      try {
-
-        await UploadAudio();
-
-        console.log("Loading Audio");
-
-        const result = await sound.current.loadAsync({uri: this.shiftedURI});
-        audioLength = result.durationMillis;
-        if (result.isLoaded === false) {
-          console.log("Error in Loading Audio");
-        } else {
-          await PlayAudio();
-        }
-      } catch (error) {
-        console.log("Error in Loading Audio");
-      }
-    } else {
-      console.log("Error in Loading Audio");
-    }
-  };
-
-  const PlayAudio = async () => {
     try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
-        if (result.isPlaying === false) {
-          sound.current.playAsync();
-          SetStatus(true);
-          console.log("Audio playing");
-        }
-      } else {
-        LoadAudio();
-      }
+      const shiftedUrl = await uploadAudioAsync(audioUri);
+      Alert.alert("Upload successful!", audio.assets[0].name + " uploaded.");
+      console.log("local = " + shiftedUrl);
+      this.shiftedURI = shiftedUrl;
+      changeShiftedURL();
+
     } catch (error) {
-      SetStatus(false);
+      console.error(error);
+      Alert.alert("Upload failed", audio.assets[0].name + " failed to upload, please try again.")
     }
-  };
+  }
 
   return (
     <View>
       <TouchableOpacity style={styles.button} onPress={pick}>
         <Text style={styles.body}> Import File </Text>
       </TouchableOpacity>
-
-      {/* FOR DEBUGGING
-      <TouchableOpacity style={styles.button} onPress={playAudio}>
-        <Text style={styles.body}> PLAY </Text>
-      </TouchableOpacity> */}
     </View>
   );
 }
