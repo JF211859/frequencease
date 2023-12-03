@@ -57,12 +57,14 @@ export default function SoundPlayer(props) {
 
     if (shiftedURI === "NOT SET"){
       console.log("Attempting to load before audio is recorded!");
+      // TODO: could open modal here
+      return;
     }
     else if (shiftedURI === currentURI) {
       console.log("Already loaded");
+      return;
     }
-
-    else{
+    else {
       try {
         console.log("props.shiftedURI = " + shiftedURI);
         await sound.current.unloadAsync();
@@ -85,7 +87,7 @@ export default function SoundPlayer(props) {
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
+      if (result.isLoaded && shiftedURI === currentURI) {
         if (result.isPlaying === false) {
           if (currentPos === totalLength) {
             sound.current.playFromPositionAsync(0);
