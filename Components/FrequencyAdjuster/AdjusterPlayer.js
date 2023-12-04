@@ -1,8 +1,10 @@
 import * as React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import styles from "../../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
 import SeekBar from "./SeekBar";
+import Modal from "react-native-modal";
 
 export default function SoundPlayer(props) {
 
@@ -13,6 +15,17 @@ export default function SoundPlayer(props) {
   const [currentPos, setCurrentPos] = React.useState(0);
   const [intervalId, setIntervalId] = React.useState(0);
   const [currentURI, setURI] = React.useState("");
+
+  // Error message modal
+  const [isModalVisible, setModalVisible] = React.useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   // get audio length from sound
   const setDuration = (sound) => {
@@ -64,7 +77,7 @@ export default function SoundPlayer(props) {
 
     if (shiftedURI === "NOT SET"){
       console.log("Attempting to load before audio is recorded!");
-      // TODO: could open modal here
+      openModal();
       return;
     }
     else if (shiftedURI === currentURI) {
@@ -157,20 +170,24 @@ export default function SoundPlayer(props) {
 
   const ReplayAudio = async () => {
     try {
-      LoadAudio();
-      clearInterval(intervalId);
-      sound.current.replayAsync();
-      setStatus(true);
-      setTime(sound, 0);
+      if (shiftedURI === currentURI) {
+        clearInterval(intervalId);
+        sound.current.replayAsync();
+        setStatus(true);
+        setTime(sound, 0);
 
-      const interval = setInterval(updatePos, 300);
-      setIntervalId(interval);
-      sound.current.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          setStatus(false);
-        }
-      });
-      console.log("Audio replaying");
+        const interval = setInterval(updatePos, 300);
+        setIntervalId(interval);
+        sound.current.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setStatus(false);
+          }
+        });
+        console.log("Audio replaying");
+      }
+      else {
+        LoadAudio();
+      }
     } catch (error) {
       setStatus(false);
     }
@@ -178,6 +195,45 @@ export default function SoundPlayer(props) {
 
   return (
     <View>
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 200,
+              height: 200,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text style={styles.body}>
+            You need to record or import an audio first!
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 20,
+                },
+              ]}
+              onPress={() => closeModal()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.progressBar}>
         <SeekBar
           onSlidingStart={() => PauseAudio()}
