@@ -16,6 +16,7 @@ export default function SoundPlayer(props) {
 
   // get audio length from sound
   const setDuration = (sound) => {
+    print("-----------------");
     setTotalLength(sound.durationMillis);
   };
 
@@ -45,9 +46,15 @@ export default function SoundPlayer(props) {
       if (result.isPlaying) {
         setCurrentPos(result.positionMillis);
       }
-      // console.log("update");
+      // onPlaybackStatusUpdate stopped the audio
+      else if (!result.isPlaying) {
+        console.log(intervalId);
+        clearInterval(intervalId); // FIXME: gets old intervalId, doesn't clear
+        setCurrentPos(result.durationMillis);
+      }
     }
     catch (error) {
+      console.log("updatePos error: " + error);
       clearInterval(intervalId);
     }
   }
@@ -73,10 +80,18 @@ export default function SoundPlayer(props) {
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
+
+        // start playing audio
         sound.current.playFromPositionAsync(currentPos);
         setStatus(true);
         const interval = setInterval(updatePos, 300);
         setIntervalId(interval);
+        
+        sound.current.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setStatus(false);
+          }
+        });
       } catch (error) {
         console.log("Error in Loading Audio: " + error);
       }
@@ -86,16 +101,14 @@ export default function SoundPlayer(props) {
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
-      // what to do if old is loaded?
       if (result.isLoaded && shiftedURI === currentURI) {
         if (result.isPlaying === false) {
-          // if (currentPos === totalLength) {
-          //   sound.current.playFromPositionAsync(0);
-          // }
-          // else {
-          //   sound.current.playFromPositionAsync(currentPos);
-          // }
-          sound.current.playFromPositionAsync(currentPos);
+          if (currentPos === totalLength) {
+            sound.current.playFromPositionAsync(0);
+          }
+          else {
+            sound.current.playFromPositionAsync(currentPos);
+          }
           setStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);
@@ -103,8 +116,6 @@ export default function SoundPlayer(props) {
           sound.current.setOnPlaybackStatusUpdate((status) => {
             if (status.didJustFinish) {
               setStatus(false);
-              clearInterval(intervalId);
-              setCurrentPos(totalLength);
             }
           });
         }
@@ -138,7 +149,7 @@ export default function SoundPlayer(props) {
       setStatus(false);
       setTime(sound, 0);
       clearInterval(intervalId);
-      console.log("Audio stopped");
+      console.log("Audio stopped: " + intervalId);
     } catch (error) {
       setStatus(false);
     }
@@ -151,8 +162,14 @@ export default function SoundPlayer(props) {
       sound.current.replayAsync();
       setStatus(true);
       setTime(sound, 0);
+
       const interval = setInterval(updatePos, 300);
       setIntervalId(interval);
+      sound.current.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          setStatus(false);
+        }
+      });
       console.log("Audio replaying");
     } catch (error) {
       setStatus(false);
