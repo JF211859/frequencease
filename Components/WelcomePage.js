@@ -43,7 +43,7 @@ export default function FrequencyTester() {
           or you can upload or record audios to have their frequencies adjusted
           as well.{"\n"} {"\n"}
           If you ever need more instructions for a page, there will be a
-          question mark button in the top right corner of your screen you can
+          question mark button in the bottom right corner of your screen you can
           click for a tutorial.
         </Text>
       </View>

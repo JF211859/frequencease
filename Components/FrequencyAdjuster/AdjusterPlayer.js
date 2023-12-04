@@ -1,8 +1,10 @@
 import * as React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import styles from "../../Style/styles";
+import { COLORS } from "../../Style/colorScheme";
 import SeekBar from "./SeekBar";
+import Modal from "react-native-modal";
 
 export default function SoundPlayer(props) {
 
@@ -14,8 +16,20 @@ export default function SoundPlayer(props) {
   const [intervalId, setIntervalId] = React.useState(0);
   const [currentURI, setURI] = React.useState("");
 
+  // Error message modal
+  const [isModalVisible, setModalVisible] = React.useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   // get audio length from sound
   const setDuration = (sound) => {
+    print("-----------------");
     setTotalLength(sound.durationMillis);
   };
 
@@ -45,9 +59,15 @@ export default function SoundPlayer(props) {
       if (result.isPlaying) {
         setCurrentPos(result.positionMillis);
       }
-      // console.log("update");
+      // onPlaybackStatusUpdate stopped the audio
+      else if (!result.isPlaying) {
+        //console.log(intervalId);
+        clearInterval(intervalId); // FIXME: gets old intervalId, doesn't clear
+        setCurrentPos(result.durationMillis);
+      }
     }
     catch (error) {
+      console.log("updatePos error: " + error);
       clearInterval(intervalId);
     }
   }
@@ -57,12 +77,14 @@ export default function SoundPlayer(props) {
 
     if (shiftedURI === "NOT SET"){
       console.log("Attempting to load before audio is recorded!");
+      openModal();
+      return;
     }
     else if (shiftedURI === currentURI) {
       console.log("Already loaded");
+      return;
     }
-
-    else{
+    else {
       try {
         console.log("props.shiftedURI = " + shiftedURI);
         await sound.current.unloadAsync();
@@ -71,28 +93,32 @@ export default function SoundPlayer(props) {
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
-        if (result.isLoaded === false) {
-          console.log("Error in Loadng Audio");
-        } else {
-          await PlayAudio();
-        }
+        
+        // start playing audio
+        // If playing from load, start from 0
+        sound.current.playFromPositionAsync(0);
+        setStatus(true);
+        const interval = setInterval(updatePos, 300);
+        setIntervalId(interval);
+
+        sound.current.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setStatus(false);
+          }
+        });
       } catch (error) {
         console.log("Error in Loading Audio: " + error);
       }
     }
   };
-  
+
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
+      if (result.isLoaded && shiftedURI === currentURI) {
+        // FIXME: if you press play instead of replay when loading new audio
         if (result.isPlaying === false) {
-          if (currentPos === totalLength) {
-            sound.current.playFromPositionAsync(0);
-          }
-          else {
-            sound.current.playFromPositionAsync(currentPos);
-          }
+          sound.current.playFromPositionAsync(currentPos);
           setStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);
@@ -100,8 +126,6 @@ export default function SoundPlayer(props) {
           sound.current.setOnPlaybackStatusUpdate((status) => {
             if (status.didJustFinish) {
               setStatus(false);
-              clearInterval(intervalId);
-              setCurrentPos(totalLength);
             }
           });
         }
@@ -131,11 +155,15 @@ export default function SoundPlayer(props) {
 
   const StopAudio = async () => {
     try {
+      if (shiftedURI === "NOT SET"){
+        openModal();
+        return;
+      }
       sound.current.stopAsync();
       setStatus(false);
       setTime(sound, 0);
       clearInterval(intervalId);
-      console.log("Audio stopped");
+      console.log("Audio stopped: " + intervalId);
     } catch (error) {
       setStatus(false);
     }
@@ -143,14 +171,24 @@ export default function SoundPlayer(props) {
 
   const ReplayAudio = async () => {
     try {
-      LoadAudio();
-      clearInterval(intervalId);
-      sound.current.replayAsync();
-      setStatus(true);
-      setTime(sound, 0);
-      const interval = setInterval(updatePos, 300);
-      setIntervalId(interval);
-      console.log("Audio replaying");
+      if (shiftedURI === currentURI) {
+        clearInterval(intervalId);
+        sound.current.replayAsync();
+        setStatus(true);
+        setTime(sound, 0);
+
+        const interval = setInterval(updatePos, 300);
+        setIntervalId(interval);
+        sound.current.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setStatus(false);
+          }
+        });
+        console.log("Audio replaying");
+      }
+      else {
+        LoadAudio();
+      }
     } catch (error) {
       setStatus(false);
     }
@@ -158,6 +196,45 @@ export default function SoundPlayer(props) {
 
   return (
     <View>
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 200,
+              height: 200,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text style={styles.body}>
+            You need to record or import an audio first!
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 20,
+                },
+              ]}
+              onPress={() => closeModal()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.progressBar}>
         <SeekBar
           onSlidingStart={() => PauseAudio()}
@@ -170,7 +247,11 @@ export default function SoundPlayer(props) {
       <View style={[styles.row, { justifyContent: "space-around" }]}>
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
-          style={styles.circleButton}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
         >
           <Image
             source={
@@ -182,10 +263,24 @@ export default function SoundPlayer(props) {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
+        <TouchableOpacity
+          onPress={StopAudio}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
+        >
           <Image source={require("../../images/stop.png")} style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
+        <TouchableOpacity
+          onPress={ReplayAudio}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
+        >
           <Image
             source={require("../../images/replay-music.png")}
             style={styles.icon}

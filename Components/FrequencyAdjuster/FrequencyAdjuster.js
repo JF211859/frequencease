@@ -43,19 +43,21 @@ export default function FrequencyAdjuster() {
     setRecordModalVisible(true);
   };
 
-  state = {
-    shiftedURI: "NOT SET",
-  };
+  const [shiftedURI, setShiftedURI] = React.useState("NOT SET");
+  // state = {
+  //   shiftedURI: "NOT SET",
+  // };
 
   changeShiftedURI = (shiftedURI) => {
     console.log("parent input = " + shiftedURI);
-    this.state.URI = shiftedURI;
-    // this.setState({URI: shiftedURI});
-    console.log("parent state = " + this.state.URI);
+    // this.state.URI = shiftedURI;
+    setShiftedURI(shiftedURI);
+    // console.log("parent state = " + this.state.URI);
   };
 
   getShiftedURI = () => {
-    return this.state.URI;
+    // return this.state.URI;
+    return shiftedURI;
   };
 
   return (
