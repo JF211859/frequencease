@@ -61,7 +61,7 @@ export default function SoundPlayer(props) {
       }
       // onPlaybackStatusUpdate stopped the audio
       else if (!result.isPlaying) {
-        console.log(intervalId);
+        //console.log(intervalId);
         clearInterval(intervalId); // FIXME: gets old intervalId, doesn't clear
         setCurrentPos(result.durationMillis);
       }
@@ -99,7 +99,7 @@ export default function SoundPlayer(props) {
         setStatus(true);
         const interval = setInterval(updatePos, 300);
         setIntervalId(interval);
-        
+
         sound.current.setOnPlaybackStatusUpdate((status) => {
           if (status.didJustFinish) {
             setStatus(false);
@@ -110,7 +110,7 @@ export default function SoundPlayer(props) {
       }
     }
   };
-  
+
   const PlayAudio = async () => {
     try {
       const result = await sound.current.getStatusAsync();
@@ -246,7 +246,11 @@ export default function SoundPlayer(props) {
       <View style={[styles.row, { justifyContent: "space-around" }]}>
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
-          style={styles.circleButton}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
         >
           <Image
             source={
@@ -258,10 +262,24 @@ export default function SoundPlayer(props) {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={StopAudio} style={[styles.circleButton]}>
+        <TouchableOpacity
+          onPress={StopAudio}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
+        >
           <Image source={require("../../images/stop.png")} style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
+        <TouchableOpacity
+          onPress={ReplayAudio}
+          style = {
+            props.getShiftedURI() === "NOT SET"
+              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              : styles.circleButton
+            }
+        >
           <Image
             source={require("../../images/replay-music.png")}
             style={styles.icon}
