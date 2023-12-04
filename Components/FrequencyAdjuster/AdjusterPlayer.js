@@ -93,9 +93,10 @@ export default function SoundPlayer(props) {
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
-
+        
         // start playing audio
-        sound.current.playFromPositionAsync(currentPos);
+        // If playing from load, start from 0
+        sound.current.playFromPositionAsync(0);
         setStatus(true);
         const interval = setInterval(updatePos, 300);
         setIntervalId(interval);
@@ -115,13 +116,9 @@ export default function SoundPlayer(props) {
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded && shiftedURI === currentURI) {
+        // FIXME: if you press play instead of replay when loading new audio
         if (result.isPlaying === false) {
-          if (currentPos === totalLength) {
-            sound.current.playFromPositionAsync(0);
-          }
-          else {
-            sound.current.playFromPositionAsync(currentPos);
-          }
+          sound.current.playFromPositionAsync(currentPos);
           setStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);
@@ -158,6 +155,10 @@ export default function SoundPlayer(props) {
 
   const StopAudio = async () => {
     try {
+      if (shiftedURI === "NOT SET"){
+        openModal();
+        return;
+      }
       sound.current.stopAsync();
       setStatus(false);
       setTime(sound, 0);
