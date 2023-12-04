@@ -73,11 +73,10 @@ export default function SoundPlayer(props) {
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
-        // if (result.isLoaded === false) {
-        //   console.log("Error in Loadng Audio");
-        // } else {
-        //   await PlayAudio();
-        // }
+        sound.current.playFromPositionAsync(currentPos);
+        setStatus(true);
+        const interval = setInterval(updatePos, 300);
+        setIntervalId(interval);
       } catch (error) {
         console.log("Error in Loading Audio: " + error);
       }
@@ -90,12 +89,13 @@ export default function SoundPlayer(props) {
       // what to do if old is loaded?
       if (result.isLoaded && shiftedURI === currentURI) {
         if (result.isPlaying === false) {
-          if (currentPos === totalLength) {
-            sound.current.playFromPositionAsync(0);
-          }
-          else {
-            sound.current.playFromPositionAsync(currentPos);
-          }
+          // if (currentPos === totalLength) {
+          //   sound.current.playFromPositionAsync(0);
+          // }
+          // else {
+          //   sound.current.playFromPositionAsync(currentPos);
+          // }
+          sound.current.playFromPositionAsync(currentPos);
           setStatus(true);
           const interval = setInterval(updatePos, 300);
           setIntervalId(interval);
