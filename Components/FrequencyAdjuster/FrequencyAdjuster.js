@@ -89,8 +89,8 @@ export default function FrequencyAdjuster() {
           </Text>
           <Text style={styles.body}>
             Tap the Record button to start recording or tap the Import File
-            button to upload your own audio. The audio you recorded will be
-            adjusted in the app!
+            button to upload your own audio (all audio file types are
+            accepted). The audio will then be adjusted in the app!
           </Text>
 
           <View style={[styles.row, { justifyContent: "space-around" }]}>
