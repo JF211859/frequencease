@@ -20,6 +20,7 @@ const minutesAndSeconds = (position) => ([
 ]);
 
 const SeekBar = ({
+  uri,
   trackLength,
   currentPosition,
   onSeek,
@@ -30,12 +31,12 @@ const SeekBar = ({
   return (
     <View style={seekbarStyle.container}>
       <View style={ styles.row }>
-        <Text style={[styles.body, styles.center]}>
-          {elapsed[0] + ":" + elapsed[1]}
+        <Text style={[styles.body, styles.center, {height: 18}]}>
+          {uri !== "NOT SET" && elapsed[0] + ":" + elapsed[1]}
         </Text>
         <View style={{ flex: 1 }} />
-        <Text style={[styles.body,, styles.center]}>
-          {trackLength > 1 && "-" + remaining[0] + ":" + remaining[1]}
+        <Text style={[styles.body, styles.center, {height: 18}]}>
+          {(uri !== "NOT SET" && trackLength > 1) && "-" + remaining[0] + ":" + remaining[1]}
         </Text>
       </View>
       <Slider
@@ -43,7 +44,7 @@ const SeekBar = ({
         onSlidingStart={onSlidingStart}
         onSlidingComplete={onSeek}
         onValueChange={onSeek}
-        value={currentPosition}
+        value={uri !== "NOT SET" ? currentPosition : 0}
         minimumTrackTintColor={COLORS.MEDIUM_BLUE}
         maximumTrackTintColor={COLORS.GREY}
         style={[{height: 50}, styles.margin]}

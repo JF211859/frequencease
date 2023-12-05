@@ -5,9 +5,9 @@ import styles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
 import SeekBar from "./SeekBar";
 import Modal from "react-native-modal";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function SoundPlayer(props) {
-
   const sound = React.useRef(new Audio.Sound());
   const [Status, setStatus] = React.useState(false); // isPlaying
   // Seekbar variables
@@ -15,6 +15,15 @@ export default function SoundPlayer(props) {
   const [currentPos, setCurrentPos] = React.useState(0);
   const [intervalId, setIntervalId] = React.useState(0);
   const [currentURI, setURI] = React.useState("");
+
+  // Run side effects when screen opened
+  useFocusEffect(
+    React.useCallback(() => {
+      setURI("NOT SET");
+      setCurrentPos(0);
+      setTotalLength(1);
+    }, [])
+  );
 
   // Error message modal
   const [isModalVisible, setModalVisible] = React.useState(false);
@@ -205,8 +214,8 @@ export default function SoundPlayer(props) {
           style={[
             styles.center,
             {
-              width: 200,
-              height: 200,
+              width: 225,
+              height: 175,
               backgroundColor: "white",
               borderRadius: 30,
               padding: 20,
@@ -237,6 +246,7 @@ export default function SoundPlayer(props) {
       </Modal>
       <View style={styles.progressBar}>
         <SeekBar
+          uri={currentURI}
           onSlidingStart={() => PauseAudio()}
           onSeek={(value) => seek(value)}
           trackLength={totalLength}
@@ -248,7 +258,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -266,7 +276,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={StopAudio}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -276,7 +286,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={ReplayAudio}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }

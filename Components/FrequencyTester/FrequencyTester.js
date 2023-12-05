@@ -77,10 +77,17 @@ export default function FrequencyTester({ route }) {
     }
   };
 
+  // tutorial modal
+  const [isTutorialModalVisible, setTutorialModalVisible] = React.useState(false);
+
   // tutorial page
   const testerTutorialPage = () => {
-    Alert.alert("tutorial page to be implemented");
+    setTutorialModalVisible(true);
   };
+
+  const closeTutorial = () => {
+    setTutorialModalVisible(false);
+  }
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -133,6 +140,58 @@ export default function FrequencyTester({ route }) {
               <Text style={styles.h3}>Okay, I'm ready!</Text>
             </TouchableOpacity>
           )}
+        </View>
+      </Modal>
+
+      {/* Tutorial Modal */}
+      <Modal
+        isVisible={isTutorialModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 350,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.h3,
+              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+            ]}
+          >
+            Tutorial
+          </Text>
+          <Text style={styles.body}>
+            Press the play button to listen to the current sound. If you can
+            hear the sound, select the thumbs up button ("Yes") on the right.
+            If you can't hear the sound, select the thumbs down ("No") button
+            on the left.
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 20,
+                },
+              ]}
+              onPress={() => closeTutorial()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
