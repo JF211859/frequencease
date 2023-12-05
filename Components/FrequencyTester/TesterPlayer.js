@@ -22,7 +22,7 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
     setStatus(false);
     soundPlayed(false);
     return () => sound.unloadAsync();
-  }, [navigation]); //pause audio when screen changes (TODO: unsure if this works)
+  }, [navigation]); //pause audio when screen changes
 
   React.useEffect(() => {
     LoadAudio();
@@ -51,12 +51,12 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
       try {
         const result = await sound.loadAsync(mp3, {}, true);
         if (result.isLoaded === false) {
-          console.log("Error in Loading Audio");
+          console.log("Loading Audio");
         } else {
           await playSound();
         }
       } catch (error) {
-        console.log("Error in Loading Audio");
+        console.log("Loading Audio");
       }
     } else {
       console.log("Audio already loaded");

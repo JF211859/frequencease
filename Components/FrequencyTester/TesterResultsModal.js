@@ -11,8 +11,8 @@ export default function TesterResultsModal({ isVisible, toggleTutorial }) {
         style={[
           styles.center,
           {
-            width: 310,
-            height: 320,
+            width: 320,
+            height: 310,
             backgroundColor: "white",
             borderRadius: 30,
             padding: 20,
@@ -25,12 +25,13 @@ export default function TesterResultsModal({ isVisible, toggleTutorial }) {
             { paddingBottom: 10, marginTop: 20, fontWeight: "bold" },
           ]}
         >
-          Undetstanding Your Results
+          Understanding Your Results
         </Text>
-        <Text style={styles.body}>
-          Your results from the frequency test are important for assessing your
-          hearing capabilities. If you have any concerns about the accuracy of
-          your results, don't hesitate to retake any phase of the test.
+        <Text style={[styles.body, styles.center]}>
+          Your test results are important for assessing your hearing
+          capabilities which will be used in the frequency adjuster. If you have
+          any concerns about the accuracy of your results, feel free to retake
+          the test now or later.
         </Text>
         <TouchableOpacity
           style={[

@@ -27,7 +27,7 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
         >
           Tutorial
         </Text>
-        <Text style={styles.body}>
+        <Text style={[styles.body, styles.center]}>
           The frequency test contains three phases to test your lower and upper
           hearing range. Play the test sound, follow the progress bar, and use
           the yes/no buttons to respond. Good luck!

@@ -17,6 +17,7 @@ import { COLORS } from "../../Style/colorScheme";
 import TesterModal from "./TesterModal";
 import TesterTutorialModal from "./TesterTutorialModal";
 import { phaseInfo } from "./testerData";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ export default function FrequencyTester({ route }) {
   const navigateToNextPhase = () => {
     if (phase === 8) {
       navigation.navigate("FrequencyTesterPhase"); //final phase finished
+      saveHighestFreq("8000");
     } else {
       navigation.navigate("FrequencyTester", {
         phase: phase + 1,
@@ -50,6 +52,21 @@ export default function FrequencyTester({ route }) {
   const toggleTutorial = (isVisible) => {
     setTutorialVisible(isVisible);
   };
+
+  // keep track of yes/no state
+  const [answeredYes, setAnsweredYes] = React.useState(false);
+  const [answeredNo, setAnsweredNo] = React.useState(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      setAnsweredYes(false);
+      setAnsweredNo(false);
+    }, [])
+  );
+
+  if (phase === 0) {
+    saveLowestFreq("100");
+    saveHighestFreq("100");
+  }
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
@@ -134,12 +151,12 @@ export default function FrequencyTester({ route }) {
         >
           <TouchableOpacity
             onPress={() => {
-              if (actualPhase === 1) {
-                saveLowestFreq(phaseInfo[phase + 1].hz.toString());
-                navigateToNextPhase();
-              } else {
+              // save highest frequency when user clicks "No" after hitting yes beforehand
+              if (answeredYes) {
                 saveHighestFreq(phaseInfo[phase - 1].hz.toString());
-                navigation.navigate("FrequencyTesterPhase"); //finish hearing test
+                navigation.navigate("FrequencyTesterPhase");
+              } else {
+                navigateToNextPhase();
               }
             }}
           >
@@ -153,13 +170,11 @@ export default function FrequencyTester({ route }) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              if (phase === 0) {
-                saveLowestFreq("100");
+              // Save the lowest frequency when the user hits "Yes" for the first time
+              if (!answeredYes) {
+                saveLowestFreq(phaseInfo[phase].hz.toString());
+                setAnsweredYes(true);
               }
-              if (actualPhase !== 1) {
-                saveHighestFreq(phaseInfo[phase].hz.toString());
-              }
-
               navigateToNextPhase();
             }}
           >

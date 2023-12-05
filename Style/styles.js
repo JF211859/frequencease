@@ -79,7 +79,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginHorizontal: 90,
+    marginHorizontal: 55,
     marginVertical: 5,
   },
 });
