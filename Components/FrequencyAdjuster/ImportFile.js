@@ -1,12 +1,23 @@
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Alert, StyleSheet } from 'react-native';
 import React, { useState } from "react";
 import { Audio } from 'expo-av';
+import { COLORS } from "../../Style/colorScheme";
+import Modal from "react-native-modal";
 import * as DocumentPicker from 'expo-document-picker';
 import styles from "../../Style/styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ImportFile(props) {
   const [audio, setAudio] = React.useState([]);
+  const [isImportModalVisible, setImportModalVisible] = React.useState(false);
+  const [isFailedModalVisible, setFailedModalVisible] = React.useState(false);
+
+  const closeImport = () => {
+    setImportModalVisible(false);
+  };
+  const closeFailed = () => {
+    setFailedModalVisible(false);
+  };
 
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
 
@@ -41,80 +52,133 @@ export default function ImportFile(props) {
   };
 
   async function pick() {
-    setAudio(await DocumentPicker.getDocumentAsync({
-      type: 'audio/*',
-      copyToCacheDirectory: true
-    }));
-    console.log(audio.assets[0].uri);
-
-    const audioUri = audio.assets[0].uri;
-
-    const shiftedUrl = await uploadAudioAsync(audio.assets[0].uri);
-    console.log("local = " + shiftedUrl);
-
-    this.shiftedURI = shiftedUrl;
-
-    changeShiftedURL();
-
-    // const soundObject = new Audio.Sound();
-    // soundObject.setOnPlaybackStatusUpdate();
-
-    // await soundObject.loadAsync({ uri: audioUri });
-    // await soundObject.playAsync();
-  }
-
-  const LoadAudio = async () => {
-    const checkLoading = await sound.current.getStatusAsync();
-    // Get Loading Status
-    if (checkLoading.isLoaded === false) {
-      try {
-
-        await UploadAudio();
-
-        console.log("Loading Audio");
-
-        const result = await sound.current.loadAsync({uri: this.shiftedURI});
-        audioLength = result.durationMillis;
-        if (result.isLoaded === false) {
-          console.log("Error in Loading Audio");
-        } else {
-          await PlayAudio();
-        }
-      } catch (error) {
-        console.log("Error in Loading Audio");
-      }
-    } else {
-      console.log("Error in Loading Audio");
-    }
-  };
-
-  const PlayAudio = async () => {
     try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded) {
-        if (result.isPlaying === false) {
-          sound.current.playAsync();
-          SetStatus(true);
-          console.log("Audio playing");
-        }
-      } else {
-        LoadAudio();
-      }
+      upload = await DocumentPicker.getDocumentAsync({
+        type: 'audio/*',
+        copyToCacheDirectory: true
+      });
+      setAudio(upload);
     } catch (error) {
-      SetStatus(false);
+      console.log(error);
+      setFailedModalVisible(true);
     }
-  };
+
+    if (audio === null || audio.assets === null || audio.canceled === true) {
+      setFailedModalVisible(true);
+    } else {
+      const audioUri = audio.assets[0].uri;
+      console.log(audioUri);
+
+      const shiftedUrl = await uploadAudioAsync(audioUri);
+      setImportModalVisible(true);
+      console.log("local = " + shiftedUrl);
+      this.shiftedURI = shiftedUrl;
+      changeShiftedURL();
+    }
+  }
 
   return (
     <View>
+      <Modal
+        isVisible={isImportModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 250,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.h3,
+              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+            ]}
+          >
+            Upload Successful!
+          </Text>
+          <Text style={styles.body}>
+            Your audio has been imported successfully!
+            Press play to hear the adjusted audio 🔊
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 35,
+                },
+              ]}
+              onPress={() => closeImport()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={isFailedModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 250,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.h3,
+              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+            ]}
+          >
+            Upload Failed
+          </Text>
+          <Text style={styles.body}>
+            Your audio failed to upload, please try again 😔
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 40,
+                },
+              ]}
+              onPress={() => closeFailed()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <TouchableOpacity style={styles.button} onPress={pick}>
         <Text style={styles.body}> Import File </Text>
       </TouchableOpacity>
-
-      {/* FOR DEBUGGING
-      <TouchableOpacity style={styles.button} onPress={playAudio}>
-        <Text style={styles.body}> PLAY </Text>
-      </TouchableOpacity> */}
     </View>
   );
 }
