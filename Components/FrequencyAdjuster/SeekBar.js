@@ -31,7 +31,7 @@ const SeekBar = ({
   return (
     <View style={seekbarStyle.container}>
       <View style={ styles.row }>
-        <Text style={[styles.body, styles.center]}>
+        <Text style={[styles.body, styles.center, {height: 18}]}>
           {uri !== "NOT SET" && elapsed[0] + ":" + elapsed[1]}
         </Text>
         <View style={{ flex: 1 }} />
