@@ -5,9 +5,9 @@
 Note: Our app is currently iOS-only as the backend is not compatible with Android.
 
 ## Note for Testing the App
-* The first file upload for the "Import File" button does not work, but all others after should
+* The first file upload for the "Import File" button will have an "Unhandled Promise Rejection" warning, but just ignore it and re-upload the file
+* Uploading a new file may need to be done twice for the correct audio to play, this seems to be a bug with the package we are using
 * Audio for "Record" and "Import File" buttons may come from the phone's top speaker and not the bottom ones
-* Press replay or stop after recording/uploading a new audio for it to play correctly
 
 ## Setup
 Clone this repository to your local machine
