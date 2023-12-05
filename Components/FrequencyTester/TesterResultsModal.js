@@ -4,14 +4,14 @@ import { View, TouchableOpacity, Text } from "react-native";
 import styles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
 
-export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
+export default function TesterResultsModal({ isVisible, toggleTutorial }) {
   return (
     <Modal isVisible={isVisible} style={styles.center} backdropOpacity={0.8}>
       <View
         style={[
           styles.center,
           {
-            width: 300,
+            width: 310,
             height: 320,
             backgroundColor: "white",
             borderRadius: 30,
@@ -25,12 +25,12 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
             { paddingBottom: 10, marginTop: 20, fontWeight: "bold" },
           ]}
         >
-          Tutorial
+          Undetstanding Your Results
         </Text>
         <Text style={styles.body}>
-          The frequency test contains three phases to test your lower and upper
-          hearing range. Play the test sound, follow the progress bar, and use
-          the yes/no buttons to respond. Good luck!
+          Your results from the frequency test are important for assessing your
+          hearing capabilities. If you have any concerns about the accuracy of
+          your results, don't hesitate to retake any phase of the test.
         </Text>
         <TouchableOpacity
           style={[

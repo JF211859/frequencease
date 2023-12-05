@@ -45,13 +45,10 @@ export default function FrequencyTester({ route }) {
     setSoundPlayed(isSoundPlayed);
   }
 
-  // tester tutorial
+  // tester tutorial modal
   const [tutorialVisible, setTutorialVisible] = React.useState(false);
-  const openTutorial = () => {
-    setTutorialVisible(true);
-  };
-  const closeTutorial = () => {
-    setTutorialVisible(false);
+  const toggleTutorial = (isVisible) => {
+    setTutorialVisible(isVisible);
   };
 
   return (
@@ -59,8 +56,8 @@ export default function FrequencyTester({ route }) {
       {/* Tester Modals */}
       <TesterModal phase={phase} />
       <TesterTutorialModal
-        showModal={tutorialVisible}
-        onClose={closeTutorial}
+        isVisible={tutorialVisible}
+        toggleTutorial={toggleTutorial}
       />
 
       {/* FrequencyTester View */}
@@ -177,7 +174,7 @@ export default function FrequencyTester({ route }) {
         </View>
       )}
 
-      <TutorialButton tutorial={() => openTutorial()} />
+      <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />
     </View>
   );
 }

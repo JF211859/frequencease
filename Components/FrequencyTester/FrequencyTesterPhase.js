@@ -5,6 +5,7 @@ import { APP_THEME } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import styles from "../../Style/styles";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
+import TesterResultsModal from "./TesterResultsModal";
 
 function Phase(props) {
   const phaseColor = APP_THEME[`PHASE_${props.phase}`];
@@ -56,8 +57,19 @@ export default function FrequencyTesterPhase() {
     readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
   }, []);
 
+  // tutorial modal
+  const [tutorialVisible, setTutorialVisible] = React.useState(false);
+  const toggleTutorial = (isVisible) => {
+    setTutorialVisible(isVisible);
+  };
+
   return (
     <View style={[styles.screenContainer, { gap: 5 }]}>
+      <TesterResultsModal
+        isVisible={tutorialVisible}
+        toggleTutorial={toggleTutorial}
+      />
+
       <Text style={[styles.h1, styles.center, { fontWeight: "bold" }]}>
         Your test results are in! 🎉{" "}
       </Text>
@@ -99,7 +111,7 @@ export default function FrequencyTesterPhase() {
         </TouchableOpacity>
       </View>
 
-      <TutorialButton />
+      <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />
     </View>
   );
 }
