@@ -10,9 +10,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ImportFile(props) {
   const [audio, setAudio] = React.useState([]);
   const [isImportModalVisible, setImportModalVisible] = React.useState(false);
+  const [isFailedModalVisible, setFailedModalVisible] = React.useState(false);
 
-  const closeAll = () => {
+  const closeImport = () => {
     setImportModalVisible(false);
+  };
+  const closeFailed = () => {
+    setFailedModalVisible(false);
   };
 
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
@@ -48,24 +52,28 @@ export default function ImportFile(props) {
   };
 
   async function pick() {
-    setAudio(await DocumentPicker.getDocumentAsync({
-      type: 'audio/*',
-      copyToCacheDirectory: true
-    }));
-
-    const audioUri = audio.assets[0].uri;
-    console.log(audioUri);
-
     try {
+      upload = await DocumentPicker.getDocumentAsync({
+        type: 'audio/*',
+        copyToCacheDirectory: true
+      });
+      setAudio(upload);
+    } catch (error) {
+      console.log(error);
+      setFailedModalVisible(true);
+    }
+
+    if (audio === null || audio.assets === null || audio.canceled === true) {
+      setFailedModalVisible(true);
+    } else {
+      const audioUri = audio.assets[0].uri;
+      console.log(audioUri);
+
       const shiftedUrl = await uploadAudioAsync(audioUri);
       setImportModalVisible(true);
       console.log("local = " + shiftedUrl);
       this.shiftedURI = shiftedUrl;
       changeShiftedURL();
-
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Upload failed", audio.assets[0].name + " failed to upload, please try again.")
     }
   }
 
@@ -81,7 +89,7 @@ export default function ImportFile(props) {
             styles.center,
             {
               width: 300,
-              height: 300,
+              height: 250,
               backgroundColor: "white",
               borderRadius: 30,
               padding: 20,
@@ -109,10 +117,58 @@ export default function ImportFile(props) {
                   borderRadius: 30,
                   backgroundColor: COLORS.RED,
                   marginRight: 10,
-                  marginTop: 20,
+                  marginTop: 35,
                 },
               ]}
-              onPress={() => closeAll()}
+              onPress={() => closeImport()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={isFailedModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 250,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.h3,
+              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+            ]}
+          >
+            Upload Failed
+          </Text>
+          <Text style={styles.body}>
+            Your audio failed to upload, please try again 😔
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 40,
+                },
+              ]}
+              onPress={() => closeFailed()}
             >
               <Text style={styles.h3}>Close</Text>
             </TouchableOpacity>
