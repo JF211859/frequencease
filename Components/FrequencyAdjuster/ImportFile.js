@@ -97,7 +97,7 @@ export default function ImportFile(props) {
             Upload Successful!
           </Text>
           <Text style={styles.body}>
-            Your audio "{audio.assets[0].name}" has been imported successfully!
+            Your audio has been imported successfully!
             Press play to hear the adjusted audio 🔊
           </Text>
 
