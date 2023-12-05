@@ -1,5 +1,4 @@
 import React from "react";
-
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { APP_THEME } from "../../Style/colorScheme";

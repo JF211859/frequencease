@@ -5,7 +5,7 @@ import { useNavigationState } from "@react-navigation/native";
 import { Audio } from "expo-av";
 import styles from "../../Style/styles";
 
-function SoundPlayer({ mp3, progressRef }) {
+function SoundPlayer({ mp3, progressRef, soundPlayed }) {
   const navigation = useNavigationState((state) => state);
   const [sound] = React.useState(new Audio.Sound());
   const [status, setStatus] = React.useState(false);
@@ -75,6 +75,7 @@ function SoundPlayer({ mp3, progressRef }) {
           sound.setOnPlaybackStatusUpdate((status) => {
             if (status.didJustFinish) {
               setStatus(false);
+              soundPlayed();
               sound.setPositionAsync(0);
               //reset circular progress
               progressRef.current.reAnimate();
