@@ -72,7 +72,7 @@ export default function FrequencyAdjuster() {
             styles.center,
             {
               width: 300,
-              height: 300,
+              height: 375,
               backgroundColor: "white",
               borderRadius: 30,
               padding: 20,
@@ -89,9 +89,9 @@ export default function FrequencyAdjuster() {
           </Text>
           <Text style={styles.body}>
             Tap the Record button to start recording or tap the Import File
-            button to upload your own audio. The audio you recorded or
-            imported will be adjusted in the app! Once it is uploaded, press
-            the Play button to listen to your audio.
+            button to upload your own audio! The audio you recorded or
+            imported will be adjusted in the app. Once it is uploaded, press
+            the Play button to listen to your audio!
           </Text>
 
           <View style={[styles.row, { justifyContent: "space-around" }]}>
