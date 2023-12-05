@@ -20,6 +20,7 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
   React.useEffect(() => {
     PauseAudio();
     setStatus(false);
+    soundPlayed(false);
     return () => sound.unloadAsync();
   }, [navigation]); //pause audio when screen changes (TODO: unsure if this works)
 
@@ -71,11 +72,17 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
           progressRef.current.play();
           setStatus(true);
           console.log("Audio playing");
+
+          const timer = setTimeout(() => {
+            //display thumbs up/down after 0.8 seconds
+            soundPlayed(true);
+          }, 800);
+
           // when audio finishes, change to pause button and restart audio
           sound.setOnPlaybackStatusUpdate((status) => {
             if (status.didJustFinish) {
               setStatus(false);
-              soundPlayed();
+              clearTimeout(timer);
               sound.setPositionAsync(0);
               //reset circular progress
               progressRef.current.reAnimate();
@@ -112,6 +119,9 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
       sound.replayAsync();
       setStatus(true);
       progressRef.current.reAnimate();
+      const timer = setTimeout(() => {
+        soundPlayed(true);
+      }, 800);
       console.log("Audio replaying");
     } catch (error) {
       setStatus(false);

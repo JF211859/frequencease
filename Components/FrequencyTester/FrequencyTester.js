@@ -41,8 +41,8 @@ export default function FrequencyTester({ route }) {
 
   //  handle test sound played state
   const [soundPlayed, setSoundPlayed] = React.useState(false);
-  function handleSound() {
-    setSoundPlayed(true);
+  function handleSound(isSoundPlayed) {
+    setSoundPlayed(isSoundPlayed);
   }
 
   // tester tutorial
@@ -50,12 +50,18 @@ export default function FrequencyTester({ route }) {
   const openTutorial = () => {
     setTutorialVisible(true);
   };
+  const closeTutorial = () => {
+    setTutorialVisible(false);
+  };
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
       {/* Tester Modals */}
       <TesterModal phase={phase} />
-      <TesterTutorialModal showModal={tutorialVisible} />
+      <TesterTutorialModal
+        showModal={tutorialVisible}
+        onClose={closeTutorial}
+      />
 
       {/* FrequencyTester View */}
       <StepIndicator
