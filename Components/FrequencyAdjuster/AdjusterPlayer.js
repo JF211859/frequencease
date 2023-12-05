@@ -205,7 +205,7 @@ export default function SoundPlayer(props) {
           style={[
             styles.center,
             {
-              width: 200,
+              width: 250,
               height: 200,
               backgroundColor: "white",
               borderRadius: 30,
@@ -237,6 +237,7 @@ export default function SoundPlayer(props) {
       </Modal>
       <View style={styles.progressBar}>
         <SeekBar
+          uri={props.getShiftedURI()}
           onSlidingStart={() => PauseAudio()}
           onSeek={(value) => seek(value)}
           trackLength={totalLength}

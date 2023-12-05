@@ -20,6 +20,7 @@ const minutesAndSeconds = (position) => ([
 ]);
 
 const SeekBar = ({
+  uri,
   trackLength,
   currentPosition,
   onSeek,
@@ -31,7 +32,7 @@ const SeekBar = ({
     <View style={seekbarStyle.container}>
       <View style={ styles.row }>
         <Text style={[styles.body, styles.center]}>
-          {elapsed[0] + ":" + elapsed[1]}
+          {uri !== "NOT SET" && elapsed[0] + ":" + elapsed[1]}
         </Text>
         <View style={{ flex: 1 }} />
         <Text style={[styles.body,, styles.center]}>
