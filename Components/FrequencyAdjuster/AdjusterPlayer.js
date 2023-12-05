@@ -258,7 +258,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -276,7 +276,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={StopAudio}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -286,7 +286,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={ReplayAudio}
           style = {
-            props.getShiftedURI() === "NOT SET"
+            currentURI === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
