@@ -1,12 +1,19 @@
 import { Text, TouchableOpacity, View, Alert, StyleSheet } from 'react-native';
 import React, { useState } from "react";
 import { Audio } from 'expo-av';
+import { COLORS } from "../../Style/colorScheme";
+import Modal from "react-native-modal";
 import * as DocumentPicker from 'expo-document-picker';
 import styles from "../../Style/styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ImportFile(props) {
   const [audio, setAudio] = React.useState([]);
+  const [isImportModalVisible, setImportModalVisible] = React.useState(false);
+
+  const closeAll = () => {
+    setImportModalVisible(false);
+  };
 
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
 
@@ -51,7 +58,7 @@ export default function ImportFile(props) {
 
     try {
       const shiftedUrl = await uploadAudioAsync(audioUri);
-      Alert.alert("Upload successful!", audio.assets[0].name + " uploaded.");
+      setImportModalVisible(true);
       console.log("local = " + shiftedUrl);
       this.shiftedURI = shiftedUrl;
       changeShiftedURL();
@@ -64,6 +71,55 @@ export default function ImportFile(props) {
 
   return (
     <View>
+      <Modal
+        isVisible={isImportModalVisible}
+        style={styles.center}
+        backdropOpacity={0.8}
+      >
+        <View
+          style={[
+            styles.center,
+            {
+              width: 300,
+              height: 300,
+              backgroundColor: "white",
+              borderRadius: 30,
+              padding: 20,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.h3,
+              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+            ]}
+          >
+            Upload Successful!
+          </Text>
+          <Text style={styles.body}>
+            Your audio "{audio.assets[0].name}" has been imported successfully!
+            Press play to hear the adjusted audio 🔊
+          </Text>
+
+          <View style={[styles.row, { justifyContent: "space-around" }]}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderRadius: 30,
+                  backgroundColor: COLORS.RED,
+                  marginRight: 10,
+                  marginTop: 20,
+                },
+              ]}
+              onPress={() => closeAll()}
+            >
+              <Text style={styles.h3}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <TouchableOpacity style={styles.button} onPress={pick}>
         <Text style={styles.body}> Import File </Text>
       </TouchableOpacity>
