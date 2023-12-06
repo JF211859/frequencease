@@ -22,6 +22,14 @@ export const saveHighestFreq = async (max_freq) => {
   }
 };
 
+export const saveTheme = async (theme) => {
+  try {
+    await AsyncStorage.setItem("THEME", theme);
+  } catch (e) {
+    alert("Failed to save the theme to the storage");
+  }
+};
+
 export const readData = async (key) => {
   try {
     const value = await AsyncStorage.getItem(key);

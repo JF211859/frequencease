@@ -3,14 +3,29 @@ import { View, Image, TouchableOpacity, Text } from "react-native";
 import { useNavigationState } from "@react-navigation/native";
 
 import { Audio } from "expo-av";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
+import { useTheme } from "../../Style/ThemeContext";
 
 function SoundPlayer({ mp3, progressRef, soundPlayed }) {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+  const replaySource = getIsDarkMode()
+    ? require("../../images/replay_dark.png")
+    : require("../../images/replay-music.png");
+  const playSource = getIsDarkMode()
+    ? require("../../images/play_dark.png")
+    : require("../../images/play.png");
+  const pauseSource = getIsDarkMode()
+    ? require("../../images/pause_dark.png")
+    : require("../../images/pause.png");
+
   const navigation = useNavigationState((state) => state);
+
   const [sound] = React.useState(new Audio.Sound());
   const [status, setStatus] = React.useState(false);
   const [imageSrc, setImageSrc] = React.useState({
-    src: require("../../images/play.png"),
+    src: playSource,
   }); //change play/pause button with state variable
 
   React.useEffect(() => {
@@ -35,11 +50,11 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
   React.useMemo(() => {
     if (status === false) {
       setImageSrc({
-        src: require("../../images/play.png"),
+        src: playSource,
       });
     } else {
       setImageSrc({
-        src: require("../../images/pause.png"),
+        src: pauseSource,
       });
     }
   }, [status]); // update play/ pause image
@@ -140,16 +155,17 @@ function SoundPlayer({ mp3, progressRef, soundPlayed }) {
           <Image source={imageSrc.src} style={styles.icon} />
         </TouchableOpacity>
 
-        <Text style={[styles.h2]}>{status === false ? "Play" : "Pause"}</Text>
+        <Text style={[styles.h2, { color: appTheme.TEXT_STANDARD }]}>
+          {status === false ? "Play" : "Pause"}
+        </Text>
       </View>
       <View style={{ flex: 1, alignItems: "center" }}>
         <TouchableOpacity onPress={ReplayAudio} style={styles.circleButton}>
-          <Image
-            source={require("../../images/replay-music.png")}
-            style={styles.icon}
-          />
+          <Image source={replaySource} style={styles.icon} />
         </TouchableOpacity>
-        <Text style={[styles.h2]}>Replay</Text>
+        <Text style={[styles.h2, { color: appTheme.TEXT_STANDARD }]}>
+          Replay
+        </Text>
       </View>
     </View>
   );

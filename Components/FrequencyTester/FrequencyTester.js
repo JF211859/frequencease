@@ -12,16 +12,20 @@ import TutorialButton from "../ImageComponents/TutorialButton";
 import StepIndicator from "react-native-step-indicator";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { saveLowestFreq, saveHighestFreq } from "../Storage";
-import styles from "../../Style/styles";
-import { COLORS } from "../../Style/colorScheme";
+import dynamicStyles from "../../Style/styles";
 import TesterModal from "./TesterModal";
 import TesterTutorialModal from "./TesterTutorialModal";
 import { phaseInfo } from "./testerData";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "../../Style/ThemeContext";
 
 export default function FrequencyTester({ route }) {
+  const styles = dynamicStyles();
+
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
 
   const phase = route.params.phase || 0;
   const actualPhase = parseInt(phase / 3, 10) + 1;
@@ -82,21 +86,21 @@ export default function FrequencyTester({ route }) {
         stepCount={3}
         customStyles={{
           labelSize: 25,
-          currentStepLabelColor: COLORS.BLACK,
-          labelColor: COLORS.GREY,
+          currentStepLabelColor: appTheme.TEXT_STANDARD,
+          labelColor: appTheme.TEXT_SECONDARY,
           stepIndicatorSize: 30,
           currentStepIndicatorSize: 35,
-          stepStrokeCurrentColor: COLORS.DARK_BLUE,
-          stepStrokeFinishedColor: COLORS.MEDIUM_BLUE,
-          stepStrokeUnFinishedColor: COLORS.MEDIUM_BLUE,
-          separatorFinishedColor: COLORS.MEDIUM_BLUE,
-          separatorUnFinishedColor: COLORS.GREY,
-          stepIndicatorFinishedColor: COLORS.MEDIUM_BLUE,
-          stepIndicatorUnFinishedColor: COLORS.GREY,
-          stepIndicatorCurrentColor: COLORS.MEDIUM_BLUE,
-          stepIndicatorLabelCurrentColor: COLORS.MEDIUM_BLUE,
-          stepIndicatorLabelFinishedColor: COLORS.MEDIUM_BLUE,
-          stepIndicatorLabelUnFinishedColor: COLORS.GREY,
+          stepStrokeCurrentColor: appTheme.BLUE_DARK,
+          stepStrokeFinishedColor: appTheme.BLUE_MED,
+          stepStrokeUnFinishedColor: appTheme.BLUE_MED,
+          separatorFinishedColor: appTheme.BLUE_MED,
+          separatorUnFinishedColor: appTheme.TEXT_SECONDARY,
+          stepIndicatorFinishedColor: appTheme.BLUE_MED,
+          stepIndicatorUnFinishedColor: appTheme.TEXT_SECONDARY,
+          stepIndicatorCurrentColor: appTheme.BLUE_MED,
+          stepIndicatorLabelCurrentColor: appTheme.BLUE_MED,
+          stepIndicatorLabelFinishedColor: appTheme.BLUE_MED,
+          stepIndicatorLabelUnFinishedColor: appTheme.TEXT_SECONDARY,
         }}
       />
 
@@ -113,7 +117,7 @@ export default function FrequencyTester({ route }) {
           title={`${phaseInfo[phase].hz}`}
           titleStyle={{
             fontWeight: "bold",
-            color: COLORS.BLACK,
+            color: appTheme.TEXT_STANDARD,
             marginTop: 20,
           }}
           subtitle={"Hz"}
@@ -121,7 +125,7 @@ export default function FrequencyTester({ route }) {
             fontWeight: "bold",
             fontSize: 40,
             marginTop: 0,
-            color: COLORS.BLACK,
+            color: appTheme.TEXT_STANDARD,
           }}
         />
       </View>
@@ -134,7 +138,14 @@ export default function FrequencyTester({ route }) {
         />
       </View>
 
-      <Text style={[styles.h1, styles.marginTop, styles.center]}>
+      <Text
+        style={[
+          styles.h1,
+          styles.marginTop,
+          styles.center,
+          { color: appTheme.TEXT_STANDARD },
+        ]}
+      >
         Can you hear this sound?
       </Text>
 
@@ -162,7 +173,12 @@ export default function FrequencyTester({ route }) {
               source={require("../../images/thumbsdown.png")}
               style={styles.icon}
             />
-            <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>
+            <Text
+              style={[
+                styles.h3,
+                { marginLeft: 12, marginTop: 8, color: appTheme.TEXT_STANDARD },
+              ]}
+            >
               No
             </Text>
           </TouchableOpacity>
@@ -180,7 +196,12 @@ export default function FrequencyTester({ route }) {
               source={require("../../images/thumbsup.png")}
               style={styles.icon}
             />
-            <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>
+            <Text
+              style={[
+                styles.h3,
+                { marginLeft: 12, marginTop: 8, color: appTheme.TEXT_STANDARD },
+              ]}
+            >
               Yes
             </Text>
           </TouchableOpacity>

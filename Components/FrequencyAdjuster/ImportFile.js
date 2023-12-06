@@ -1,13 +1,17 @@
-import { Text, TouchableOpacity, View, Alert, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Alert, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
 import { COLORS } from "../../Style/colorScheme";
 import Modal from "react-native-modal";
-import * as DocumentPicker from 'expo-document-picker';
-import styles from "../../Style/styles";
+import * as DocumentPicker from "expo-document-picker";
+import dynamicStyles from "../../Style/styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "../../Style/ThemeContext";
 
 export default function ImportFile(props) {
+  const styles = dynamicStyles();
+  const { isDarkMode, toggleTheme, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
   const [audio, setAudio] = React.useState([]);
   const [isImportModalVisible, setImportModalVisible] = React.useState(false);
   const [isFailedModalVisible, setFailedModalVisible] = React.useState(false);
@@ -22,40 +26,44 @@ export default function ImportFile(props) {
   const changeShiftedURL = () => props.changeShiftedURI(this.shiftedURI);
 
   async function uploadAudioAsync(uri) {
-    const storedMin = await AsyncStorage.getItem('MinFrequency');
-    const storedMax = await AsyncStorage.getItem('MaxFrequency');
+    const storedMin = await AsyncStorage.getItem("MinFrequency");
+    const storedMax = await AsyncStorage.getItem("MaxFrequency");
 
     console.log("Uploading " + uri);
 
-    const uploadURL = 'https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency='+storedMin+'&max_frequency='+storedMax;
+    const uploadURL =
+      "https://frequenceaseapi-3k7cjdpwya-uc.a.run.app/adjuster/?min_frequency=" +
+      storedMin +
+      "&max_frequency=" +
+      storedMax;
 
     var uploaded_audio = {
       uri: uri,
-      type: 'audio/wav',
-      name: 'file',
+      type: "audio/wav",
+      name: "file",
     };
 
     var body = new FormData();
-    body.append('file', uploaded_audio);
+    body.append("file", uploaded_audio);
 
     let formData = new FormData();
-    formData.append('file', {
-      uri: uri
+    formData.append("file", {
+      uri: uri,
     });
 
     console.log("POSTing " + uri + " to " + uploadURL);
-    return await fetch(uploadURL, {method: 'POST', body})
-    .then(response => response.text())
-    .then(text => {
-      return text;
-    });
-  };
+    return await fetch(uploadURL, { method: "POST", body })
+      .then((response) => response.text())
+      .then((text) => {
+        return text;
+      });
+  }
 
   async function pick() {
     try {
       upload = await DocumentPicker.getDocumentAsync({
-        type: 'audio/*',
-        copyToCacheDirectory: true
+        type: "audio/*",
+        copyToCacheDirectory: true,
       });
       setAudio(upload);
     } catch (error) {
@@ -90,7 +98,7 @@ export default function ImportFile(props) {
             {
               width: 300,
               height: 250,
-              backgroundColor: "white",
+              backgroundColor: appTheme.MODAL,
               borderRadius: 30,
               padding: 20,
             },
@@ -99,14 +107,19 @@ export default function ImportFile(props) {
           <Text
             style={[
               styles.h3,
-              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+              {
+                paddingBottom: 20,
+                marginTop: 20,
+                fontWeight: "bold",
+                color: appTheme.TEXT_STANDARD,
+              },
             ]}
           >
             Upload Successful!
           </Text>
           <Text style={styles.body}>
-            Your audio has been imported successfully!
-            Press play to hear the adjusted audio 🔊
+            Your audio has been imported successfully! Press play to hear the
+            adjusted audio 🔊
           </Text>
 
           <View style={[styles.row, { justifyContent: "space-around" }]}>
@@ -115,14 +128,16 @@ export default function ImportFile(props) {
                 styles.button,
                 {
                   borderRadius: 30,
-                  backgroundColor: COLORS.RED,
+                  backgroundColor: appTheme.CANCEL,
                   marginRight: 10,
                   marginTop: 35,
                 },
               ]}
               onPress={() => closeImport()}
             >
-              <Text style={styles.h3}>Close</Text>
+              <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -139,7 +154,7 @@ export default function ImportFile(props) {
             {
               width: 300,
               height: 250,
-              backgroundColor: "white",
+              backgroundColor: appTheme.MODAL,
               borderRadius: 30,
               padding: 20,
             },
@@ -148,12 +163,17 @@ export default function ImportFile(props) {
           <Text
             style={[
               styles.h3,
-              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+              {
+                paddingBottom: 20,
+                marginTop: 20,
+                fontWeight: "bold",
+                color: appTheme.TEXT_STANDARD,
+              },
             ]}
           >
             Upload Failed
           </Text>
-          <Text style={styles.body}>
+          <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
             Your audio failed to upload, please try again 😔
           </Text>
 
@@ -163,21 +183,25 @@ export default function ImportFile(props) {
                 styles.button,
                 {
                   borderRadius: 30,
-                  backgroundColor: COLORS.RED,
+                  backgroundColor: appTheme.CANCEL,
                   marginRight: 10,
                   marginTop: 40,
                 },
               ]}
               onPress={() => closeFailed()}
             >
-              <Text style={styles.h3}>Close</Text>
+              <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
       <TouchableOpacity style={styles.button} onPress={pick}>
-        <Text style={styles.body}> Import File </Text>
+        <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
+          Import File
+        </Text>
       </TouchableOpacity>
     </View>
   );

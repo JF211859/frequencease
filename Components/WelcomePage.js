@@ -9,14 +9,23 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
+import { useTheme } from "../Style/ThemeContext";
 
 // This is the page first-time users should see when opening the app
 export default function FrequencyTester() {
   const navigation = useNavigation();
   const windowHeight = useWindowDimensions().height;
+  const { getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
 
   return (
-    <SafeAreaView style={{ height: { windowHeight }, flex: 1, justifyContent: "space-around" }}>
+    <SafeAreaView
+      style={{
+        height: { windowHeight },
+        flex: 1,
+        justifyContent: "space-around",
+      }}
+    >
       <View>
         <Image
           source={require("../images/logo.png")}
@@ -53,7 +62,7 @@ export default function FrequencyTester() {
           navigation.navigate("FrequencyTester");
         }}
         style={{
-          backgroundColor: APP_THEME.APP_BLUE,
+          backgroundColor: appTheme.APP_BLUE,
           width: 200,
           height: 80,
           borderRadius: 50,
