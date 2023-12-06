@@ -1,50 +1,51 @@
 import React from "react";
-
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { APP_THEME } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import styles from "../../Style/styles";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
+import TesterResultsModal from "./TesterResultsModal";
+import { phaseInfo } from "./testerData";
 
-function Phase(props) {
-  const phaseColor = APP_THEME[`PHASE_${props.phase}`];
-  const navigation = useNavigation();
-  const phaseNum = (props.phase - 1) * 3;
+function ResultsDisplay({ minFreq, maxFreq }) {
+  const phases = [[], [], []]; //logic for setting the range information
+  for (let i = 0; i < 9; i++) {
+    const { hz } = phaseInfo[i];
+    if (hz >= minFreq && hz <= maxFreq) {
+      const phaseIndex = parseInt(i / 3, 10);
+      phases[phaseIndex].push(hz);
+    }
+  }
 
-  return (
-    <View style={styles.phaseContainer}>
-      <View>
+  return phases.map((phase, index) => (
+    <View style={styles.phaseContainer} key={index}>
+      <View style={{ paddingRight: 20 }}>
         <Text
           style={[
             styles.h3,
             styles.center,
-            { fontWeight: "bold", color: APP_THEME.TEXT_STANDARD },
+            {
+              fontWeight: "bold",
+              color: APP_THEME.TEXT_STANDARD,
+            },
           ]}
         >
-          Phase {props.phase}
+          {`Phase ${index + 1}:`}
         </Text>
         <Text style={[styles.h3, styles.center, { fontStyle: "italic" }]}>
-          {props.phase === 1 ? "lower" : props.phase === 2 ? "middle" : "upper"}{" "}
-          range
+          {index === 0 ? "lower" : index === 1 ? "middle" : "upper"} range
         </Text>
       </View>
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { borderRadius: 15, backgroundColor: phaseColor },
-        ]}
-        onPress={() => {
-          navigation.navigate({
-            name: "FrequencyTester",
-            params: { phase: phaseNum },
-          });
-        }}
-      >
-        <Text style={styles.body}>Retake</Text>
-      </TouchableOpacity>
+      {phase.length > 0 ? (
+        <Text style={styles.h3}>{`${Math.min(...phase)}Hz - ${Math.max(
+          ...phase
+        )}Hz`}</Text>
+      ) : (
+        <Text style={styles.h3}>Out of Range</Text>
+      )}
     </View>
-  );
+  ));
 }
 
 export default function FrequencyTesterPhase() {
@@ -57,8 +58,19 @@ export default function FrequencyTesterPhase() {
     readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
   }, []);
 
+  // tutorial modal
+  const [tutorialVisible, setTutorialVisible] = React.useState(false);
+  const toggleTutorial = (isVisible) => {
+    setTutorialVisible(isVisible);
+  };
+
   return (
     <View style={[styles.screenContainer, { gap: 5 }]}>
+      <TesterResultsModal
+        isVisible={tutorialVisible}
+        toggleTutorial={toggleTutorial}
+      />
+
       <Text style={[styles.h1, styles.center, { fontWeight: "bold" }]}>
         Your test results are in! 🎉{" "}
       </Text>
@@ -66,9 +78,8 @@ export default function FrequencyTesterPhase() {
       <Text style={[styles.h2, styles.center, { marginBottom: 20 }]}>
         Your hearing range is {minFreq} - {maxFreq}Hz
       </Text>
-      <Phase phase={1} />
-      <Phase phase={2} />
-      <Phase phase={3} />
+
+      <ResultsDisplay minFreq={minFreq} maxFreq={maxFreq} />
 
       <View style={[styles.bottomButtons, { marginTop: 20 }]}>
         <TouchableOpacity
@@ -99,6 +110,7 @@ export default function FrequencyTesterPhase() {
           <Text style={styles.h3}>Go to Adjuster</Text>
         </TouchableOpacity>
       </View>
+      <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />
     </View>
   );
 }

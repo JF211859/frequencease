@@ -6,18 +6,18 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
-  Alert,
 } from "react-native";
 import SoundPlayer from "./TesterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import StepIndicator from "react-native-step-indicator";
 import CircularProgress from "react-native-circular-progress-indicator";
-import { Audio } from "expo-av";
-
 import { saveLowestFreq, saveHighestFreq } from "../Storage";
 import styles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
-import Modal from "react-native-modal";
+import TesterModal from "./TesterModal";
+import TesterTutorialModal from "./TesterTutorialModal";
+import { phaseInfo } from "./testerData";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function FrequencyTester({ route }) {
   const navigation = useNavigation();
@@ -26,23 +26,10 @@ export default function FrequencyTester({ route }) {
   const phase = route.params.phase || 0;
   const actualPhase = parseInt(phase / 3, 10) + 1;
 
-  const phaseInfo = {
-    0: { hz: 100, audio: require("../../audio/100.mp3") }, //phase 1
-    1: { hz: 200, audio: require("../../audio/200.mp3") },
-    2: { hz: 300, audio: require("../../audio/300.mp3") },
-
-    3: { hz: 400, audio: require("../../audio/400.mp3") }, //phase 2
-    4: { hz: 600, audio: require("../../audio/600.mp3") },
-    5: { hz: 800, audio: require("../../audio/800.mp3") },
-
-    6: { hz: 1000, audio: require("../../audio/1000.mp3") }, //phase 3
-    7: { hz: 5000, audio: require("../../audio/5000.mp3") },
-    8: { hz: 8000, audio: require("../../audio/8000.mp3") },
-  };
-
   const navigateToNextPhase = () => {
     if (phase === 8) {
       navigation.navigate("FrequencyTesterPhase"); //final phase finished
+      saveHighestFreq("8000");
     } else {
       navigation.navigate("FrequencyTester", {
         phase: phase + 1,
@@ -51,149 +38,42 @@ export default function FrequencyTester({ route }) {
   };
 
   // progress bar
-  const labels = ["Phase 1", "Phase 2", "Phase 3"];
   const progressRef = React.useRef(null);
+  const labels = ["Phase 1", "Phase 2", "Phase 3"];
 
-  // ringtone modal
-  const [isModalVisible, setModalVisible] = React.useState(false);
-  const [ringtonePlayed, setRingtonePlayed] = React.useState(false);
-  React.useEffect(() => {
-    if (phase === 0) {
-      setModalVisible(true);
-    }
-  }, []);
-  const playRingtone = async () => {
-    const soundObject = new Audio.Sound();
-    try {
-      await soundObject.loadAsync(require("../../audio/ringtone.mp3"));
-      await soundObject.playAsync();
-      soundObject.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          setRingtonePlayed(true);
-        }
-      });
-    } catch (error) {
-      console.error("Error loading sound", error);
-    }
+  //  handle test sound played state
+  const [soundPlayed, setSoundPlayed] = React.useState(false);
+  function handleSound(isSoundPlayed) {
+    setSoundPlayed(isSoundPlayed);
+  }
+
+  // tester tutorial modal
+  const [tutorialVisible, setTutorialVisible] = React.useState(false);
+  const toggleTutorial = (isVisible) => {
+    setTutorialVisible(isVisible);
   };
 
-  // tutorial modal
-  const [isTutorialModalVisible, setTutorialModalVisible] = React.useState(false);
+  // keep track of yes/no state
+  const [answeredYes, setAnsweredYes] = React.useState(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      setAnsweredYes(false);
+    }, [])
+  );
 
-  // tutorial page
-  const testerTutorialPage = () => {
-    setTutorialModalVisible(true);
-  };
-
-  const closeTutorial = () => {
-    setTutorialModalVisible(false);
+  if (phase === 0) {
+    saveLowestFreq("100");
+    saveHighestFreq("100");
   }
 
   return (
     <View style={{ height: { windowHeight }, flex: 1 }}>
-      {/* Modal to notify users to turn on ringer */}
-      <Modal
-        isVisible={isModalVisible}
-        style={styles.center}
-        backdropOpacity={0.8}
-      >
-        <View
-          style={[
-            styles.center,
-            {
-              width: 300,
-              height: 300,
-              backgroundColor: "white",
-              borderRadius: 30,
-              padding: 20,
-            },
-          ]}
-        >
-          <Text style={[styles.h2, { paddingBottom: 20, marginTop: 20 }]}>
-            Please turn on your device's ringer before starting the test. 😃
-          </Text>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                width: 220,
-                marginBottom: 15,
-                borderRadius: 30,
-                backgroundColor: COLORS.LIGHT_BLUE,
-              },
-            ]}
-            onPress={playRingtone}
-          >
-            <Text style={[styles.h2, { marginTop: 0 }]}>Play Test Audio</Text>
-          </TouchableOpacity>
-          {ringtonePlayed && (
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  borderRadius: 30,
-                  backgroundColor: COLORS.GREEN,
-                },
-              ]}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.h3}>Okay, I'm ready!</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </Modal>
-
-      {/* Tutorial Modal */}
-      <Modal
-        isVisible={isTutorialModalVisible}
-        style={styles.center}
-        backdropOpacity={0.8}
-      >
-        <View
-          style={[
-            styles.center,
-            {
-              width: 300,
-              height: 350,
-              backgroundColor: "white",
-              borderRadius: 30,
-              padding: 20,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              styles.h3,
-              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
-            ]}
-          >
-            Tutorial
-          </Text>
-          <Text style={styles.body}>
-            Press the play button to listen to the current sound. If you can
-            hear the sound, select the thumbs up button ("Yes") on the right.
-            If you can't hear the sound, select the thumbs down ("No") button
-            on the left.
-          </Text>
-
-          <View style={[styles.row, { justifyContent: "space-around" }]}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  borderRadius: 30,
-                  backgroundColor: COLORS.RED,
-                  marginRight: 10,
-                  marginTop: 20,
-                },
-              ]}
-              onPress={() => closeTutorial()}
-            >
-              <Text style={styles.h3}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {/* Tester Modals */}
+      <TesterModal phase={phase} />
+      <TesterTutorialModal
+        isVisible={tutorialVisible}
+        toggleTutorial={toggleTutorial}
+      />
 
       {/* FrequencyTester View */}
       <StepIndicator
@@ -247,54 +127,67 @@ export default function FrequencyTester({ route }) {
       </View>
 
       <View style={[styles.center, styles.margin]}>
-        <SoundPlayer mp3={phaseInfo[phase].audio} progressRef={progressRef} />
+        <SoundPlayer
+          mp3={phaseInfo[phase].audio}
+          progressRef={progressRef}
+          soundPlayed={handleSound}
+        />
       </View>
 
       <Text style={[styles.h1, styles.marginTop, styles.center]}>
         Can you hear this sound?
       </Text>
 
-      <View
-        style={[styles.row, styles.margin, { justifyContent: "space-evenly" }]}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            if (actualPhase === 1) {
-              saveLowestFreq(phaseInfo[phase + 1].hz.toString());
+      {/* display thumbs up/down after the sound plays */}
+      {soundPlayed && (
+        <View
+          style={[
+            styles.row,
+            styles.margin,
+            { justifyContent: "space-evenly" },
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              // save highest frequency when user clicks "No" after hitting yes beforehand
+              if (answeredYes) {
+                saveHighestFreq(phaseInfo[phase - 1].hz.toString());
+                navigation.navigate("FrequencyTesterPhase");
+              } else {
+                navigateToNextPhase();
+              }
+            }}
+          >
+            <Image
+              source={require("../../images/thumbsdown.png")}
+              style={styles.icon}
+            />
+            <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>
+              No
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              // Save the lowest frequency when the user hits "Yes" for the first time
+              if (!answeredYes) {
+                saveLowestFreq(phaseInfo[phase].hz.toString());
+                setAnsweredYes(true);
+              }
               navigateToNextPhase();
-            } else {
-              saveHighestFreq(phaseInfo[phase - 1].hz.toString());
-              navigation.navigate("FrequencyTesterPhase"); //finish hearing test
-            }
-          }}
-        >
-          <Image
-            source={require("../../images/thumbsdown.png")}
-            style={styles.icon}
-          />
-          <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>No</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            if (phase === 0) {
-              saveLowestFreq("100");
-            }
-            if (actualPhase !== 1) {
-              saveHighestFreq(phaseInfo[phase].hz.toString());
-            }
+            }}
+          >
+            <Image
+              source={require("../../images/thumbsup.png")}
+              style={styles.icon}
+            />
+            <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>
+              Yes
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-            navigateToNextPhase();
-          }}
-        >
-          <Image
-            source={require("../../images/thumbsup.png")}
-            style={styles.icon}
-          />
-          <Text style={[styles.h3, { marginLeft: 12, marginTop: 8 }]}>Yes</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TutorialButton tutorial={() => testerTutorialPage()} />
+      <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />
     </View>
   );
 }
