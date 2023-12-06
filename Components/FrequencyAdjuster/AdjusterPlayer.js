@@ -125,7 +125,6 @@ export default function SoundPlayer(props) {
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded && shiftedURI === currentURI) {
-        // FIXME: if you press play instead of replay when loading new audio
         if (result.isPlaying === false) {
           sound.current.playFromPositionAsync(currentPos);
           setStatus(true);
@@ -180,6 +179,10 @@ export default function SoundPlayer(props) {
 
   const ReplayAudio = async () => {
     try {
+      if (shiftedURI === "NOT SET"){
+        openModal();
+        return;
+      }
       if (shiftedURI === currentURI) {
         clearInterval(intervalId);
         sound.current.replayAsync();
@@ -258,7 +261,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
           style = {
-            currentURI === "NOT SET"
+            props.getShiftedURI() === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -276,7 +279,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={StopAudio}
           style = {
-            currentURI === "NOT SET"
+            props.getShiftedURI() === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
@@ -286,7 +289,7 @@ export default function SoundPlayer(props) {
         <TouchableOpacity
           onPress={ReplayAudio}
           style = {
-            currentURI === "NOT SET"
+            props.getShiftedURI() === "NOT SET"
               ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
               : styles.circleButton
             }
