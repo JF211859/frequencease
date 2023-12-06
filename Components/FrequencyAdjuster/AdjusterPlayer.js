@@ -179,6 +179,10 @@ export default function SoundPlayer(props) {
 
   const ReplayAudio = async () => {
     try {
+      if (shiftedURI === "NOT SET"){
+        openModal();
+        return;
+      }
       if (shiftedURI === currentURI) {
         clearInterval(intervalId);
         sound.current.replayAsync();
