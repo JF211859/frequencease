@@ -110,7 +110,6 @@ export default function FrequencyTesterPhase() {
           <Text style={styles.h3}>Go to Adjuster</Text>
         </TouchableOpacity>
       </View>
-
       <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />
     </View>
   );
