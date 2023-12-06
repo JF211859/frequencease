@@ -27,7 +27,7 @@ export default function TesterResultsModal({ isVisible, toggleTutorial }) {
         >
           Understanding Your Results
         </Text>
-        <Text style={[styles.body, styles.center]}>
+        <Text style={styles.body}>
           Your test results are important for assessing your hearing
           capabilities which will be used in the frequency adjuster. If you have
           any concerns about the accuracy of your results, feel free to retake

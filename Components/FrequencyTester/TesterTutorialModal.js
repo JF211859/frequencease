@@ -27,10 +27,11 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
         >
           Tutorial
         </Text>
-        <Text style={[styles.body, styles.center]}>
-          The frequency test contains three phases to test your lower and upper
-          hearing range. Play the test sound, follow the progress bar, and use
-          the yes/no buttons to respond. Good luck!
+        <Text style={styles.body}>
+          Press the play button to listen to the current sound. If you can hear
+          the sound, select the thumbs up button ("Yes") on the right. If you
+          can't hear the sound, select the thumbs down ("No") button on the
+          left.
         </Text>
         <TouchableOpacity
           style={[
