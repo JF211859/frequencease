@@ -108,7 +108,7 @@ export default function FrequencyTester({ route }) {
         <CircularProgress
           ref={progressRef}
           initialValue={100}
-          progressValueColor={"#f2f2f2"}
+          progressValueColor={!getIsDarkMode() ? "#f2f2f2" : "#000000"}
           value={0}
           duration={4000} //4 seconds
           radius={130}

@@ -76,13 +76,37 @@ export default function Profile() {
             },
           ]}
         >
-          {isDarkMode ? "Dark Mode" : "Light Mode"}
+          Appearance
         </Text>
-        <Switch
-          value={isDarkMode}
-          onValueChange={toggleTheme}
-          ios_backgroundColor={"#3e3e3e"}
-        />
+        <View style={styles.row}>
+          <Text
+            style={[
+              styles.body,
+              {
+                marginRight: 10,
+                color: appTheme.TEXT_STANDARD,
+              },
+            ]}
+          >
+            Light
+          </Text>
+          <Switch
+            value={isDarkMode}
+            onValueChange={toggleTheme}
+            ios_backgroundColor={"#3e3e3e"}
+          />
+          <Text
+            style={[
+              styles.body,
+              {
+                marginLeft: 10,
+                color: appTheme.TEXT_STANDARD,
+              },
+            ]}
+          >
+            Dark
+          </Text>
+        </View>
       </View>
     </View>
   );

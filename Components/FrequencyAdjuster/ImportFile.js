@@ -117,7 +117,7 @@ export default function ImportFile(props) {
           >
             Upload Successful!
           </Text>
-          <Text style={styles.body}>
+          <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
             Your audio has been imported successfully! Press play to hear the
             adjusted audio 🔊
           </Text>
