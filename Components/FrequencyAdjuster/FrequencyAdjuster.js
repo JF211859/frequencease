@@ -8,7 +8,7 @@ import {
 import React from "react";
 import SwitchSelector from "react-native-switch-selector"; // https://www.npmjs.com/package/react-native-switch-selector
 import { COLORS } from "../../Style/colorScheme";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
 import SoundPlayer from "./AdjusterPlayer";
 import TutorialButton from "../ImageComponents/TutorialButton";
 import RecordAndPlayback from "./RecordAndPlayback";
@@ -16,9 +16,14 @@ import ImportFile from "./ImportFile";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 import Modal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "../../Style/ThemeContext";
 
 // This should be the home screen when app opens
 export default function FrequencyAdjuster() {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   const windowHeight = useWindowDimensions().height;
   const windowWidth = useWindowDimensions().width;
 
@@ -73,7 +78,7 @@ export default function FrequencyAdjuster() {
             {
               width: 300,
               height: 375,
-              backgroundColor: "white",
+              backgroundColor: appTheme.MODAL,
               borderRadius: 30,
               padding: 20,
             },
@@ -82,16 +87,21 @@ export default function FrequencyAdjuster() {
           <Text
             style={[
               styles.h3,
-              { paddingBottom: 20, marginTop: 20, fontWeight: "bold" },
+              {
+                paddingBottom: 20,
+                marginTop: 20,
+                fontWeight: "bold",
+                color: appTheme.TEXT_STANDARD,
+              },
             ]}
           >
             Tutorial
           </Text>
-          <Text style={styles.body}>
+          <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
             Tap the Record button to start recording or tap the Import File
             button to upload your own audio (all audio file types are accepted)!
-            The audio you recorded or imported will then be adjusted in the app. Once it
-            is uploaded, press the Play button to listen to your audio!
+            The audio you recorded or imported will then be adjusted in the app.
+            Once it is uploaded, press the Play button to listen to your audio!
           </Text>
 
           <View style={[styles.row, { justifyContent: "space-around" }]}>
@@ -100,20 +110,29 @@ export default function FrequencyAdjuster() {
                 styles.button,
                 {
                   borderRadius: 30,
-                  backgroundColor: COLORS.RED,
+                  backgroundColor: appTheme.CANCEL,
                   marginRight: 10,
                   marginTop: 20,
                 },
               ]}
               onPress={() => closeAll()}
             >
-              <Text style={styles.h3}>Close</Text>
+              <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <Text style={[styles.h1, styles.marginTop, styles.center]}>
+      <Text
+        style={[
+          styles.h1,
+          styles.marginTop,
+          styles.center,
+          { color: appTheme.TEXT_STANDARD },
+        ]}
+      >
         Audible Frequency
       </Text>
 
@@ -126,22 +145,22 @@ export default function FrequencyAdjuster() {
         */}
         <View
           style={{
-            backgroundColor: COLORS.GREY,
-            width: (minFreq - 100) / 8000 * (windowWidth - 30),
+            backgroundColor: appTheme.TEXT_SECONDARY,
+            width: ((minFreq - 100) / 8000) * (windowWidth - 30),
             height: 50,
           }}
         />
         <View
           style={{
-            backgroundColor: COLORS.LIGHT_BLUE,
-            width: (maxFreq - minFreq) / 8000 * (windowWidth - 30),
+            backgroundColor: appTheme.APP_BLUE,
+            width: ((maxFreq - minFreq) / 8000) * (windowWidth - 30),
             height: 50,
           }}
         />
         <View
           style={{
-            backgroundColor: COLORS.GREY,
-            width: (8000 - maxFreq) / 8000 * (windowWidth - 30),
+            backgroundColor: appTheme.TEXT_SECONDARY,
+            width: ((8000 - maxFreq) / 8000) * (windowWidth - 30),
             height: 50,
           }}
         />
@@ -149,8 +168,12 @@ export default function FrequencyAdjuster() {
       <View
         style={[styles.margin, styles.row, { justifyContent: "space-between" }]}
       >
-        <Text>Lower range: {minFreq} Hz</Text>
-        <Text>Higher range: {maxFreq} Hz</Text>
+        <Text style={{ color: appTheme.TEXT_STANDARD }}>
+          Lower range: {minFreq} Hz
+        </Text>
+        <Text style={{ color: appTheme.TEXT_STANDARD }}>
+          Higher range: {maxFreq} Hz
+        </Text>
       </View>
 
       {/* <Text>Select the mode here</Text>

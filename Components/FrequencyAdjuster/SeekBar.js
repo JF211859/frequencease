@@ -1,42 +1,59 @@
 // source: https://stackoverflow.com/questions/55537889/implemtation-of-audio-progress-bar-in-react-native
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
 import { COLORS, APP_THEME } from "../../Style/colorScheme";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
+import { useTheme } from "../../Style/ThemeContext";
 
 function pad(n, width, z = 0) {
-  n = n + '';
+  n = n + "";
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-const minutesAndSeconds = (position) => ([
+const minutesAndSeconds = (position) => [
   pad(Math.floor(position / 60), 2),
   pad(position % 60, 2),
-]);
+];
 
 const SeekBar = ({
   uri,
   trackLength,
   currentPosition,
   onSeek,
-  onSlidingStart
+  onSlidingStart,
 }) => {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   const elapsed = minutesAndSeconds(Math.floor(currentPosition / 1000));
-  const remaining = minutesAndSeconds(Math.floor(trackLength / 1000) - Math.floor(currentPosition / 1000));
+  const remaining = minutesAndSeconds(
+    Math.floor(trackLength / 1000) - Math.floor(currentPosition / 1000)
+  );
   return (
     <View style={seekbarStyle.container}>
-      <View style={ styles.row }>
-        <Text style={[styles.body, styles.center, {height: 18}]}>
+      <View style={styles.row}>
+        <Text
+          style={[
+            styles.body,
+            styles.center,
+            { height: 18, color: appTheme.TEXT_STANDARD },
+          ]}
+        >
           {uri !== "NOT SET" && elapsed[0] + ":" + elapsed[1]}
         </Text>
         <View style={{ flex: 1 }} />
-        <Text style={[styles.body, styles.center, {height: 18}]}>
-          {(uri !== "NOT SET" && trackLength > 1) && "-" + remaining[0] + ":" + remaining[1]}
+        <Text
+          style={[
+            styles.body,
+            styles.center,
+            { height: 18, color: appTheme.TEXT_STANDARD },
+          ]}
+        >
+          {uri !== "NOT SET" &&
+            trackLength > 1 &&
+            "-" + remaining[0] + ":" + remaining[1]}
         </Text>
       </View>
       <Slider
@@ -47,7 +64,7 @@ const SeekBar = ({
         value={uri !== "NOT SET" ? currentPosition : 0}
         minimumTrackTintColor={COLORS.MEDIUM_BLUE}
         maximumTrackTintColor={COLORS.GREY}
-        style={[{height: 50}, styles.margin]}
+        style={[{ height: 50 }, styles.margin]}
       />
     </View>
   );
@@ -75,8 +92,8 @@ const seekbarStyle = StyleSheet.create({
     backgroundColor: APP_THEME.APP_BLUE,
   },
   text: {
-    color: 'rgba(255, 255, 255, 0.72)',
+    color: "rgba(255, 255, 255, 0.72)",
     fontSize: 12,
-    textAlign: 'center',
-  }
+    textAlign: "center",
+  },
 });

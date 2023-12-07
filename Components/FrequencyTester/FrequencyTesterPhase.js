@@ -1,14 +1,18 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation, StackActions } from "@react-navigation/native";
-import { APP_THEME } from "../../Style/colorScheme";
 import TutorialButton from "../ImageComponents/TutorialButton";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "../Storage";
 import TesterResultsModal from "./TesterResultsModal";
 import { phaseInfo } from "./testerData";
+import { useTheme } from "../../Style/ThemeContext";
 
 function ResultsDisplay({ minFreq, maxFreq }) {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   const phases = [[], [], []]; //logic for setting the range information
   for (let i = 0; i < 9; i++) {
     const { hz } = phaseInfo[i];
@@ -27,28 +31,40 @@ function ResultsDisplay({ minFreq, maxFreq }) {
             styles.center,
             {
               fontWeight: "bold",
-              color: APP_THEME.TEXT_STANDARD,
+              color: appTheme.TEXT_STANDARD,
             },
           ]}
         >
           {`Phase ${index + 1}:`}
         </Text>
-        <Text style={[styles.h3, styles.center, { fontStyle: "italic" }]}>
+        <Text
+          style={[
+            styles.h3,
+            styles.center,
+            { fontStyle: "italic", color: appTheme.TEXT_STANDARD },
+          ]}
+        >
           {index === 0 ? "lower" : index === 1 ? "middle" : "upper"} range
         </Text>
       </View>
       {phase.length > 0 ? (
-        <Text style={styles.h3}>{`${Math.min(...phase)}Hz - ${Math.max(
-          ...phase
-        )}Hz`}</Text>
+        <Text
+          style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}
+        >{`${Math.min(...phase)}Hz - ${Math.max(...phase)}Hz`}</Text>
       ) : (
-        <Text style={styles.h3}>Out of Range</Text>
+        <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+          Out of Range
+        </Text>
       )}
     </View>
   ));
 }
 
 export default function FrequencyTesterPhase() {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   const navigation = useNavigation();
   const [minFreq, setMinFreq] = React.useState(400); //default hearing range
   const [maxFreq, setMaxFreq] = React.useState(800);
@@ -71,11 +87,23 @@ export default function FrequencyTesterPhase() {
         toggleTutorial={toggleTutorial}
       />
 
-      <Text style={[styles.h1, styles.center, { fontWeight: "bold" }]}>
+      <Text
+        style={[
+          styles.h1,
+          styles.center,
+          { fontWeight: "bold", color: appTheme.TEXT_STANDARD },
+        ]}
+      >
         Your test results are in! 🎉{" "}
       </Text>
 
-      <Text style={[styles.h2, styles.center, { marginBottom: 20 }]}>
+      <Text
+        style={[
+          styles.h2,
+          styles.center,
+          { marginBottom: 20, color: appTheme.TEXT_STANDARD },
+        ]}
+      >
         Your hearing range is {minFreq} - {maxFreq}Hz
       </Text>
 
@@ -85,7 +113,7 @@ export default function FrequencyTesterPhase() {
         <TouchableOpacity
           style={[
             styles.button,
-            { borderRadius: 15, backgroundColor: APP_THEME.CANCEL },
+            { borderRadius: 15, backgroundColor: appTheme.CANCEL },
           ]}
           onPress={() => {
             navigation.navigate({
@@ -94,12 +122,14 @@ export default function FrequencyTesterPhase() {
             });
           }}
         >
-          <Text style={styles.h3}>Retake Entire Test</Text>
+          <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+            Retake Entire Test
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
-            { borderRadius: 15, backgroundColor: APP_THEME.CONFIRM },
+            { borderRadius: 15, backgroundColor: appTheme.CONFIRM },
           ]}
           onPress={() => {
             navigation.dispatch(StackActions.popToTop());
@@ -107,7 +137,9 @@ export default function FrequencyTesterPhase() {
             navigation.navigate("Home");
           }}
         >
-          <Text style={styles.h3}>Go to Adjuster</Text>
+          <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+            Go to Adjuster
+          </Text>
         </TouchableOpacity>
       </View>
       <TutorialButton tutorial={() => toggleTutorial(!tutorialVisible)} />

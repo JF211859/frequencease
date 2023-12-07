@@ -7,16 +7,32 @@ import HamburgerIcon from "./Components/ImageComponents/HamburgerIcon";
 import Profile from "./Components/Profile";
 import WelcomePage from "./Components/WelcomePage";
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { APP_THEME } from "./Style/colorScheme";
+import { ThemeProvider } from "./Style/ThemeContext";
+import { useTheme } from "./Style/ThemeContext";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
 // Nested Stack Navigator for Profile/ Frequency Tester Views
 function ProfileTesterStack() {
+  const { getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   return (
     <Stack.Navigator
       initialRouteName="Welcome Page"
@@ -39,7 +55,7 @@ function ProfileTesterStack() {
         name="Profile"
         component={Profile}
         options={{
-          headerLeft: HamburgerIcon,
+          headerLeft: () => <HamburgerIcon />,
           headerTitle: "Profile",
           gestureEnabled: false, //disable back
         }}
@@ -49,8 +65,8 @@ function ProfileTesterStack() {
         component={FrequencyTester}
         options={{
           headerBackVisible: false,
-          headerTintColor: APP_THEME.TEXT_STANDARD,
-          headerBackImage: BackButtonImage,
+          headerTintColor: appTheme.TEXT_STANDARD,
+          headerBackImage: () => <BackButtonImage />,
           headerTitle: "Frequency Tester",
           gestureEnabled: false, //disable back
         }}
@@ -60,7 +76,7 @@ function ProfileTesterStack() {
         name="FrequencyTesterPhase"
         component={FrequencyTesterPhase}
         options={{
-          headerTintColor: APP_THEME.TEXT_STANDARD,
+          headerTintColor: appTheme.TEXT_STANDARD,
           headerBackVisible: false,
           headerTitle: "",
           gestureEnabled: false, //disable back
@@ -71,9 +87,12 @@ function ProfileTesterStack() {
 }
 
 // Entire App's Navigation Container
-export default function App() {
+function AppContent() {
+  const { getIsDarkMode } = useTheme();
+  const navigationTheme = getIsDarkMode() ? DarkTheme : DefaultTheme;
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <Drawer.Navigator
         initialRouteName={"User Profile"}
         screenOptions={{
@@ -88,7 +107,7 @@ export default function App() {
           component={FrequencyAdjuster}
           options={{
             headerTitle: "Frequency Adjuster",
-            headerLeft: HamburgerIcon,
+            headerLeft: () => <HamburgerIcon />,
             headerLeftContainerStyle: { paddingLeft: 20 },
             drawerLabelStyle: { fontSize: 24 },
           }}

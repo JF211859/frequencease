@@ -1,12 +1,15 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import styles from "../Style/styles";
+import { View, Text, TouchableOpacity, Switch } from "react-native";
+import dynamicStyles from "../Style/styles";
 import { useNavigation } from "@react-navigation/native";
-import { APP_THEME } from "../Style/colorScheme";
 import { readData, MINFREQ_KEY, MAXFREQ_KEY } from "./Storage";
+import { useTheme } from "../Style/ThemeContext";
 
 export default function Profile() {
+  const styles = dynamicStyles();
+
   const navigation = useNavigation();
+  const { isDarkMode, toggleTheme, getAppTheme } = useTheme();
 
   // get minFreq and maxFreq from asyncStorage
   const [minFreq, setMinFreq] = React.useState(400);
@@ -17,19 +20,27 @@ export default function Profile() {
     readData(MAXFREQ_KEY).then((maxFreqValue) => setMaxFreq(maxFreqValue));
   }, []);
 
+  const appTheme = getAppTheme();
+
   return (
     <View style={[styles.screenContainer, styles.center, { margin: 20 }]}>
-      <Text style={[styles.h1, { marginBottom: 20 }]}>
+      <Text
+        style={[styles.h1, { marginBottom: 20, color: appTheme.TEXT_STANDARD }]}
+      >
         Your Hearing Range is:
       </Text>
       <View style={[styles.row]}>
-        <Text style={styles.h2}>{minFreq} Hz - </Text>
-        <Text style={styles.h2}>{maxFreq} Hz</Text>
+        <Text style={[styles.h2, { color: appTheme.TEXT_STANDARD }]}>
+          {minFreq} Hz -{" "}
+        </Text>
+        <Text style={[styles.h2, { color: appTheme.TEXT_STANDARD }]}>
+          {maxFreq} Hz
+        </Text>
       </View>
 
       <TouchableOpacity
         style={{
-          backgroundColor: APP_THEME.APP_BLUE,
+          backgroundColor: appTheme.APP_BLUE,
           width: 250,
           height: 50,
           borderRadius: 50,
@@ -44,10 +55,59 @@ export default function Profile() {
           });
         }}
       >
-        <Text style={{ fontSize: 20, textAlign: "center" }}>
+        <Text
+          style={{
+            fontSize: 20,
+            textAlign: "center",
+            color: appTheme.TEXT_STANDARD,
+          }}
+        >
           Retake Frequency Test
         </Text>
       </TouchableOpacity>
+      {/* Toggle for Dark/Light Mode */}
+      <View style={{ alignItems: "center", marginTop: 50 }}>
+        <Text
+          style={[
+            styles.h2,
+            {
+              marginBottom: 10,
+              color: appTheme.TEXT_STANDARD,
+            },
+          ]}
+        >
+          Appearance
+        </Text>
+        <View style={styles.row}>
+          <Text
+            style={[
+              styles.body,
+              {
+                marginRight: 10,
+                color: appTheme.TEXT_STANDARD,
+              },
+            ]}
+          >
+            Light
+          </Text>
+          <Switch
+            value={isDarkMode}
+            onValueChange={toggleTheme}
+            ios_backgroundColor={"#3e3e3e"}
+          />
+          <Text
+            style={[
+              styles.body,
+              {
+                marginLeft: 10,
+                color: appTheme.TEXT_STANDARD,
+              },
+            ]}
+          >
+            Dark
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }

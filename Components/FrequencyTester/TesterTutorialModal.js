@@ -1,10 +1,15 @@
 import React from "react";
 import Modal from "react-native-modal";
 import { View, TouchableOpacity, Text } from "react-native";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
+import { useTheme } from "../../Style/ThemeContext";
 
 export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
+  const styles = dynamicStyles();
+  const { getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+
   return (
     <Modal isVisible={isVisible} style={styles.center} backdropOpacity={0.8}>
       <View
@@ -13,7 +18,7 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
           {
             width: 300,
             height: 320,
-            backgroundColor: "white",
+            backgroundColor: appTheme.MODAL,
             borderRadius: 30,
             padding: 20,
           },
@@ -22,12 +27,17 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
         <Text
           style={[
             styles.h3,
-            { paddingBottom: 10, marginTop: 20, fontWeight: "bold" },
+            {
+              paddingBottom: 10,
+              marginTop: 20,
+              fontWeight: "bold",
+              color: appTheme.TEXT_STANDARD,
+            },
           ]}
         >
           Tutorial
         </Text>
-        <Text style={styles.body}>
+        <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
           Press the play button to listen to the current sound. If you can hear
           the sound, select the thumbs up button ("Yes") on the right. If you
           can't hear the sound, select the thumbs down ("No") button on the
@@ -39,12 +49,14 @@ export default function TesterTutorialModal({ isVisible, toggleTutorial }) {
             {
               marginTop: 10,
               borderRadius: 30,
-              backgroundColor: COLORS.RED,
+              backgroundColor: appTheme.CANCEL,
             },
           ]}
           onPress={() => toggleTutorial(!isVisible)}
         >
-          <Text style={styles.h3}>Close</Text>
+          <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+            Close
+          </Text>
         </TouchableOpacity>
       </View>
     </Modal>

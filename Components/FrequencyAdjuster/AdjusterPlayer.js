@@ -1,13 +1,30 @@
 import * as React from "react";
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
-import styles from "../../Style/styles";
+import dynamicStyles from "../../Style/styles";
 import { COLORS } from "../../Style/colorScheme";
 import SeekBar from "./SeekBar";
 import Modal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "../../Style/ThemeContext";
 
 export default function SoundPlayer(props) {
+  const styles = dynamicStyles();
+  const { getIsDarkMode, getAppTheme } = useTheme();
+  const appTheme = getAppTheme();
+  const replaySource = getIsDarkMode()
+    ? require("../../images/replay_dark.png")
+    : require("../../images/replay-music.png");
+  const playSource = getIsDarkMode()
+    ? require("../../images/play_dark.png")
+    : require("../../images/play.png");
+  const pauseSource = getIsDarkMode()
+    ? require("../../images/pause_dark.png")
+    : require("../../images/pause.png");
+  const stopSource = getIsDarkMode()
+    ? require("../../images/stop_dark.png")
+    : require("../../images/stop.png");
+
   const sound = React.useRef(new Audio.Sound());
   const [Status, setStatus] = React.useState(false); // isPlaying
   // Seekbar variables
@@ -44,12 +61,12 @@ export default function SoundPlayer(props) {
 
   const setTime = (sound, pos) => {
     console.log("Set time: " + pos);
-    sound.current.positionMillis = pos
+    sound.current.positionMillis = pos;
     setCurrentPos(pos);
   };
 
   const seek = (pos) => {
-    if (currentURI === "NOT SET"){
+    if (currentURI === "NOT SET") {
       LoadAudio();
     }
     console.log("Seeking " + pos);
@@ -74,35 +91,32 @@ export default function SoundPlayer(props) {
         clearInterval(intervalId); // FIXME: gets old intervalId, doesn't clear
         setCurrentPos(result.durationMillis);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log("updatePos error: " + error);
       clearInterval(intervalId);
     }
-  }
+  };
 
   const LoadAudio = async () => {
     shiftedURI = props.getShiftedURI();
 
-    if (shiftedURI === "NOT SET"){
+    if (shiftedURI === "NOT SET") {
       console.log("Attempting to load before audio is recorded!");
       openModal();
       return;
-    }
-    else if (shiftedURI === currentURI) {
+    } else if (shiftedURI === currentURI) {
       console.log("Already loaded");
       return;
-    }
-    else {
+    } else {
       try {
         console.log("props.shiftedURI = " + shiftedURI);
         await sound.current.unloadAsync();
-        let result = await sound.current.loadAsync({uri: shiftedURI});
+        let result = await sound.current.loadAsync({ uri: shiftedURI });
         console.log(sound.current);
         setURI(result.uri);
         setTime(sound, 0);
         setDuration(result);
-        
+
         // start playing audio
         // If playing from load, start from 0
         sound.current.playFromPositionAsync(0);
@@ -163,7 +177,7 @@ export default function SoundPlayer(props) {
 
   const StopAudio = async () => {
     try {
-      if (shiftedURI === "NOT SET"){
+      if (shiftedURI === "NOT SET") {
         openModal();
         return;
       }
@@ -179,7 +193,7 @@ export default function SoundPlayer(props) {
 
   const ReplayAudio = async () => {
     try {
-      if (shiftedURI === "NOT SET"){
+      if (shiftedURI === "NOT SET") {
         openModal();
         return;
       }
@@ -197,8 +211,7 @@ export default function SoundPlayer(props) {
           }
         });
         console.log("Audio replaying");
-      }
-      else {
+      } else {
         LoadAudio();
       }
     } catch (error) {
@@ -212,6 +225,7 @@ export default function SoundPlayer(props) {
         isVisible={isModalVisible}
         style={styles.center}
         backdropOpacity={0.8}
+        backgroundColor={appTheme.BACKGROUND}
       >
         <View
           style={[
@@ -219,13 +233,13 @@ export default function SoundPlayer(props) {
             {
               width: 225,
               height: 175,
-              backgroundColor: "white",
+              backgroundColor: appTheme.MODAL,
               borderRadius: 30,
               padding: 20,
             },
           ]}
         >
-          <Text style={styles.body}>
+          <Text style={[styles.body, { color: appTheme.TEXT_STANDARD }]}>
             You need to record or import an audio first!
           </Text>
 
@@ -235,14 +249,16 @@ export default function SoundPlayer(props) {
                 styles.button,
                 {
                   borderRadius: 30,
-                  backgroundColor: COLORS.RED,
+                  backgroundColor: appTheme.CANCEL,
                   marginRight: 10,
                   marginTop: 20,
                 },
               ]}
               onPress={() => closeModal()}
             >
-              <Text style={styles.h3}>Close</Text>
+              <Text style={[styles.h3, { color: appTheme.TEXT_STANDARD }]}>
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -260,44 +276,37 @@ export default function SoundPlayer(props) {
       <View style={[styles.row, { justifyContent: "space-around" }]}>
         <TouchableOpacity
           onPress={Status === false ? () => PlayAudio() : () => PauseAudio()}
-          style = {
+          style={
             props.getShiftedURI() === "NOT SET"
-              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              ? [styles.circleButton, { backgroundColor: COLORS.GREY }]
               : styles.circleButton
-            }
+          }
         >
           <Image
-            source={
-              Status === false
-                ? require("../../images/play.png")
-                : require("../../images/pause.png")
-            }
+            source={Status === false ? playSource : pauseSource}
             style={styles.icon}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={StopAudio}
-          style = {
+          style={
             props.getShiftedURI() === "NOT SET"
-              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              ? [styles.circleButton, { backgroundColor: COLORS.GREY }]
               : styles.circleButton
-            }
+          }
         >
-          <Image source={require("../../images/stop.png")} style={styles.icon} />
+          <Image source={stopSource} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={ReplayAudio}
-          style = {
+          style={
             props.getShiftedURI() === "NOT SET"
-              ? [styles.circleButton, {backgroundColor: COLORS.GREY}]
+              ? [styles.circleButton, { backgroundColor: COLORS.GREY }]
               : styles.circleButton
-            }
+          }
         >
-          <Image
-            source={require("../../images/replay-music.png")}
-            style={styles.icon}
-          />
+          <Image source={replaySource} style={styles.icon} />
         </TouchableOpacity>
       </View>
     </View>
